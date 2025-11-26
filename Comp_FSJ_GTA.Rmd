@@ -7,6 +7,10 @@ output:
     extra_dependencies: [placeins]
     toc: true
     toc_depth: 1
+  bookdown::word_document2:
+    toc: true
+    toc_depth: 1
+    always_allow_html: true
 abstract: > 
   This article presents a detailed comparison of two sources of fish catch data: the FAO FishStatJ set (FSJ) and the FIRMS Global Tuna Atlas set (GTA). 
   These two databases differ in structure, temporal coverage and level of detail. FSJ includes some 347 species, detailed information on fishing fleets, and more precise geographical data. GTA, on the other hand, focuses on a restricted set of 65 species (32 of which are considered major) and aggregates certain geographical or national entities that FSJ treats in greater detail. It does, however, include three additional items of information : gear, fishing method and information on discards. 
@@ -69,7 +73,7 @@ table_recap <- readr::read_csv(here::here("diff_FSJ_GTA_recap.csv"))
 library(flextable)
 library(dplyr)
 
-# construction du flextable réduit
+# construction du flextable rÃ©duit
 ft_recap <- 
   qflextable(table_recap) %>% 
   flextable::autofit() %>% 
@@ -83,7 +87,7 @@ ft_recap
 ```
 
 
-The FSJ dataset is much more exhaustive for species and flags. A greater number of species can be observed in FSJ, 347 species, while GTA lists only 65. The fishing_fleet categories are also more numerous in FSJ, due to the higher level of detail, whereas in GTA some data are aggregated (for example, 'Réunion' is included in France).
+The FSJ dataset is much more exhaustive for species and flags. A greater number of species can be observed in FSJ, 347 species, while GTA lists only 65. The fishing_fleet categories are also more numerous in FSJ, due to the higher level of detail, whereas in GTA some data are aggregated (for example, 'RÃ©union' is included in France).
 
 ```{r numberdim, tab.cap="Number of dimensions for each dataset, after mapping of fishing_fleet and species for FSJ"}
 qflextable(onlyminortabletest)
@@ -114,10 +118,8 @@ We note that catches of species not present in GTA, but present in FSJ, represen
 As far as geographical data is concerned, FSJ (FishStatJ) is more precise, particularly in terms of longitudes, which are subdivided into several sub-regions (after mapping).
 
 ```{r}
-# 1. RÃ©cupÃ©rer les valeurs uniques
 geo_ids <- unique(ncd$geographic_identifier)
 oceans  <- unique(captured$ocean_basin)
-# Avec paste() et collapse pour sÃ©parer par des virgules
 phrase_geo <- paste(geo_ids, collapse = ",\n ")
 phrase_oce <- paste(oceans,  collapse = ",\n ")
 
@@ -206,7 +208,7 @@ CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement
 
 <!-- To ensure a consistent comparison, only species for which catches exist for both sources of authority in the Pacific should be retained. -->
 
-<!-- On commente le reste car peu utile c'est un peu les redites des données précédentes -->
+<!-- On commente le reste car peu utile c'est un peu les redites des donnÃ©es prÃ©cÃ©dentes -->
 <!-- ## Analysis by fishing fleet (`fishing_fleet_label`) --> 
 
 <!-- The biggest disparities come from Indonesia, the Philippines, Thailand, Malaysia and China, where FSJ > GTA. Conversely, many data are classified as NEI in GTA, which explains in part these discrepancies and reminds us that FSJ offers a finer level of detail on countries. This data could be used to refine GTA data.  Conversely, Burma (Myanmar) has very little data in FSJ, whereas GTA offers a lot, and Oman presents significant differences. The differences in Curacao values is because of a difference in mapping as it is equivalent to the Netherlands Antilles in the FSJ dataset. -->
@@ -231,7 +233,7 @@ df_presence <- bind_rows(
   captured  %>% dplyr::select(species_name, ocean_simple) %>% dplyr::mutate(source = "Captured")
 )
 
-# 2. Création du tableau complet (including absences)
+# 2. CrÃ©ation du tableau complet (including absences)
 all_species <- union(ncd$species_name, captured$species_name)
 all_oceans  <- union(ncd$ocean_simple, captured$ocean_simple)
 
@@ -261,7 +263,7 @@ presence_df_complete <- expand.grid(
     by = c("species_name", "ocean_simple")
   )
 
-# 3. Détection des espèces toujours en "Both" ou toujours en "None"
+# 3. DÃ©tection des espÃ¨ces toujours en "Both" ou toujours en "None"
 always_both_or_none <- presence_df_complete %>%
   dplyr::group_by(species_name) %>%
   dplyr::filter(all(presence %in% c("Both", NA))) %>%
@@ -292,7 +294,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-# 1. Combinaison et agrégation des valeurs de capture par source
+# 1. Combinaison et agrÃ©gation des valeurs de capture par source
 df_values <- dplyr::bind_rows(
   ncd      %>% dplyr::select(species_name, ocean_simple, measurement_value) %>% dplyr::mutate(source = "GTA"),
   captured %>% dplyr::select(species_name, ocean_simple, measurement_value) %>% dplyr::mutate(source = "FSJ")
@@ -303,7 +305,7 @@ df_values <- dplyr::bind_rows(
     .groups = "drop"
   )
 
-# 2. Construction du tableau complet (présence + valeurs)
+# 2. Construction du tableau complet (prÃ©sence + valeurs)
 all_species <- base::union(ncd$species_name, captured$species_name)
 all_oceans  <- base::union(ncd$ocean_simple, captured$ocean_simple)
 
@@ -374,10 +376,10 @@ ggplot2::ggplot(
   
   ggplot2::facet_wrap(~ flag, scales = "free_y", ncol = 1)
 
-# 3. Tracé de la heatmap avec comparaison des valeurs
+# 3. TracÃ© de la heatmap avec comparaison des valeurs
 # ggplot2::ggplot(presence_df, ggplot2::aes(x = ocean_simple, y = species_name, fill = presence)) +
 #   ggplot2::geom_tile(color = "white") +
-#   # contour épais pour les espèces flagged
+#   # contour Ã©pais pour les espÃ¨ces flagged
 #   geom_tile(
 #     data = presence_df_complete %>% dplyr::filter(flag != "Other"),
 #     aes(x = ocean_simple, y = species_name),
@@ -385,11 +387,11 @@ ggplot2::ggplot(
 #   ) +
 # ggplot2::scale_fill_manual(
 #   values = c(
-#     "Both: GTA > FSJ" = "#1B9E77",  # vert bleut� fonc�
-#     "GTA only"        = "#66C2A5",  # vert bleut� clair (m�me teinte)
+#     "Both: GTA > FSJ" = "#1B9E77",  # vert bleute fonce
+#     "GTA only"        = "#66C2A5",  # vert bleute clair (même teinte)
 #     
-#     "Both: FSJ > GTA" = "#D95F02",  # orange fonc� (ou rouge brun)
-#     "FSJ only"        = "#FC8D62",  # orange clair (m�me teinte)
+#     "Both: FSJ > GTA" = "#D95F02",  # orange fonce (ou rouge brun)
+#     "FSJ only"        = "#FC8D62",  # orange clair (même teinte)
 #     
 #     "None"            = "#BDBDBD"   # gris neutre
 #   )
@@ -510,7 +512,7 @@ CWP.dataset::qflextable2(table %>% dplyr::ungroup()%>% dplyr::select(-measuremen
 ```
 
 
-We observe the same differences as before for Skipjack, Swordfish, and Pacific Bluefin tuna—which is expected, as these species occur in all oceans and are therefore not affected by the new filtering criteria. However, even after excluding Pacific data for Kawakawa and sharks, the FSJ dataset still reports higher values. This suggests that records for these species may be inaccurate for GTA.
+We observe the same differences as before for Skipjack, Swordfish, and Pacific Bluefin tunaâ€”which is expected, as these species occur in all oceans and are therefore not affected by the new filtering criteria. However, even after excluding Pacific data for Kawakawa and sharks, the FSJ dataset still reports higher values. This suggests that records for these species may be inaccurate for GTA.
 
 <!-- ## Analysis for the all comparable species i.e. 8 species present in both datasets in every ocean -->
 
@@ -679,7 +681,7 @@ As major tunas are also present in all oceans for both datasets and are the main
 <!-- ft3 <- tableGrob(Bigeye$summary_of_differences %>% dplyr::select(-measurement_unit)%>% dplyr::mutate_if(is.numeric, round)) -->
 <!-- ft4 <- tableGrob(Yellowfin$summary_of_differences%>% dplyr::select(-measurement_unit) %>% dplyr::mutate_if(is.numeric, round)) -->
 
-<!-- # # 2. CrÃ©er un cowplot avec des labels -->
+<!-- # # 2. CrÃƒÂ©er un cowplot avec des labels -->
 <!-- # cowplot::plot_grid( -->
 <!-- #   ft1, ft2, ft3, ft4, -->
 <!-- #   labels = c("A) Skipjack", "B) Albacore", "C) Bigeye", "D) Yellowfin"), -->
@@ -696,7 +698,7 @@ g2 <- (Albacore$time_coverage_analysis_list$plots[[1]])
 g3 <- (Bigeye$time_coverage_analysis_list$plots[[1]])
 g4 <- (Yellowfin$time_coverage_analysis_list$plots[[1]])
 
-# # 2. CrÃ©er un cowplot avec des labels
+# # 2. CrÃƒÂ©er un cowplot avec des labels
 # cowplot::plot_grid(
 #   g1, g2, g3, g4,
 #   labels = c("A) Skipjack", "B) Albacore", "C) Bigeye", "D) Yellowfin"),
@@ -720,7 +722,7 @@ Albacorekg1 <- CWP.dataset::qflextable2(CWP.dataset::compare_dimension_differenc
 Bigeyeg1 <- CWP.dataset::qflextable2(CWP.dataset::compare_dimension_differences(Bigeye$groupping_differences_list$Groupped_all, "ocean_simple", parameter_diff_value_or_percent = "Difference in value", topn = 10)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
 
 Yellowfing1 <- CWP.dataset::qflextable2(CWP.dataset::compare_dimension_differences(Yellowfin$groupping_differences_list$Groupped_all, "ocean_simple", parameter_diff_value_or_percent = "Difference in value", topn = 10)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
-# 2. CrÃ©er un cowplot avec des labels
+# 2. CrÃƒÂ©er un cowplot avec des labels
 ```
 
 
@@ -754,7 +756,7 @@ gg4 <- ggplot() +
 # 1. Chargez cowplot (et non ggpubr pour get_legend avec return_all)
 library(cowplot)
 library(patchwork)
-# 1. Préparez g1 avec légende, les autres sans
+# 1. PrÃ©parez g1 avec lÃ©gende, les autres sans
 # g1_legend <- g1 + theme(legend.position = "none")
 # g2_nl     <- g2 + theme(legend.position = "none")
 # g3_nl     <- g3 + theme(legend.position = "none")
@@ -762,13 +764,13 @@ library(patchwork)
 
 library(ggplot2)
 
-# Thème commun pour les tags
+# ThÃ¨me commun pour les tags
 tag_theme <- ggplot2::theme(
   plot.tag           = ggplot2::element_text(size = 12, face = "bold"),
   plot.tag.position  = c(0, 1)
 )
 
-# 1. Pour chaque ligne, on place le tableau à gauche (2/3) et le ggplot à droite (1/3)
+# 1. Pour chaque ligne, on place le tableau Ã  gauche (2/3) et le ggplot Ã  droite (1/3)
 
 row1 <- patchwork::wrap_elements(panel = gg1) |
   (
@@ -807,7 +809,7 @@ row4 <- patchwork::wrap_elements(panel = gg4) |
   ) +
   plot_layout(widths = c(5, 1))
 
-# 2. Empilez les quatre lignes et collectez la légende unique (si besoin)
+# 2. Empilez les quatre lignes et collectez la lÃ©gende unique (si besoin)
 final_plot <- (row1 / row2 / row3 / row4) +
   plot_layout(guides = "collect")
 
@@ -911,7 +913,7 @@ CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement
 ```{r fig.cap="Presence and absence of the 32 main GTA species in each Ocean basin (black boxes represent the species commun in all ocean basin for both datasets)"}
 ggplot(presence_df_complete, aes(x = ocean_simple, y = species_name, fill = presence)) +
   geom_tile(color = "white") +
-  # contour épais pour les espèces flagged
+  # contour Ã©pais pour les espÃ¨ces flagged
   geom_tile(
     data = presence_df_complete %>% dplyr::filter(flag != "Other"),
     aes(x = ocean_simple, y = species_name),
@@ -920,7 +922,7 @@ ggplot(presence_df_complete, aes(x = ocean_simple, y = species_name, fill = pres
   scale_fill_manual(
 values = c(
   "Both" = "#1B9E77",   # vert plus profond
-  "GTA"  = "#377EB8",   # bleu fonc�
+  "GTA"  = "#377EB8",   # bleu fonce
   "FSJ"  = "#FFD700",   # orange vif
   "None" = "#999999"    # gris moyen, moins clair
 )

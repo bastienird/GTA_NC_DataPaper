@@ -1,0 +1,38 @@
+\usepackage[sfdefault]{carlito} 
+\renewcommand{\familydefault}{\sfdefault} 
+
+\usepackage{chngcntr}
+
+\counterwithout{figure}{section}
+\renewcommand{\thefigure}{\arabic{figure}}
+
+\counterwithout{table}{section}
+\renewcommand{\thetable}{\Roman{table}}
+
+% preamble.tex
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % clear default header/footer
+
+\usepackage{doi} % Pour un formatage propre des DOI
+
+% Header : title left, code right
+% Header avec DOI
+\fancyhead[L]{\fontsize{7}{8.5}\selectfont\textbf{Following the tuna trail: Contrasting global catch estimates from FAO and RFMOs}}
+\fancyhead[R]{\fontsize{7}{8.5}\selectfont\textbf{IOTC-2025-WPDCS21-17\_Rev1 | DOI: 10.5281/zenodo.17719667}}
+
+% Optional footer with page number centered
+\fancyfoot[C]{\thepage}
+
+% Prevent header line separation (optional)
+\renewcommand{\headrulewidth}{0.4pt}
+
+% --- Custom author and affiliation block ---
+\makeatletter
+\AtBeginDocument{%
+  \footnotetext[1]{Institut de Recherche pour le D\'eveloppement (IRD), 34203 S\`ete Cedex, France}%
+  \footnotetext[2]{MARBEC, University of Montpellier, CNRS, Ifremer, IRD, S\`ete, France}%
+  \footnotetext[3]{Indian Ocean Tuna Commission (IOTC) Secretariat, Victoria, Mah\'e, Seychelles}%
+  \footnotetext[4]{Food and Agriculture Organization of the United Nations (FAO), 00153 Rome, Italy}%
+}
+\makeatother

@@ -1,0 +1,534 @@
+---
+title: "Following the tuna trail:\nContrasting catch estimates from FishStat and the Global Tuna Atlas"
+subtitle: "Focus on the Indian Ocean (WPDCS-21)"
+author: |
+  Bastien Grasset (IRD, MARBEC) \
+  Emmanuel Chassot (IOTC) \
+  Julien Barde (IRD, MARBEC) \
+  James Geehan, Fabio Fiorellato (FAO)
+institute: "WPDCS-21 - Indian Ocean Tuna Commission"
+date: "`r format(Sys.Date(), '%d %B %Y')`"
+always_allow_html: true
+output:
+  beamer_presentation:
+    theme: "Madrid"
+    colortheme: "default"
+    fonttheme: "professionalfonts"
+    slide_level: 2
+    keep_tex: true
+    latex_engine: xelatex
+fontsize: 11pt
+classoption: "aspectratio=169"
+header-includes:
+  - |
+      \usepackage{graphicx}
+      \usepackage[sfdefault]{carlito}
+      \renewcommand{\familydefault}{\sfdefault}
+      \usepackage{tikz}
+      \usepackage{placeins}
+      \usepackage{sidecap}
+      \usepackage{xcolor}
+      \usepackage{ragged2e}
+      \usepackage{booktabs}
+      \usepackage{longtable} 
+      % Tout le texte en blanc
+      % Logos slide de titre
+      \titlegraphic{%
+        \vspace{-0.5cm}
+        \includegraphics[height=1cm]{inputs/images/Logo_IRD_2016_BLOC_FR_COUL.png}\hfill
+        \includegraphics[height=1cm]{inputs/images/iotc-logo.png}\hfill
+        \includegraphics[height=1cm]{inputs/images/FAO_logo.svg.png}
+      }
+
+      % Footline personnalise :
+      % Gauche = WPDCS-21
+      % Centre = Comparison FS--GTA
+      % Droite = numero de slide
+      \setbeamertemplate{footline}{%
+        \leavevmode%
+        \hbox{%
+          % Bloc gauche : WPDCS-21
+          \begin{beamercolorbox}[wd=.25\paperwidth,ht=2.25ex,dp=1ex,left]{author in head/foot}%
+            \hspace*{1ex}\usebeamerfont{author in head/foot}WPDCS-21
+          \end{beamercolorbox}%
+          % Bloc centre : Comparison FS - GTA
+          \begin{beamercolorbox}[wd=.50\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+            \usebeamerfont{title in head/foot}Comparison FS--GTA
+          \end{beamercolorbox}%
+          % Bloc droite : numero de slide
+          \begin{beamercolorbox}[wd=.25\paperwidth,ht=2.25ex,dp=1ex,right]{date in head/foot}%
+            \usebeamerfont{date in head/foot}\insertframenumber{} / \inserttotalframenumber\hspace*{1.5ex}
+          \end{beamercolorbox}%
+        }%
+        \vskip0pt%
+      }
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE, 
+	cache = FALSE
+)
+```
+
+```{r, cache=TRUE}
+require(CWP.dataset)
+require(dplyr)
+require(qs)
+```
+
+
+## Outline
+
+- Context  
+- Why comparing FishStat & GTA matters  
+- Indian Ocean focus  
+- Key species results  
+- Country / fleet differences 
+- Take-home messages  
+
+## FAO Global Capture Production (FishStat)
+
+- Official global reference for capture fishery production statistics.  
+- Compiled annually by FAO from NS1 submissions by Member States.  
+- Covers:
+  - **country/territory**
+  - **species** (ASFIS)
+  - **FAO major fishing area**
+  - **marine/inland**
+- All values are nominal landings (in tonnes, live weight equivalent); some species also in number.
+- Disseminated through **FishStatJ** (desktop client application^[Available at: https://www.fao.org/fishery/en/topic/166235/en]) and downloadable CSV files.
+
+## FAO Global Capture Production (FishStat) - first lines
+
+\scriptsize
+
+```{r fishStatfirstlines, tab.cap="First lines of the FS dataset", results='asis', echo=FALSE}
+
+
+headfsj <- qs::qread("outputs/headfsj.qs")
+require(dplyr)
+knitr::kable(headfsj, booktabs = TRUE) %>%
+  kableExtra::kable_styling(latex_options = "scale_down")
+
+```
+
+\normalsize
+
+We use the March 2025 release available through a CSV dataset accessible from the FAO Fisheries and Aquaculture Statistics online portal as a zipped file^[Available at: https://www.fao.org/fishery/static/Data/Capture_2025.1.0.zip].
+
+
+
+## FIRMS Global Tuna Atlas (GTA)
+
+- Harmonized nominal + geo-referenced catch datasets from all **5 t-RFMOs**:
+  CCSBT, IATTC, ICCAT, IOTC, WCPFC/SPC.
+- Built under **FAO-FIRMS**, consistent with **CWP standards**.
+- Open, transparent, reproducible:
+  - Datasets on Zenodo (with DOI)
+  - Full R workflow & Docker image
+- Covers tunas, tuna-like species, billfishes, mackerels, sharks, etc.
+- Data structure = **16 descriptive dimensions**:
+  
+## FAO FIRMS Global Tuna Atlas (GTA) - first lines
+
+```{r gtafirstlinestitle, results='asis', echo=FALSE}
+cat("
+\\begin{table}[ht]
+\\centering
+\\caption{Extract of the Global Tuna Atlas dataset, with redundant temporal columns (year, month, quarter) omitted}
+\\end{table}
+")
+```
+
+
+\scriptsize
+  
+```{r gtafirstlines, results='asis', echo=FALSE}
+
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+headGTA <- head(qs::qread("outputs/headGTA.qs"))
+
+left_tbl  <- headGTA %>%
+  dplyr::select(source_authority, fishing_fleet, time_start, time_end, geographic_identifier,gear_type, species)
+
+right_tbl <- headGTA %>%
+  dplyr::select(fishing_mode, measurement, measurement_unit, measurement_processing_level, measurement_value)
+
+cat("\\begin{columns}[T]\n")
+
+cat("\\begin{column}{0.48\\textwidth}\n")
+knitr::kable(left_tbl, "latex", booktabs = TRUE) %>%
+  kable_styling(latex_options = "scale_down", font_size = 7) %>%
+  print()
+cat("\\end{column}\n")
+
+cat("\\begin{column}{0.48\\textwidth}\n")
+knitr::kable(right_tbl, "latex", booktabs = TRUE) %>%
+  kable_styling(latex_options = "scale_down", font_size = 7) %>%
+  print()
+cat("\\end{column}\n")
+
+cat("\\end{columns}\n")
+
+
+
+```
+
+\normalsize
+
+The nominal catch dataset component of the GTA, covering the period 1918-2023, is publicly available from the Zenodo repository^[DOI: https://doi.org/10.5281/zenodo.8034730].
+
+
+## Key structural differences (FS vs GTA)
+
+\scriptsize
+
+```{r comptabletitle, results='asis', echo=FALSE}
+cat("
+\\begin{table}[ht]
+\\centering
+\\caption{Summary of the main structural differences used for this comparison.}
+\\end{table}
+")
+```
+
+
+| **Dimension** | **FishStat (FS)** | **GTA** | **Key differences** |
+|--------------|------------------|--------|----------------------|
+| **Species and group of species** | 337 | 65 | FS broader coverage; GTA tuned to tuna species. |
+| **Fishing Fleet** | 169 (country/territory) | 158 (aggregated) | FS detailed territories; GTA RFMO-aligned groups. |
+| **Gear Type** | Not reported | Reported |   |
+| **Fishing Mode** | Not reported | Reported |   |
+| **Source Authority** | National authority | RFMO / source agency |  |
+| **Area / Region** | 17 FAO areas | 10 RFMO areas | Partial overlap, especially in the Pacific. |
+| **Measurement Type** | Nominal Landings (NL) | NC + NL (+ discards) | Harmonized as equivalent for this analysis. |
+| **Temporal Range** | 1950-2023 | 1918-2023 | Heterogeneous for each tRFMO in GTA |
+
+\normalsize
+
+## Harmonization steps
+
+To ensure comparability between FS and GTA, we harmonized:
+
+\small
+\tightlist
+
+**1. Species**
+
+- Mapping between **ASFIS** species codes (FS) and **t-RFMO / CWP** species lists (GTA).
+- 32 species retained (shared and unambiguous, one group of species retained "Frigate and bullet tuna").
+
+**2. Fleets**
+
+- Alignment of **FS national/territorial fleets** with **GTA fleet categories**.
+- Merging of territories for FS to match GTA conventions.
+
+**3. Areas**
+
+- Strict equivalence only in **Mediterranean & Black Sea** and in **Indian Ocean (IOTC_WEST / EAST)**
+- Others aligned at the **ocean basin** level (Atlantic, Pacific).
+
+**4. Measurement Type**
+
+- FishStat = **NL only** and GTA = **NC + NL**  
+--> Combined into a unified measure for comparison.
+
+\normalsize
+
+## Context
+
+- They rely on overlapping sources but differ in:
+  - aggregation rules  
+  - species resolution 
+  - fleet and spatial breakdown  
+- The paper compare **global** and **ocean-level** differences but today's presentation, focus only on the **Indian Ocean.**
+
+
+## Context
+
+
+<!-- ```{r presenceabsence_latex, echo=FALSE, results='asis'} -->
+
+<!-- cat(" -->
+<!-- \\begin{figure} -->
+<!--   \\centering -->
+<!--   \\includegraphics[height=0.80\\textheight]{outputs/figs/presenceabsence.pdf} -->
+<!--   \\caption{\\footnotesize Presence and absence of the main species for each ocean} -->
+<!-- \\end{figure} -->
+<!-- ") -->
+
+<!-- ``` -->
+
+
+```{r presenceabsence, fig.cap="Presence and absence of the main species for each ocean"}
+
+knitr::include_graphics("outputs/figs/presenceabsence.pdf")
+
+```
+
+
+## Global comparison
+
+After performing several filters to be able to compare the two datasets:
+
+- Global totals FishStat vs GTA differ by **< 1 %** (1950-2023).  
+- But this masks **large species-regional differences**.  
+
+## Global comparison
+
+::: columns
+::: {.column width="0.7"}
+
+```{r totbyspecies, echo=FALSE}
+
+knitr::include_graphics("outputs/totbyspecies.png")
+
+
+```
+
+:::
+::: {.column width="0.3"}
+
+```{r totbyspeciestitle, results='asis', echo=FALSE}
+
+cat("
+\\begin{table}[ht]
+\\vspace*{2cm}
+\\centering
+\\caption{Comparison of total catch (t) by taxon between the Global Tuna Atlas and Fishstat database for the 32 retained species and one group of species}
+\\end{table}
+")
+
+```
+
+:::
+:::
+
+## Global comparison
+
+```{r totalcatch, echo=FALSE, results='asis'}
+cat("
+\\begin{table}[ht]
+\\centering
+\\includegraphics[width=0.9\\textwidth]{outputs/summary_of_differences.png}
+\\caption{Total catch (t) for each dataset and relative differences}
+\\end{table}
+")
+```
+
+<!-- ```{r timeseriestot,  fig.cap = "Comparison of annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat and GTA datasets for the period 1950-2023", out.height='80%'} -->
+
+<!-- knitr::include_graphics("outputs/figs/timeseriestot.pdf") -->
+
+<!-- ``` -->
+
+
+## Indian Ocean - Total catches (1950-2023)
+
+- Approximately same geographic coverage, same measurement_type and same time coverage.
+- FishStat total catches in the Indian Ocean are **0.8% higher** than in GTA.  
+- However, **temporal trends are consistent** between both datasets.  
+
+
+## Indian Ocean - Total catches (1950-2023)
+
+```{r time_cov_indian_ocean, fig.cap = "\\scriptsize Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat (red) and GTA (blue) datasets for the period 1950-2023", out.height='75%'}
+
+knitr::include_graphics("outputs/time_cov_indian_ocean.pdf")
+
+```
+
+\normalsize
+
+## Species-level comparison
+
+Key findings:
+
+- **Yellowfin, skipjack, swordfish**: close alignment FishStat vs GTA  
+- **Bigeye** : small differences overall, but large deviations in specific subareas  
+- **Albacore** huge differences overall and in each subareas
+- **Sharks & rays (ISSCAAP 38)**: higher values in total FishStat than GTA but higher for many species in GTA, reflects different taxonomic aggregation
+
+## Species-level comparison
+
+::: columns
+::: {.column width="0.7"}
+
+```{r species_level_analysis, echo=FALSE, out.height='85%', out.width='100%'}
+
+knitr::include_graphics("outputs/species_level_analysis_reduced.png")
+
+
+```
+
+:::
+::: {.column width="0.3"}
+
+```{r speciesleveltitle, results='asis', echo=FALSE}
+
+cat("
+\\begin{table}[ht]
+\\vspace*{2cm}
+\\centering
+\\caption{Comparison of total catch (t) by species between the Global Tuna Atlas and Fishstat database for top 8 species in value}
+\\end{table}
+")
+
+```
+
+:::
+:::
+
+## Major tuna and tuna-like species 
+
+
+```{r albacore_bigeye, fig.cap="\\scriptsize Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat (red) and GTA (blue) datasets for the period 1950-2023 for Albacore and Bigeye", out.height='75%'}
+
+knitr::include_graphics("outputs/albacore_bigeye.pdf")
+
+```
+
+## Major tuna and tuna-like species 
+
+```{r other_species, fig.cap="\\scriptsize Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat (red) and GTA (blue) datasets for the period 1950-2023 for Skipjack, Yellowfin and Swordfish", out.height='75%'}
+
+knitr::include_graphics("outputs/other_three.pdf")
+
+```
+
+<!-- ```{r finalplot,    echo=FALSE,   warning=FALSE,   message=FALSE,  fig.width=16,   fig.height=16,   out.width='100%', out.height='90%', fig.cap="Evolutions of values for the dimension year and differences by ocean for 5 major species between FS (red) and GTA (Blue)"} -->
+
+<!-- knitr::include_graphics("outputs/figs/final_plot.pdf") -->
+
+<!-- ``` -->
+
+## Major tuna and tuna-like species 
+
+```{r major_tunas_summmary_diff, echo=FALSE, results='asis'}
+cat("
+\\begin{table}[ht]
+\\centering
+\\includegraphics[width=0.9\\textwidth]{outputs/major_tunas_summmary_diff.png}
+\\caption{Total captures (t) for each dataset and relative differences, for datasets filtered on major species}
+\\end{table}
+")
+```
+
+
+## Example: Bigeye tuna
+
+- Largest differences in the **Eastern Indian Ocean**.
+- This is driven mainly by the **Indonesian fleet**, for which:
+  - GTA integrated revised RFMO series  
+  - FishStat still contains older national submissions  
+- Even excluding the very specific Indonesian catches, the differences remain substantial in the Eastern Indian Ocean.
+
+## Example: Bigeye tuna
+
+```{r compbigeyenoind, fig.width=12, fig.height=8, out.width='100%', fig.align='center', fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches, without Indonesian data", out.height='70%'}
+
+knitr::include_graphics("outputs/figs/compbigeyenoind.pdf")
+
+```
+
+
+## Example: Bigeye tuna
+
+::: columns
+::: {.column width="0.7"}
+
+````{r fleet_table_left, echo=FALSE, out.height='85%', out.width='100%'}
+knitr::include_graphics("outputs/bigeyetable.png")
+````
+
+:::
+::: {.column width="0.3"}
+
+\vfill
+
+```{r fleettabletitle, results='asis', echo=FALSE}
+
+cat("
+\\begin{table}[ht]
+\\vspace*{2cm}
+\\centering
+\\caption{Major differences break down by `fishing fleet` between FS and GTA datasets,
+for bigeye tuna catches in Eastern Indian Ocean.}
+\\end{table}
+")
+
+```
+
+\vfill
+
+:::
+:::
+
+
+## Fleet-level differences
+
+- Alignment is high after ~2014.  
+- Remaining differences are concentrated in a few fleets:
+
+<!-- *(tableau flextable converti en PNG)* + graph des diffs entre chaque strate par annee pour expliquer vraiment pourquoi on regarde Ã  partir de 2014 avant c'est pas ouf. (Annexe?) -->
+
+## Fleet-level differences
+
+```{r countryspecificdiff, fig.width=12, fig.height=8, out.width='100%', fig.align='center', fig.cap="Country-specific differences in reported catches (GTA vs FishStat, 2012-2023)", out.height='80%'}
+
+knitr::include_graphics("outputs/figs/countryspecificdiff.pdf")
+
+```
+
+<!-- ## Convergence in recent years -->
+
+<!-- - After 2014: -->
+<!--   - FishStat and GTA are **almost identical** for primary tuna species.   -->
+<!--   - Differences mostly due to: -->
+<!--     - update lags   -->
+<!--     - timing of RFMO revisions   -->
+<!--     - treatment of secondary/bycatch species   -->
+
+
+## Take-home messages
+
+- For **major tuna species**, alignment is **strong**, especially after 2014.  
+- Differences come from:
+  - taxonomic aggregation choices  
+  - national revisions not yet harmonized 
+  
+- Yet all the differences are not understood exactly and the alignement can be huge for specific fleet - species combinations
+
+- FishStat has a **broader taxonomic coverage**  
+- GTA is **more detailed for a tuna-focused breakdown** and contains the **gear** dimension
+
+
+## Acknowledgements
+
+- Work conducted under Blue-Cloud 2026 (HEU Grant 101094227).  
+- Thanks to FAO, FIRMS, IOTC, and all RFMO data teams.  
+
+## Reproducibility & resources
+
+- All code used for the analyses and figures is openly available:
+  - **Code (Zenodo DOI):** https://doi.org/10.5281/zenodo.17719667  
+- Data products used in this comparison are also archived:
+  - **Global Tuna Atlas nominal catch dataset (DOI):** https://zenodo.org/records/17494424
+  - **FishStat dataset:** https://www.fao.org/ﬁshery/static/Data/Capture_2025.1.0.zip  
+
+<!-- - A Docker image is provided with the full environement: -->
+<!--   - **Image reference:** ghcr.io/bastienird/GTA_NC_DataPaper:v1   -->
+<!--   - **Archived with DOI:** ...  -->
+
+- This work is associated with:
+  - **Working paper (WPDCS) and this presentation:** https://doi.org/10.5281/zenodo.17719667  
+
+Questions?
+
