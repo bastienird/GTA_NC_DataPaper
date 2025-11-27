@@ -105,12 +105,12 @@ In contrast, FS provides a more aggregated representation: it does not include s
 ```{r initialisation, message=FALSE, warning=FALSE, include=FALSE, cache = FALSE}
 # rm(list = ls())
   # load(here::here(".RData"))
-source("initialisation/90_LIBS.R")
 setwd("./initialisation/")
 source("00_CORE.R")
 setwd("..")
-source("capture_quantity2.R")
- source(here::here("initialisation/90_LIBS.R"))
+source(here::here("initialisation/90_LIBS.R"))
+source(here::here("capture_quantity2.R"))
+ 
   
   lapply(
   list.files(here::here("R"), full.names = TRUE),

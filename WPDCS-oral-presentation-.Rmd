@@ -123,7 +123,9 @@ knitr::kable(headfsj, booktabs = TRUE) %>%
 
 We use the March 2025 release available through a CSV dataset accessible from the FAO Fisheries and Aquaculture Statistics online portal as a zipped file^[Available at: https://www.fao.org/fishery/static/Data/Capture_2025.1.0.zip].
 
+## FAO Global Capture Production (FishStat)
 
+Only marine capture data were retained (excluding inland records), and the analysis focuses on ISSCAAP groups 36 (Tunas and tuna-like species) and 38 (Sharks, rays, chimaeras). All measurement_value entries represent nominal catches in metric tonnes (t).
 
 ## FIRMS Global Tuna Atlas (GTA)
 
@@ -133,8 +135,8 @@ We use the March 2025 release available through a CSV dataset accessible from th
 - Covers tunas, tuna-like species, billfishes, mackerels, sharks, etc.
 - Open, transparent, reproducible:
   - Datasets on Zenodo with DOIs
-  - Full R workflow & Docker image with DOIs
-- Data structure: **16 descriptive dimensions**:
+  - Full R workflow with DOIs
+- Data structure: **12 descriptive dimensions**:
   
 ## FAO FIRMS Global Tuna Atlas (GTA) - first lines
 
@@ -197,7 +199,7 @@ The nominal catch dataset component of the GTA, covering the period 1918-2023, i
 cat("
 \\begin{table}[ht]
 \\centering
-\\caption{Summary of the main structural differences used for this comparison.}
+\\caption{Summary of the main structural differences between FS and GTA.}
 \\end{table}
 ")
 ```
@@ -209,9 +211,9 @@ cat("
 | **Fishing Fleet** | 169 (country/territory) | 158 (aggregated) | FS detailed territories; GTA RFMO-aligned groups. |
 | **Gear Type** | Not reported | Reported |   |
 | **Fishing Mode** | Not reported | Reported |   |
-| **Source Authority** | National authority | RFMO / source agency |  |
+| **Source Authority** | National authority | RFMO  |  |
 | **Area / Region** | 17 FAO areas | 10 RFMO areas | Partial overlap, especially in the Pacific. |
-| **Measurement Type** | Nominal Landings (NL) | NC + NL (+ discards) | Harmonized as equivalent for this analysis. |
+| **Measurement Type** | Nominal Landings (NL) | Nominal catches + NL (+ discards) | Harmonized as equivalent for this analysis. |
 | **Temporal Range** | 1950-2023 | 1918-2023 | Heterogeneous for each tRFMO in GTA |
 
 \normalsize
@@ -623,6 +625,38 @@ for bigeye tuna catches in Eastern Indian Ocean.}
 knitr::include_graphics("outputs/figs/countryspecificdiff.pdf")
 
 ```
+
+## Fleet-level differences 
+
+## Country-specific behaviour for Indian Ocean
+
+Although major species do not show clear convergence between FishStat and GTA at the global level, **country-level analysis reveals distinct patterns**:
+
+### Four behavioural categories:
+
+- **Stable agreement**  
+  Consistent alignment over time
+
+- **Persistent differences**  
+  Systematic deviations in reporting practices
+
+- **Variable alignment**  
+  Alternating periods of agreement and divergence
+
+. **Integration lags**  
+   - Non-Contracting Parties (Djibouti, Egypt)  
+   - Asynchronous updates create temporary gaps
+   
+## Country-specific behaviour for Indian Ocean
+
+### Case study: Djibouti
+- **Before**: Yellowfin Tuna reported in both datasets
+- **After**: Reallocated to "Tunas nei" in FishStat only  
+- **Result**: Temporary taxonomic discrepancy
+
+<!-- ### Key insight -->
+
+<!-- Differences are **systematic and structured** rather than random, requiring detailed analysis of underlying reporting flows for each variation type. -->
 
 <!-- ## Convergence in recent years -->
 
