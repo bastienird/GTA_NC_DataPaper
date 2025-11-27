@@ -121,4 +121,10 @@ RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summaris
 RUN R -e "source(here::here('initialisation/90_LIBS.R'))"
 RUN R -e "setwd('./initialisation/')"
 RUN R -e "source('00_CORE.R')"
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    texlive-latex-extra \  
+    && rm -rf /var/lib/apt/lists/*
+
 RUN R -e "source(here::here('./generate_paper.R'))"
