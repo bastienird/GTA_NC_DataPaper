@@ -83,12 +83,15 @@ require(qs)
 
 ## Outline
 
+\large 
+
 - Context  
-- Why comparing FishStat & GTA matters  
 - Indian Ocean focus  
 - Key species results  
 - Country / fleet differences 
 - Take-home messages  
+
+\normalsize
 
 ## FAO Global Capture Production (FishStat)
 
@@ -124,14 +127,14 @@ We use the March 2025 release available through a CSV dataset accessible from th
 
 ## FIRMS Global Tuna Atlas (GTA)
 
-- Harmonized nominal + geo-referenced catch datasets from all **5 t-RFMOs**:
+- Harmonized nominal and geo-referenced catch datasets from all **5 t-RFMOs**:
   CCSBT, IATTC, ICCAT, IOTC, WCPFC/SPC.
 - Built under **FAO-FIRMS**, consistent with **CWP standards**.
-- Open, transparent, reproducible:
-  - Datasets on Zenodo (with DOI)
-  - Full R workflow & Docker image
 - Covers tunas, tuna-like species, billfishes, mackerels, sharks, etc.
-- Data structure = **16 descriptive dimensions**:
+- Open, transparent, reproducible:
+  - Datasets on Zenodo with DOIs
+  - Full R workflow & Docker image with DOIs
+- Data structure: **16 descriptive dimensions**:
   
 ## FAO FIRMS Global Tuna Atlas (GTA) - first lines
 
@@ -237,8 +240,7 @@ To ensure comparability between FS and GTA, we harmonized:
 
 **4. Measurement Type**
 
-- FishStat = **NL only** and GTA = **NC + NL**  
---> Combined into a unified measure for comparison.
+- FishStat = **NL only** and GTA = **NC and NL**. Combined into a unified measure for comparison.
 
 \normalsize
 
@@ -248,7 +250,7 @@ To ensure comparability between FS and GTA, we harmonized:
   - aggregation rules  
   - species resolution 
   - fleet and spatial breakdown  
-- The paper compare **global** and **ocean-level** differences but today's presentation, focus only on the **Indian Ocean.**
+- The paper compare **global** and **ocean-level** differences but today's presentation, focus mainly on the **Indian Ocean.**
 
 
 ## Context
@@ -266,12 +268,42 @@ To ensure comparability between FS and GTA, we harmonized:
 
 <!-- ``` -->
 
+::: columns
+::: {.column width="0.8"}
 
-```{r presenceabsence, fig.cap="Presence and absence of the main species for each ocean"}
+```{r presenceabsence, echo=FALSE, out.height='85%'}
 
 knitr::include_graphics("outputs/figs/presenceabsence.pdf")
 
 ```
+
+:::
+::: {.column width="0.2"}
+
+\vfill
+
+```{r presenceabsence-title, results='asis', echo=FALSE}
+
+cat("
+\\begin{figure}
+\\vspace*{2cm}
+\\centering
+\\caption{Presence and absence of the main species for each ocean}
+\\end{figure}
+")
+
+```
+
+\vfill
+
+:::
+:::
+
+<!-- ```{r presenceabsence, out.height='85%', fig.cap="Presence and absence of the main species for each ocean"} -->
+
+<!-- knitr::include_graphics("outputs/figs/presenceabsence.pdf") -->
+
+<!-- ``` -->
 
 
 ## Global comparison
@@ -283,33 +315,133 @@ After performing several filters to be able to compare the two datasets:
 
 ## Global comparison
 
-::: columns
-::: {.column width="0.7"}
+<!-- ```{r totbyspeciestitle, results='asis', echo=FALSE} -->
+<!-- cat(" -->
+<!-- \\begin{table}[ht] -->
+<!-- \\centering -->
+<!-- \\caption{\\footnotesize Comparison of total catch (x 1,000 t) by taxon between the Global Tuna Atlas and Fishstat database for the 32 retained species and one group of species} -->
+<!-- \\end{table} -->
+<!-- ") -->
+<!-- ``` -->
 
-```{r totbyspecies, echo=FALSE}
 
-knitr::include_graphics("outputs/totbyspecies.png")
+```{r bigtableprep}
 
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+# Charger les données depuis les fichiers .qs
+totbyspecies_part1 <- qs::qread("outputs/totbyspecies_part1.qs")
+totbyspecies_part2 <- qs::qread("outputs/totbyspecies_part2.qs")
+
+# Extraire les données des objets flextable
+data_part1 <- totbyspecies_part1$body$dataset
+data_part2 <- totbyspecies_part2$body$dataset
+
+# Ajouter les noms de colonnes
+colnames(data_part1) <- c("Loss / Gain", "Per species", "Values dataset 1 (FS)", "Values dataset 2 (GTA)", "Difference (in %)", "Difference in value")
+colnames(data_part2) <- c("Loss / Gain", "Per species", "Values dataset 1 (FS)", "Values dataset 2 (GTA)", "Difference (in %)", "Difference in value")
+
+
+data_part1 <- data_part1 %>%
+  dplyr::mutate(across(everything(), ~replace(., is.na(.), ""))) %>%
+  dplyr::select(-`Loss / Gain`)%>%
+  dplyr::mutate(across(c(`Values dataset 1 (FS)`, `Values dataset 2 (GTA)`, `Difference in value`), 
+                ~ ifelse(. != "" & !is.na(.), round(as.numeric(.) / 1000), .))) 
+
+data_part2 <- data_part2 %>%
+  dplyr::mutate(across(everything(), ~replace(., is.na(.), ""))) %>%
+  dplyr::select(-`Loss / Gain`)%>%
+  dplyr::mutate(across(c(`Values dataset 1 (FS)`, `Values dataset 2 (GTA)`, `Difference in value`), 
+                ~ ifelse(. != "" & !is.na(.), round(as.numeric(.) / 1000), .)))
+
+colnames(data_part1) <- c("Per species", "Values FS", "Values GTA", "Difference (in %)", "Difference in value")
+colnames(data_part2) <- c("Per species", "Values FS", "Values GTA", "Difference (in %)", "Difference in value")
 
 ```
 
-:::
-::: {.column width="0.3"}
-
-```{r totbyspeciestitle, results='asis', echo=FALSE}
-
-cat("
-\\begin{table}[ht]
-\\vspace*{2cm}
-\\centering
-\\caption{Comparison of total catch (t) by taxon between the Global Tuna Atlas and Fishstat database for the 32 retained species and one group of species}
-\\end{table}
-")
+```{r, results='asis', echo=FALSE}
+cat("\\begin{table}[ht]")
+cat("\\centering")
+cat("\\caption{Comparison of total catch (x 1,000 t) by taxon between the Global Tuna Atlas and Fishstat database}")
+cat("\\begin{minipage}{0.48\\textwidth}")
+cat("\\centering")
+cat("\\textbf{\\small 1) GTA > FS:}\\\\")
+kable(data_part1, "latex", booktabs = TRUE) %>%
+  kable_styling(latex_options = c("scale_down", "hold_position"), font_size = 9) %>%
+  print()
+cat("\\end{minipage}")
+cat("\\hfill")
+cat("\\begin{minipage}{0.48\\textwidth}")
+cat("\\centering")
+cat("\\textbf{\\small 2) FS > GTA:}\\\\")
+kable(data_part2, "latex", booktabs = TRUE) %>%
+  kable_styling(latex_options = c("scale_down", "hold_position"), font_size = 9) %>%
+  print()
+cat("\\end{minipage}")
+cat("\\end{table}")
 
 ```
 
-:::
-:::
+
+\large
+
+<!-- ```{r bigtable, results='asis', echo=FALSE,tab.cap="Comparison of total catch (x 1,000 t) by taxon between the Global Tuna Atlas and Fishstat database for the 32 retained species and one group of species", out.height='100%'} -->
+<!-- cat("\\begin{columns}[T]\n") -->
+
+<!-- # Première colonne avec la première partie -->
+<!-- cat("\\begin{column}{0.48\\textwidth}\n") -->
+<!-- cat("\\textbf{\\small 1) GTA > FS:}\\\\ \\vspace{0.2cm}") -->
+<!-- knitr::kable(data_part1, "latex", booktabs = TRUE) %>% -->
+<!--   kable_styling(latex_options = "scale_down", font_size = 9) %>% -->
+<!--   print() -->
+<!-- cat("\\end{column}\n") -->
+
+<!-- # Deuxième colonne avec la deuxième partie -->
+<!-- cat("\\begin{column}{0.48\\textwidth}\n") -->
+<!-- cat("\\textbf{\\small 2) FS > GTA:}\\\\ \\vspace{0.2cm}") -->
+<!-- knitr::kable(data_part2, "latex", booktabs = TRUE) %>% -->
+<!--   kable_styling(latex_options = "scale_down", font_size = 9) %>% -->
+<!--   print() -->
+<!-- cat("\\end{column}\n") -->
+
+<!-- cat("\\end{columns}\n") -->
+
+<!-- ``` -->
+
+\normalsize
+
+<!-- ## test  -->
+
+<!-- ```{r bigtable-images, results='asis', echo=FALSE} -->
+
+<!-- cat(" -->
+<!-- \\begin{table}[ht] -->
+<!-- \\centering -->
+<!-- \\caption{\\footnotesize Comparison of total catch (x 1,000 t) by taxon between the Global Tuna Atlas and Fishstat database for the 32 retained species and one group of species} -->
+<!-- \\end{table} -->
+<!-- ") -->
+<!-- ``` -->
+
+
+<!-- ```{r bigtable-images, echo=FALSE, fig.show='hold', out.width="49%", out.height='70%', results='asis'} -->
+
+<!-- cat("\\begin{columns}[T]") -->
+<!-- cat("\\begin{column}{0.48\\textwidth}") -->
+<!-- cat("\\centering") -->
+<!-- cat("\\textbf{\\small 1) GTA > FS:}\\\\") -->
+<!-- knitr::include_graphics("outputs/totbyspecies_part1.png") -->
+<!-- cat("\\end{column}") -->
+<!-- cat("\\begin{column}{0.48\\textwidth}") -->
+<!-- cat("\\centering")  -->
+<!-- cat("\\textbf{\\small 2) FS > GTA:}\\\\") -->
+<!-- knitr::include_graphics("outputs/totbyspecies_part2.png") -->
+<!-- cat("\\end{column}") -->
+<!-- cat("\\end{columns}") -->
+
+<!-- ``` -->
+
 
 ## Global comparison
 
@@ -318,7 +450,7 @@ cat("
 \\begin{table}[ht]
 \\centering
 \\includegraphics[width=0.9\\textwidth]{outputs/summary_of_differences.png}
-\\caption{Total catch (t) for each dataset and relative differences}
+\\caption{Total catch (t) for each dataset and relative differences for global comparable datasets}
 \\end{table}
 ")
 ```
@@ -330,14 +462,14 @@ cat("
 <!-- ``` -->
 
 
-## Indian Ocean - Total catches (1950-2023)
+## Focus on Indian Ocean
 
 - Approximately same geographic coverage, same measurement_type and same time coverage.
 - FishStat total catches in the Indian Ocean are **0.8% higher** than in GTA.  
 - However, **temporal trends are consistent** between both datasets.  
 
 
-## Indian Ocean - Total catches (1950-2023)
+## Focus on Indian Ocean
 
 ```{r time_cov_indian_ocean, fig.cap = "\\scriptsize Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat (red) and GTA (blue) datasets for the period 1950-2023", out.height='75%'}
 
@@ -354,7 +486,7 @@ Key findings:
 - **Yellowfin, skipjack, swordfish**: close alignment FishStat vs GTA  
 - **Bigeye** : small differences overall, but large deviations in specific subareas  
 - **Albacore** huge differences overall and in each subareas
-- **Sharks & rays (ISSCAAP 38)**: higher values in total FishStat than GTA but higher for many species in GTA, reflects different taxonomic aggregation
+- **Sharks & rays (ISSCAAP 38)**: higher values in total FishStat (with aggregated species) than GTA but higher for a majority of species in GTA, reflects different taxonomic aggregation
 
 ## Species-level comparison
 
@@ -377,7 +509,7 @@ cat("
 \\begin{table}[ht]
 \\vspace*{2cm}
 \\centering
-\\caption{Comparison of total catch (t) by species between the Global Tuna Atlas and Fishstat database for top 8 species in value}
+\\caption{Comparison of total catch (t) by species between the Global Tuna Atlas and Fishstat database}
 \\end{table}
 ")
 
@@ -421,6 +553,11 @@ cat("
 ")
 ```
 
+
+## Example: Bigeye tuna
+
+- As general trends are difficult to interpret, we focus on specific species to better understand the underlying differences.
+- Bigeye tuna provides a compelling case study, but the analytical framework we apply is applicable to all species exhibiting similar data discrepancies between the two datasets.
 
 ## Example: Bigeye tuna
 
@@ -499,16 +636,30 @@ knitr::include_graphics("outputs/figs/countryspecificdiff.pdf")
 
 ## Take-home messages
 
-- For **major tuna species**, alignment is **strong**, especially after 2014.  
-- Differences come from:
-  - taxonomic aggregation choices  
-  - national revisions not yet harmonized 
+- **For major tuna species**, alignment is **strong**, especially after 2014, showing successful harmonization efforts
+
+- **Patterns vary by species group**:
+  - GTA: more detailed for target tuna species and gear information
+  - FishStat: broader coverage for secondary species and bycatch, with reconstruction methods
+
+- **Differences stem from multiple sources**:
+  - Taxonomic aggregation choices and classification systems
+  - National revisions not yet synchronized between systems  
+  - Different timelines in data integration processes
+  - Spatial delineation and fleet mapping variations
+
+- **Data interdependence** creates opportunities: GTA could leverage FishStat updates for more frequent revisions, especially for non-contracting parties, FishStat could also leverage GTA for a selection of species.
+
+- **Historical context matters**: While recent years show convergence, legacy differences persist due to infrequent revisions of older data
+
+- **Systemic, not contradictory**: Most differences reflect procedural timelines and structural choices rather than fundamental data conflicts
+
+
+## Suggestions:
   
-- Yet all the differences are not understood exactly and the alignement can be huge for specific fleet - species combinations
-
-- FishStat has a **broader taxonomic coverage**  
-- GTA is **more detailed for a tuna-focused breakdown** and contains the **gear** dimension
-
+  - **Explore with FAO** the dissemination of FishStat data in CWP format to leverage existing tools and enhance interoperability
+  - **Annual re-analysis** using this reproducible framework to track dataset evolution and improve understanding
+  - **Assign DOIs** to both IOTC and FishStat datasets to preserve historical versions, given frequent updates
 
 ## Acknowledgements
 
@@ -518,6 +669,7 @@ knitr::include_graphics("outputs/figs/countryspecificdiff.pdf")
 ## Reproducibility & resources
 
 - All code used for the analyses and figures is openly available:
+  - **Code (GitHub):** https://github.com/bastienird/GTA_NC_DataPaper 
   - **Code (Zenodo DOI):** https://doi.org/10.5281/zenodo.17719667  
 - Data products used in this comparison are also archived:
   - **Global Tuna Atlas nominal catch dataset (DOI):** https://zenodo.org/records/17494424

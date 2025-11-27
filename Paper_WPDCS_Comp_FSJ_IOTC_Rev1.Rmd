@@ -317,7 +317,7 @@ species_both <- presence_df_complete %>% dplyr::select(species_name, flag) %>% d
 ```
 
 
-```{r presenceabsence, fig.cap="Presence and absence of the main species and group of species for each ocean", fig.width=14, fig.height=16, out.width='100%'}
+```{r presenceabsence, fig.cap="Presence and absence of the main species and group of species for each ocean", fig.width=16, fig.height=16, out.width='100%'}
 
 # 1. Combinaison et agregation des valeurs de capture par source
 df_values <- dplyr::bind_rows(
@@ -394,12 +394,16 @@ plot_pres_abs <- ggplot2::ggplot(
 
   ggplot2::theme_minimal() +
   ggplot2::theme(
+    legend.title = ggplot2::element_text(size = 14), 
+    legend.text = ggplot2::element_text(size = 12), 
     axis.text.y      = ggplot2::element_text(size = 14),
-    axis.text.x      = ggplot2::element_text(angle = 45, hjust = 1),
+    axis.text.x      = ggplot2::element_text(angle = 45, hjust = 1, size = 14),
+        axis.title.x = ggplot2::element_text(size = 14),
+        axis.title.y = ggplot2::element_text(size = 14),
     panel.grid.major = ggplot2::element_blank(),
-    panel.grid.minor = ggplot2::element_blank()
+    panel.grid.minor = ggplot2::element_blank(), strip.text = ggplot2::element_text(size = 13)
   ) +
-
+  ggplot2::labs(fill = "Dataset presence") +
   ggplot2::facet_wrap(~ flag, scales = "free_y", ncol = 1)
 
 ggplot2::ggsave(
@@ -621,7 +625,31 @@ totbyspecies <- table%>% dplyr::ungroup()%>% dplyr::select(-c(measurement_unit, 
 
 totbyspecies <- CWP.dataset::qflextable2(totbyspecies, grouped_data = c( "Loss / Gain"), columns_to_color = c("Difference (in %)"))
 
+
+## tres grand tableau, plusieurs lignes 
+# Pour les 18 premières lignes
+totbyspecies_part1 <- table %>%dplyr::slice(1:18)  %>% 
+  dplyr::select(-c(measurement_unit, Dimension)) %>%
+  CWP.dataset::qflextable2(grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
+
+# Pour les lignes restantes
+totbyspecies_part2 <- table %>%dplyr::slice(19:n()) %>% 
+  dplyr::select(-c(measurement_unit, Dimension)) %>%
+  CWP.dataset::qflextable2(grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
 image <- save_as_image(totbyspecies, path = "outputs/totbyspecies.png")
+
+qs <- qs::qsave(totbyspecies_part1,"outputs/totbyspecies_part1.qs")
+qs <- qs::qsave(totbyspecies_part2,"outputs/totbyspecies_part2.qs")
+
+totbyspecies_part1 <- table %>%dplyr::slice(1:18)  %>% 
+  dplyr::select(-c(measurement_unit, Dimension,"Loss / Gain")) %>%
+  CWP.dataset::qflextable2(columns_to_color = c("Difference (in %)"))
+totbyspecies_part2 <- table  %>%dplyr::slice(19:n())  %>% 
+  dplyr::select(-c(measurement_unit, Dimension,"Loss / Gain")) %>%
+  CWP.dataset::qflextable2(columns_to_color = c("Difference (in %)"))
+
+image <- save_as_image(totbyspecies_part1, path = "outputs/totbyspecies_part1.png")
+image <- save_as_image(totbyspecies_part2, path = "outputs/totbyspecies_part2.png")
 
 totbyspecies
 
@@ -634,7 +662,7 @@ A more detailed examination by species reveals significant discrepancies between
 
 As noted earlier, the Frigate and Bullet tunas case illustrates a complementary mechanism: the aggregated category appears only in FishStat, while GTA reports these catches at the species level. However, the significant difference between the speciated GTA total (~4.1 million tonnes) and the FishStat aggregate (5.3 million tonnes) reveals an unreconciled gap of ~1.2 million tonnes, indicating persistent differences in classification or allocation methods between the datasets.
 
-Furthermore, an opposite trend is observed for sharks and rays, which are consistently better reported in GTA. Smooth hammerhead (+204%) and scalloped hammerhead sharks (+69%), along with the giant manta (+1,424%), show higher catches in GTA, indicating successful disaggregation from broader FishStat categories such as "Rays, stingrays, mantas nei". This pattern highlights the value of GTA for detailed elasmobranch catch analysis, while FishStat may provide better coverage for certain aggregated tuna categories.
+Furthermore, an opposite trend is observed for sharks and rays, which are consistently highly reported in GTA. Smooth hammerhead (+204%) and scalloped hammerhead sharks (+69%), along with the giant manta (+1,424%), show higher catches in GTA, indicating successful disaggregation from broader FishStat categories such as "Rays, stingrays, mantas nei". This pattern highlights the value of GTA for detailed elasmobranch catch analysis, while FishStat may provide better coverage for certain aggregated tuna categories.
 
 Finally, the highest percentage differences occur for species with the lowest catch volumes (e.g., devil ray, great hammerhead), highlighting greater uncertainty in their reporting.
 
@@ -649,7 +677,7 @@ CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement
 
 ```
 
-\tiny
+\scriptsize
 *Note: See Table \@ref(tab:speciesmain) for the list of selected species.*
 \normalsize
 
@@ -663,7 +691,7 @@ CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-c(measureme
 
 ```
 
-\tiny
+\scriptsize
 *Note: See Table \@ref(tab:speciesmain) for the list of selected species.*
 \normalsize
 
@@ -802,7 +830,7 @@ To better understand the origin of these differences, the analysis is further di
 
 ```{r iotcspecieslevelanalysis, tab.cap="Comparison of total catch (t) by species between the Global Tuna Atlas and Fishstat database for a set of selected taxa", echo=FALSE}
 
-table <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 8)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
+table <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 14)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
 
 table_reduced <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 3)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
 
@@ -823,7 +851,7 @@ species_level_analysis
 
 ```
 
-\tiny
+\scriptsize
 *Note: See Table \@ref(tab:speciesmain) for the list of selected species.*
 \normalsize
 
@@ -1414,7 +1442,7 @@ tab3d <- make_diff_table_3d(
 
 ```
 
-```{r countryspecificdiff, fig.width=12, fig.height=8, out.width='100%', fig.align='center', fig.cap="Country-specific differences in reported catches (GTA vs FishStat, 2012-2023)"}
+```{r countryspecificdiff, fig.width=16, fig.height=14, out.width='100%', fig.align='center', fig.cap="Country-specific differences in reported catches (GTA vs FishStat, 2012-2023)"}
 `%notin%` <- Negate(`%in%`)
 library(grid)   # pour unit()
 
@@ -1445,10 +1473,9 @@ countryspecificdiff <- tab3d %>%
     y = "Species"
   ) +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold", size = 12),  # centre
-    axis.text.x = element_text(angle = 45, hjust = 1, size = 7),
-    axis.text.y = element_text(size = 7),
-    strip.text = element_text(size = 8, margin = margin(b = 3, t = 3)),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
+    axis.text.y = element_text(size = 14),
+    strip.text = element_text(size = 12, margin = margin(b = 3, t = 3)),
     panel.spacing = grid::unit(0.8, "lines"),
     plot.margin = margin(5, 5, 10, 5)
   )
@@ -1623,7 +1650,7 @@ Table: (\#tab:geo) Geographic correspondence between GTA management areas and Fi
 | **Indian Ocean** | IOTC_WEST, IOTC_EAST | Indian Ocean, Western; Indian Ocean, Eastern | Correspondence between GTA and FAO for both subregions. |
 | **Pacific Ocean** | EPO, WCPO, WCPFC | Pacific Northwest, Northeast, Western Central, Eastern Central, Southwest, Southeast | FS distinguishes six FAO areas, whereas GTA uses three broad RFMO zones (EPO, WCPO, WCPFC) covering overlapping sectors. |
 | **Mediterranean & Black Sea** | MD | Mediterranean and Black Sea | Correspondence between GTA and FAO. |
-| **Southern Ocean (Antarctic)** | â€” | Atlantic Antarctic; Indian Ocean Antarctic; Pacific Antarctic | No direct equivalent in GTA. In FS, these zones contain marginal species (e.g. *Porbeagle*, *Rays*, *Mantas nei*). In GTA, only *Southern Bluefin Tuna (SBF)* may overlap under CCSBT, but reported at basin level (Indian or Atlantic). |
+| **Southern Ocean (Antarctic)** | - | Atlantic Antarctic; Indian Ocean Antarctic; Pacific Antarctic | No direct equivalent in GTA. In FS, these zones contain marginal species (e.g. *Porbeagle*, *Rays*, *Mantas nei*). In GTA, only *Southern Bluefin Tuna (SBF)* may overlap under CCSBT, but reported at basin level (Indian or Atlantic). |
 
 \normalsize
 \renewcommand{\arraystretch}{1.0}
@@ -1797,7 +1824,7 @@ Djibouti <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = d
 
 ```{r djiboutitimecov, tab.cap="Comparison of annual time series of catch (t) of Yellowfin tuna for Djibouti fleet between for FishStat and GTA datasets for the period 1980-2023"}
 
-Djibouti$time_coverage_analysis_list[[1]]
+Djibouti$time_coverage_analysis_list[[2]]
 
 ```
 
