@@ -111,19 +111,14 @@ COPY R/ R/
 COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv ./
 COPY initialisation/ initialisation/
 
-# Installer une distribution LaTeX complète (mais minimale)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    texlive-latex-base \
-    texlive-latex-extra \
-    texlive-fonts-recommended \
-    texlive-fonts-extra \
-    texlive-latex-recommended \
-    texlive-science \
-    lmodern \
-    tex-gyre \
+    texlive-full \
     && rm -rf /var/lib/apt/lists/*
     
 # Run the data to donwload GTA data for species label, species group, cwp_shape
 RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
+RUN R -e "source(here::here('initialisation/90_LIBS.R'))"
+RUN R -e "setwd('./initialisation/')"
+RUN R -e "source('00_CORE.R')"
 RUN R -e "source(here::here('./generate_paper.R'))"
