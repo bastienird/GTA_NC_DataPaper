@@ -111,12 +111,21 @@ COPY R/ R/
 COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv ./
 COPY initialisation/ initialisation/
 
+# Installer une distribution LaTeX complète (mais minimale)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     texlive-latex-base \
     texlive-latex-extra \
     texlive-fonts-recommended \
+    texlive-fonts-extra \
+    texlive-latex-recommended \
+    texlive-science \
+    lmodern \
+    tex-gyre \
     && rm -rf /var/lib/apt/lists/*
+    
+COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv ./
+
 
 # Run the data to donwload GTA data for species label, species group, cwp_shape
 RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
