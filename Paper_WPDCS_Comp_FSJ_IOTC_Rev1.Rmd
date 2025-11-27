@@ -295,7 +295,7 @@ presence_df_complete <- expand.grid(
     by = c("species_name", "ocean_simple")
   )
 
-# 3. Detection des espeÃƒâ€šÃ‚Â¨ces toujours en "Both" ou toujours en "None"
+# 3. Detection des espeÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨ces toujours en "Both" ou toujours en "None"
 always_both_or_none <- presence_df_complete %>%
   dplyr::group_by(species_name) %>%
   dplyr::filter(all(presence %in% c("Both", NA))) %>%
@@ -421,7 +421,7 @@ plot_pres_abs
 # 3. Trace de la heatmap avec comparaison des valeurs
 # ggplot2::ggplot(presence_df, ggplot2::aes(x = ocean_simple, y = species_name, fill = presence)) +
 #   ggplot2::geom_tile(color = "white") +
-#   # contour epais pour les espeÃƒâ€šÃ‚Â¨ces flagged
+#   # contour epais pour les espeÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨ces flagged
 #   geom_tile(
 #     data = presence_df_complete %>% dplyr::filter(flag != "Other"),
 #     aes(x = ocean_simple, y = species_name),
@@ -630,7 +630,7 @@ totbyspecies <- CWP.dataset::qflextable2(totbyspecies, grouped_data = c( "Loss /
 
 
 ## tres grand tableau, plusieurs lignes 
-# Pour les 18 premières lignes
+# Pour les 18 premiÃ¨res lignes
 totbyspecies_part1 <- table %>%dplyr::slice(1:18)  %>% 
   dplyr::select(-c(measurement_unit, Dimension)) %>%
   CWP.dataset::qflextable2(grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
@@ -862,7 +862,7 @@ species_level_analysis
 
 At the species level, discrepancies between GTA and FishStat are not evenly distributed.
 When focusing on the 16 IOTC "primary species" [@iotc2013cmm1303], most show comparable or slightly higher total catches in GTA compared to FishStat.
-This group includes the main tuna species (yellowfin, skipjack, albacore, bigeye), as well as swordfish, marlin, and mackerel species, which together account for the majority of catches in the Indian Ocean. Among them, kawakawa (-10.1%) and, to a lesser extent, bigeye tuna (-0.9%) and "Indo-Paci�?c king mackerel" exhibit slightly lower totals in GTA, while albacore shows a more notable increase (+16.8%). The "Frigate and bullet tunas" is also, in total, higher in Fishstat. Yellowfin and skipjack tunas display close agreement between datasets, with slightly higher catches in GTA, further confirming the strong consistency observed for the main target species in the Indian Ocean.
+This group includes the main tuna species (yellowfin, skipjack, albacore, bigeye), as well as swordfish, marlin, and mackerel species, which together account for the majority of catches in the Indian Ocean. Among them, kawakawa (-10.1%) and, to a lesser extent, bigeye tuna (-0.9%) and "Indo-Paciï¬?c king mackerel" exhibit slightly lower totals in GTA, while albacore shows a more notable increase (+16.8%). The "Frigate and bullet tunas" is also, in total, higher in Fishstat. Yellowfin and skipjack tunas display close agreement between datasets, with slightly higher catches in GTA, further confirming the strong consistency observed for the main target species in the Indian Ocean.
 In contrast, the largest discrepancies are observed for non-priority taxa such as blue shark (-46.5%) and thresher sharks nei (-93.2%), which likely reflect differences in the treatment of bycatch or taxonomic aggregation. These patterns suggest that while the reporting of primary target species is well harmonized between GTA and FishStat, secondary or bycatch groups remain less consistent and more sensitive to methodological or structural differences between datasets.
 
 Notably, some of the discrepancies highlighted previously at the global scale are almost entirely explained by the IOTC region. For instance, the case of Kawakawa largely accounts for the global deficit observed for this species, as the Indian Ocean is the only basin for which complete data are available.
@@ -1060,18 +1060,18 @@ library(gridExtra)
 
 tab_skipjack <- rasterGrob(skipjackg1 %>% as_raster())
 
-# 2. on ajoute un titre AU-DESSUS du tableau, aligne Ã  gauche
+# 2. on ajoute un titre AU-DESSUS du tableau, aligne ÃƒÂ  gauche
 tab_skipjack_labeled <- gridExtra::arrangeGrob(
   tab_skipjack,
   top = grid::textGrob(
     "A) Skipjack tuna",
-    x = 0,             # 0 = completement Ã  gauche
+    x = 0,             # 0 = completement ÃƒÂ  gauche
     hjust = 0,
     gp = grid::gpar(fontface = "bold")
   )
 )
 
-# 3. on pourra mettre Ã§a dans patchwork avec wrap_elements()
+# 3. on pourra mettre ÃƒÂ§a dans patchwork avec wrap_elements()
 gg1 <- patchwork::wrap_elements(tab_skipjack_labeled)
 tab_alb <- rasterGrob(Albacorekg1 %>% as_raster())
 gg2 <- patchwork::wrap_elements(
@@ -1138,7 +1138,7 @@ purrr::walk2(
 two_species <- row2 / row3 +
   patchwork::plot_layout(guides = "collect")
 
-# 2. Groupe Skipjack + Yellowfin + Swordfish (3 lignes empilées)
+# 2. Groupe Skipjack + Yellowfin + Swordfish (3 lignes empilÃ©es)
 other_three <- row1 / row4 / row5 +
   patchwork::plot_layout(guides = "collect")
 
