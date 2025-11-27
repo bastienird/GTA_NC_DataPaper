@@ -46,6 +46,11 @@ RUN apt-get update && apt-get install -y \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libmagick++-dev \
+    imagemagick \
+    && rm -rf /var/lib/apt/lists/*
 
 # Update and upgrade the system
 RUN apt-get update && apt-get upgrade -y
@@ -90,11 +95,9 @@ RUN Rscript -e "install.packages('remotes', repos='https://cloud.r-project.org')
 RUN Rscript -e "remotes::install_version('renv', version = jsonlite::fromJSON('renv.lock')\$Packages[['renv']]\$Version, repos = 'https://cran.r-project.org')"
 
 # COPY renv/library/ renv/library/
-RUN R -e "install.packages(c('ggpubr', 'ggsci'))"
-# Restore renv packages
 RUN R -e "renv::activate()" 
 # Used to setup the environment (with the path cache) carreful keep in multiple lines
-RUN R -e "renv::restore(exclude = c('ggpubr', 'ggsci'))"
+RUN R -e "renv::restore("
 RUN R -e "renv::repair()" 
 
 ARG TEST_SCRIPT_REF=main
