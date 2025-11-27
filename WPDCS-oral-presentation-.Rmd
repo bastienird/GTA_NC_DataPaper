@@ -657,8 +657,9 @@ knitr::include_graphics("outputs/figs/countryspecificdiff.pdf")
 
 ## Suggestions:
   
-  - **Explore with FAO** the dissemination of FishStat data in CWP format to leverage existing tools and enhance interoperability
   - **Annual re-analysis** using this reproducible framework to track dataset evolution and improve understanding
+  - **Enhance data interoperability**: Implement reciprocal data exchange where GTA leverages FishStat updates for more frequent revisions (especially for non-contracting parties), while FishStat could integrate GTA's detailed species breakdown for selected taxa.
+  - **Explore with FAO** the dissemination of FishStat data in CWP format to leverage existing tools and enhance interoperability
   - **Assign DOIs** to both IOTC and FishStat datasets to preserve historical versions, given frequent updates
 
 ## Acknowledgements
