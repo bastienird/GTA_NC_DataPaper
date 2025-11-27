@@ -6,3 +6,17 @@ The paper aims to provide a comprehensive description of the global data set of 
 - The data set is contained in the zipped file inputs/data/global_nominal_catch_firms_level0.zip.
 - The script 00_CORE.R includes the succession of R scripts which are sourced. 
 - All code lists and mappings are downloaded from the repository of the Fisheries Data Interoperability (FDI) working group.
+
+
+# Related Work
+
+This repository is also associated with the WPDCS working paper:
+
+**"Following the tuna trail: Contrasting global catch estimates from FAO and RFMOs"**
+
+- **Working paper & presentation:** https://doi.org/10.5281/zenodo.17719667
+- **Docker image with complete environment:** `ghcr.io/bastienird/gta_nc_datapaper`
+
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1234567.svg)](https://doi.org/10.5281/zenodo.1234567)
+*The DOI will be available after the first release*

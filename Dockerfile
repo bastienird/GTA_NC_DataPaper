@@ -104,10 +104,9 @@ RUN R -e "source(url('$TEST_SCRIPT_URL'), local=TRUE, encoding='UTF-8')"
 
 COPY inputs/ inputs/
 COPY R/ R/
-COPY capture_quantity.R capture_quantity.R
 
-COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv /
+COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv ./
 
 # Run the data to donwload GTA data for species label, species group, cwp_shape
 RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
-RUN R -e "source('generate_paper.R')"
+RUN R -e "source(here::here('./generate_paper.R'))"
