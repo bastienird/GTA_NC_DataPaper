@@ -111,6 +111,13 @@ COPY R/ R/
 COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv ./
 COPY initialisation/ initialisation/
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    texlive-latex-base \
+    texlive-latex-extra \
+    texlive-fonts-recommended \
+    && rm -rf /var/lib/apt/lists/*
+
 # Run the data to donwload GTA data for species label, species group, cwp_shape
 RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
 RUN R -e "source(here::here('./generate_paper.R'))"
