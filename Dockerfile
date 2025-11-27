@@ -79,9 +79,8 @@ echo "RENV_LOCK_HASH=${RENV_LOCK_HASH}" > /tmp/renv_lock_hash.txt
 RUN mkdir -p ${RENV_PATHS_ROOT}
 COPY renv.lock ./
 COPY renv/activate.R renv/
-COPY renv/settings.json renv/
   
-  #using remotes incase cache keep ancient renv version
+#using remotes incase cache keep ancient renv version
   
 RUN Rscript -e "install.packages('remotes', repos='https://cloud.r-project.org')"
 RUN Rscript -e "remotes::install_version('renv', version = jsonlite::fromJSON('renv.lock')\$Packages[['renv']]\$Version, repos = 'https://cran.r-project.org')"

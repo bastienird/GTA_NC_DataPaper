@@ -674,10 +674,8 @@ knitr::include_graphics("outputs/figs/countryspecificdiff.pdf")
 - Data products used in this comparison are also archived:
   - **Global Tuna Atlas nominal catch dataset (DOI):** https://zenodo.org/records/17494424
   - **FishStat dataset:** https://www.fao.org/ﬁshery/static/Data/Capture_2025.1.0.zip  
-
-<!-- - A Docker image is provided with the full environement: -->
-<!--   - **Image reference:** ghcr.io/bastienird/GTA_NC_DataPaper:v1   -->
-<!--   - **Archived with DOI:** ...  -->
+- A Docker image is provided with the full environement:
+  - **Image reference:** ghcr.io/bastienird/gta_nc_datapaper
 
 - This work is associated with:
   - **Working paper (WPDCS) and this presentation:** https://doi.org/10.5281/zenodo.17719667  
