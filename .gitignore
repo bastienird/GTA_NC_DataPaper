@@ -42,3 +42,6 @@ vignettes/*.pdf
 *.png
 *.html
 *.pdf
+outputs/
+.Rbuildignore
+renv/.gitignore
