@@ -8,10 +8,8 @@ if(!require(pacman)){
 
 # Install/load libraries required for analysis
 pacman::p_load("tidyverse",
-               "ggpubr", 
                "openxlsx", 
                "data.table", 
-               "ggsci", 
                "colorspace", 
                "sf", 
                "rnaturalearth", 

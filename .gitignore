@@ -45,3 +45,9 @@ vignettes/*.pdf
 outputs/
 .Rbuildignore
 renv/.gitignore
+*.log
+*.tex
+inputs/spatial_layers/
+Figures/
+Diffstratas/
+inputs/data/comparison_Fishstat_NC/
