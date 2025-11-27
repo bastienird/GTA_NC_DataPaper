@@ -21,10 +21,10 @@ if(!length(list.files(path = "../inputs/mappings/", pattern = "csv")) >= 17)
 # if(!file.exists("../inputs/spatial_layers/SpatialLayers.RData"))
 #   source("00.3_DOWNLOAD_GTA_SPATIAL_LAYERS.R")
 #   source("01.3_LOAD_GTA_SPATIAL_LAYERS.R")
-# 
+# 10.5281/zenodo.17494424
 # Load and consolidate the annual nominal catch dataset
 if(!file.exists("../inputs/data/GTA/global_nominal_catch_firms_level0_public.csv")){
-  downloader::download("https://zenodo.org/records/15311770/files/global_nominal_catch_firms_level0_public.zip?download=1",
+  downloader::download("https://zenodo.org/records/17494424/files/global_nominal_catch_firms_level0_public.zip?download=1",
                        "../inputs/data/GTA/global_nominal_catch_firms_level0_public.zip", mode = "wb")
   zip::unzip("../inputs/data/GTA/global_nominal_catch_firms_level0_public.zip", exdir = "../inputs/data/GTA/")
 }
