@@ -707,15 +707,19 @@ Although major species do not show clear convergence between FishStat and GTA at
 
 - All code used for the analyses and figures is openly available:
   - **Code (GitHub):** https://github.com/bastienird/GTA_NC_DataPaper 
-  - **Code (Zenodo DOI):** https://doi.org/10.5281/zenodo.17719667  
+  - **Code (Zenodo DOI):** Incoming
+  
 - Data products used in this comparison are also archived:
   - **Global Tuna Atlas nominal catch dataset (DOI):** https://zenodo.org/records/17494424
   - **FishStat dataset:** https://www.fao.org/ﬁshery/static/Data/Capture_2025.1.0.zip  
+  
 - A Docker image is provided with the full environement:
   - **Image reference:** ghcr.io/bastienird/gta_nc_datapaper
 
 - This work is associated with:
-  - **Working paper (WPDCS) and this presentation:** https://doi.org/10.5281/zenodo.17719667  
+  - **Working paper (WPDCS-21-17) and this presentation:** https://doi.org/10.5281/zenodo.17719667  
+  
+Thank you for your attention
 
 Questions?
 
