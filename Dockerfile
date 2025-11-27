@@ -97,3 +97,20 @@ RUN Rscript -e "remotes::install_version('renv', version = jsonlite::fromJSON('r
 # COPY renv/library/ renv/library/
 RUN R -e "renv::activate()" 
 # Used to setup the environment (with the path cache) carreful keep in multiple lines
+RUN R -e "renv::restore()"
+RUN R -e "renv::repair()" 
+
+ARG TEST_SCRIPT_REF=main
+ARG TEST_SCRIPT_URL="https://raw.githubusercontent.com/firms-gta/tunaatlas_pie_map_shiny/${TEST_SCRIPT_REF}/testing_loading_of_all_packages.R"
+
+RUN R -e "source(url('$TEST_SCRIPT_URL'), local=TRUE, encoding='UTF-8')"
+
+COPY inputs/ inputs/
+COPY R/ R/
+
+COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv ./
+COPY initialisation/ initialisation/
+
+# Run the data to donwload GTA data for species label, species group, cwp_shape
+RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
+#RUN R -e "source(here::here('./generate_paper.R'))"
