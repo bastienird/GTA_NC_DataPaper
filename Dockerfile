@@ -17,13 +17,34 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libfribidi-dev \
     libharfbuzz-dev \
-    libxml2-dev && \
+    libxml2-dev \
+    libssl-dev \
+    libcurl4-gnutls-dev \
+    libudunits2-dev \
+    libudunits2-0 \           
+    udunits-bin \             
+    libproj-dev \
+    libgeos-dev \
+    libgdal-dev \
+    libv8-dev \
+    libsodium-dev \
+    libsecret-1-dev \
+    libnetcdf-dev \
+    curl \
+    libjq-dev \
+    cmake \
+    protobuf-compiler \
+    libprotobuf-dev \
+    librdf0 \
+    librdf0-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    redland-utils \
+    unzip \
+    libcairo2-dev \
+    libpoppler-cpp-dev && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
-
-RUN apt-get update && apt-get install -y \
-libcairo2-dev
-RUN apt-get update && apt-get install -y libpoppler-cpp-dev
 
 
 # Update and upgrade the system
