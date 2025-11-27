@@ -7,4 +7,107 @@ FROM ${BASE_IMAGE:-rocker/r-ver:4.2.3}
 LABEL org.opencontainers.image.authors="bastien.grasset@ird.fr" org.opencontainers.image.authors="bastien.grasset@ird.fr"
 LABEL maintainer="Grasset Bastien <grasset.bastien@ird.fr>"
 
+RUN apt-get update && apt-get install -y \
+    make \
+    pandoc \
+    git \
+    libicu-dev \
+    libpng-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libfribidi-dev \
+    libharfbuzz-dev \
+    libxml2-dev \
+    libssl-dev \
+    libcurl4-gnutls-dev \
+    libudunits2-dev \
+    libudunits2-0 \           
+    udunits-bin \             
+    libproj-dev \
+    libgeos-dev \
+    libgdal-dev \
+    libv8-dev \
+    libsodium-dev \
+    libsecret-1-dev \
+    libnetcdf-dev \
+    curl \
+    libjq-dev \
+    cmake \
+    protobuf-compiler \
+    libprotobuf-dev \
+    librdf0 \
+    librdf0-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    redland-utils \
+    unzip \
+    libcairo2-dev \
+    libpoppler-cpp-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get clean
 
+
+# Update and upgrade the system
+RUN apt-get update && apt-get upgrade -y
+
+# Install R core package dependencies the following line install httpuv that is usually used in shiny apps
+RUN install2.r --error --skipinstalled --ncpus -1 httpuv
+
+# Set the working directory
+ARG APP_DIR=/root/GTA_NC_DataPaper
+WORKDIR $APP_DIR
+
+RUN Rscript -e "install.packages('remotes', repos='https://cloud.r-project.org'); \
+                remotes::install_version('jsonlite', version = '1.9.1', upgrade = 'never', repos = 'https://cran.r-project.org')"
+
+ENV RENV_PATHS_ROOT=/root/.cache/R/renv
+
+# Si en mode dev, changer pour le user rstudio
+RUN if [ "$MODE" = "dev" ]; then \
+export NEW_PATH="/home/rstudio/.cache/R/renv" && \
+mkdir -p "$NEW_PATH" && \
+chown -R rstudio:rstudio "$(dirname $NEW_PATH)" && \
+echo "RENV_PATHS_ROOT=$NEW_PATH" >> /etc/environment && \
+echo "RENV_PATHS_CACHE=$NEW_PATH" >> /etc/environment; \
+fi
+
+# Ces variables sont utilisées par R/renv à runtime
+ENV RENV_PATHS_CACHE=${RENV_PATHS_ROOT}
+
+ARG RENV_LOCK_HASH
+RUN if [ -z "${RENV_LOCK_HASH}" ]; then \
+export RENV_LOCK_HASH=$(sha256sum renv.lock | cut -d' ' -f1); \
+fi && \
+echo "RENV_LOCK_HASH=${RENV_LOCK_HASH}" > /tmp/renv_lock_hash.txt
+
+RUN mkdir -p ${RENV_PATHS_ROOT}
+COPY renv.lock ./
+COPY renv/activate.R renv/
+  
+#using remotes incase cache keep ancient renv version
+  
+RUN Rscript -e "install.packages('remotes', repos='https://cloud.r-project.org')"
+RUN Rscript -e "remotes::install_version('renv', version = jsonlite::fromJSON('renv.lock')\$Packages[['renv']]\$Version, repos = 'https://cran.r-project.org')"
+
+# COPY renv/library/ renv/library/
+RUN R -e "install.packages(c('ggpubr', 'ggsci'))"
+# Restore renv packages
+RUN R -e "renv::activate()" 
+# Used to setup the environment (with the path cache) carreful keep in multiple lines
+RUN R -e "renv::restore(exclude = c('ggpubr', 'ggsci'))"
+RUN R -e "renv::repair()" 
+
+ARG TEST_SCRIPT_REF=main
+ARG TEST_SCRIPT_URL="https://raw.githubusercontent.com/firms-gta/tunaatlas_pie_map_shiny/${TEST_SCRIPT_REF}/testing_loading_of_all_packages.R"
+
+RUN R -e "source(url('$TEST_SCRIPT_URL'), local=TRUE, encoding='UTF-8')"
+
+COPY inputs/ inputs/
+COPY R/ R/
+
+COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv ./
+COPY initialisation/ initialisation/
+
+# Run the data to donwload GTA data for species label, species group, cwp_shape
+RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
+# RUN R -e "source(here::here('./generate_paper.R'))"
