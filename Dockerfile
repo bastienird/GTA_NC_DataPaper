@@ -124,9 +124,6 @@ RUN apt-get update && \
     tex-gyre \
     && rm -rf /var/lib/apt/lists/*
     
-COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv ./
-
-
 # Run the data to donwload GTA data for species label, species group, cwp_shape
 RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
 RUN R -e "source(here::here('./generate_paper.R'))"
