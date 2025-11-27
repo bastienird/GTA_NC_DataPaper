@@ -17,6 +17,9 @@ env:
   CACHE_IMAGE: ghcr.io/bastienird/gta_nc_datapaper-cache
   RENV_PATHS_ROOT: /root/.cache/R/renv
   DOCKER_BUILDKIT: 1
+  permissions:
+    contents: read
+    packages: write
 
 jobs:
   build-dev-image:
