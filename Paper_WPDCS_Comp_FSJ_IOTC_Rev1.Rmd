@@ -105,17 +105,19 @@ In contrast, FS provides a more aggregated representation: it does not include s
 ```{r initialisation, message=FALSE, warning=FALSE, include=FALSE, cache = FALSE}
 # rm(list = ls())
   # load(here::here(".RData"))
+source(here::here("initialisation/90_LIBS.R"))
 setwd("./initialisation/")
 source("00_CORE.R")
 setwd("..")
-source(here::here("initialisation/90_LIBS.R"))
-source(here::here("capture_quantity2.R"))
- 
-  
   lapply(
   list.files(here::here("R"), full.names = TRUE),
   source
 )
+
+source(here::here("capture_quantity2.R"))
+ 
+  
+
 
 ```
 
@@ -859,7 +861,7 @@ species_level_analysis
 
 At the species level, discrepancies between GTA and FishStat are not evenly distributed.
 When focusing on the 16 IOTC "primary species" [@iotc2013cmm1303], most show comparable or slightly higher total catches in GTA compared to FishStat.
-This group includes the main tuna species (yellowfin, skipjack, albacore, bigeye), as well as swordfish, marlin, and mackerel species, which together account for the majority of catches in the Indian Ocean. Among them, kawakawa (-10.1%) and, to a lesser extent, bigeye tuna (-0.9%) and "Indo-PaciÔ¨Åc king mackerel" exhibit slightly lower totals in GTA, while albacore shows a more notable increase (+16.8%). The "Frigate and bullet tunas" is also, in total, higher in Fishstat. Yellowfin and skipjack tunas display close agreement between datasets, with slightly higher catches in GTA, further confirming the strong consistency observed for the main target species in the Indian Ocean.
+This group includes the main tuna species (yellowfin, skipjack, albacore, bigeye), as well as swordfish, marlin, and mackerel species, which together account for the majority of catches in the Indian Ocean. Among them, kawakawa (-10.1%) and, to a lesser extent, bigeye tuna (-0.9%) and "Indo-PaciÔ¨?c king mackerel" exhibit slightly lower totals in GTA, while albacore shows a more notable increase (+16.8%). The "Frigate and bullet tunas" is also, in total, higher in Fishstat. Yellowfin and skipjack tunas display close agreement between datasets, with slightly higher catches in GTA, further confirming the strong consistency observed for the main target species in the Indian Ocean.
 In contrast, the largest discrepancies are observed for non-priority taxa such as blue shark (-46.5%) and thresher sharks nei (-93.2%), which likely reflect differences in the treatment of bycatch or taxonomic aggregation. These patterns suggest that while the reporting of primary target species is well harmonized between GTA and FishStat, secondary or bycatch groups remain less consistent and more sensitive to methodological or structural differences between datasets.
 
 Notably, some of the discrepancies highlighted previously at the global scale are almost entirely explained by the IOTC region. For instance, the case of Kawakawa largely accounts for the global deficit observed for this species, as the Indian Ocean is the only basin for which complete data are available.
