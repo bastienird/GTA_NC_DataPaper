@@ -408,6 +408,7 @@ plot_pres_abs <- ggplot2::ggplot(
   ggplot2::labs(fill = "Dataset presence") +
   ggplot2::facet_wrap(~ flag, scales = "free_y", ncol = 1)
 
+
 ggplot2::ggsave(
   filename = "outputs/presenceabsence.pdf",
   plot     = plot_pres_abs,
@@ -1613,7 +1614,7 @@ knitr::kable(headGTA, booktabs = TRUE) %>%
 ```{r fishStatfirstlines-prep, include=FALSE}
 headfsj <- head(CAPTURE_RAW %>% dplyr::filter(AREA.CODE == "57"))
 image <- save_as_image(flextable(headfsj), "outputs/headfsj.png")
-qs::qsave(headGTA, "outputs/headfsj.pqs")
+qs::qsave(headGTA, "outputs/headfsj.qs")
 ```
 
 ```{r fishStatfirstlines, tab.cap="First lines of the FS dataset", echo=FALSE}

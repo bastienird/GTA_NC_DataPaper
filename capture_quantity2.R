@@ -180,7 +180,14 @@ CAPTURED_filtered_much <- CAPTURED_filtered %>% dplyr::inner_join(couple_species
 CAPTURED_filtered$gear_type <- "UNK"
 cl_species_level0 <- read_csv("inputs/codelists/cl_species_level0.csv")
 
-
-
+if(!dir.exists("outputs")){
+  dir.create("outputs")
+}
+if(!dir.exists("outputs/figs_final")){
+  dir.create("outputs/figs_final")
+}
+if(!dir.exists("outputs/figs")){
+  dir.create("outputs/figs")
+}
 
 
