@@ -13,8 +13,8 @@ on:
         default: "true"
 
 env:
-  IMAGE_NAME: ghcr.io/bastienird/GTA_NC_DataPaper-dev
-  CACHE_IMAGE: ghcr.io/bastienird/GTA_NC_DataPaper-dev-cache
+  IMAGE_NAME: ghcr.io/bastienird/GTA_NC_DataPaper
+  CACHE_IMAGE: ghcr.io/bastienird/GTA_NC_DataPaper-cache
   RENV_PATHS_ROOT: /root/.cache/R/renv
   DOCKER_BUILDKIT: 1
 
@@ -53,7 +53,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_PAT }}
+          password: ${{ secrets.GHCR_PAT || secrets.GHCR_TOKEN || github.token }}
 
       - name: Build dev image # type of name
         run: |
