@@ -641,14 +641,16 @@ knitr::include_graphics("outputs/figs/countryspecificdiff.pdf")
 - **Patterns vary by species group**:
   - GTA: more detailed for target tuna species and gear information
   - FishStat: broader coverage for secondary species and bycatch, with reconstruction methods
+  
+- **Data interdependence** creates opportunities: GTA could leverage FishStat updates for more frequent revisions, especially for non-contracting parties, FishStat could also leverage GTA for a selection of species.
+  
+## Take-home messages
 
 - **Differences stem from multiple sources**:
   - Taxonomic aggregation choices and classification systems
   - National revisions not yet synchronized between systems  
   - Different timelines in data integration processes
   - Spatial delineation and fleet mapping variations
-
-- **Data interdependence** creates opportunities: GTA could leverage FishStat updates for more frequent revisions, especially for non-contracting parties, FishStat could also leverage GTA for a selection of species.
 
 - **Historical context matters**: While recent years show convergence, legacy differences persist due to infrequent revisions of older data
 
