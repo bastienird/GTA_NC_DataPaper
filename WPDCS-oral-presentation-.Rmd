@@ -125,7 +125,8 @@ We use the March 2025 release available through a CSV dataset accessible from th
 
 ## FAO Global Capture Production (FishStat)
 
-Only marine capture data were retained (excluding inland records), and the analysis focuses on ISSCAAP groups 36 (Tunas and tuna-like species) and 38 (Sharks, rays, chimaeras). All measurement_value entries represent nominal catches in metric tonnes (t).
+- Only marine capture data were retained (excluding inland records), and the analysis focuses on ISSCAAP groups 36 (Tunas and tuna-like species) and 38 (Sharks, rays, chimaeras). 
+- All measurement_value entries represent nominal catches in metric tonnes (t).
 
 ## FIRMS Global Tuna Atlas (GTA)
 
