@@ -51,3 +51,5 @@ inputs/spatial_layers/
 Figures/
 Diffstratas/
 inputs/data/comparison_Fishstat_NC/
+!inputs/images/*.png
+!inputs/images/*.svg
