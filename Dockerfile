@@ -118,9 +118,8 @@ RUN apt-get update && \
     
 # Run the data to donwload GTA data for species label, species group, cwp_shape
 RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
-RUN R -e "source(here::here('initialisation/90_LIBS.R'))"
-RUN R -e "setwd('./initialisation/') ; source('00_CORE.R')"
-RUN R -e "setwd(here::here())"
+RUN R -e "source(here::here('initialisation/90_LIBS.R')) ; setwd('./initialisation/') ; source('00_CORE.R') ; setwd(here::here())"
+
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \

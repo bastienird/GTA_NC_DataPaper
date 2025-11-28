@@ -11,6 +11,9 @@ on:
         description: "Push image to GHCR (true/false)"
         required: true
         default: "true"
+  push:
+    branches:
+      - main
 
 env:
   IMAGE_NAME: ghcr.io/bastienird/gta_nc_datapaper
