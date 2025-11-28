@@ -63,7 +63,7 @@ The GTA is a global repository of harmonized nominal and geo-referenced catch da
 
 The GTA was developed through a coordinated process between the FIRMS Secretariat and the t-RFMOs to establish a common data exchange format consistent with the standards of the Coordinating Working Party on Fishery Statistics (CWP) [@FAO_CWP]. This process enables the systematic integration and annual update of harmonized nominal catch data from all t-RFMOs into a single global dataset.
 
-The GTA currently disseminates catch data for tuna and tuna-like species, including principal market tunas, billfishes, coastal or neritic tunas, and associated species such as bonitos, mackerels, and pelagic sharks. All GTA datasets are openly accessible on Zenodo with complete metadata and transparent versioning, and are outputs of an R data generation workflow and inputs for Shiny applications for visualization and analysis^[Accessible at: https://tunaatlaspiemapinseetuto.lab.dive.edito.eu/]. The nominal catch dataset component of the GTA, covering the period 1918-2023, is publicly available from the Zenodo repository^[DOI: https://doi.org/10.5281/zenodo.8034730]. The full processing workflow is also openly available, with a DOI for the source code^[DOI: https://zenodo.org/records/15312151].
+The GTA currently disseminates catch data for tuna and tuna-like species, including principal market tunas, billfishes, coastal or neritic tunas, and associated species such as bonitos, mackerels, and pelagic sharks. All GTA datasets are openly accessible on Zenodo with complete metadata and transparent versioning, and are outputs of an R data generation workflow and inputs for Shiny applications for visualization and analysis^[Accessible at: https://tunaatlaspiemapinseetuto.lab.dive.edito.eu/]. The nominal catch dataset component of the GTA, covering the period 1918-2023, is publicly available from the Zenodo repository^[DOI: https://doi.org/10.5281/zenodo.17707455]. The full processing workflow is also openly available, with a DOI for the source code^[DOI: https://zenodo.org/records/15312151].
 
 The GTA is an open, reproducible data system focused on tuna and tuna-like species. The GTA dataset follows the CWP standards. The data structure is made of 16 columns categorizing catches by using multiple dimensions: species, fleet, gear, fishing_mode, area, and time (Table \@ref(tab:gtafirstlines)). Among these, four temporal columns  *time_start*, *year*, *month*, and *quarter*  deliberately provide redundant but complementary time references which facilitate filtering and aggregation at multiple temporal scales. The exchange format is available as JSON file from the Fisheries Data Interoperability Working Group GitHub Repository^[Available at: https://github.com/fdiwg/fdi-formats/blob/main/cwp_rh_generic_gta_taskI.json].
 
@@ -1614,7 +1614,7 @@ knitr::kable(headGTA, booktabs = TRUE) %>%
 ```{r fishStatfirstlines-prep, include=FALSE}
 headfsj <- head(CAPTURE_RAW %>% dplyr::filter(AREA.CODE == "57"))
 image <- save_as_image(flextable(headfsj), "outputs/headfsj.png")
-qs::qsave(headGTA, "outputs/headfsj.qs")
+qs::qsave(headfsj, "outputs/headfsj.qs")
 ```
 
 ```{r fishStatfirstlines, tab.cap="First lines of the FS dataset", echo=FALSE}

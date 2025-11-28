@@ -1,8 +1,8 @@
-# source("initialisation/90_LIBS.R")
-# setwd("./initialisation/")
+source("initialisation/90_LIBS.R")
+setwd("./initialisation/")
 # 
-# source("00_CORE.R")
-# setwd("..")
+source("00_CORE.R")
+setwd("..")
 # source("capture_quantity2.R")
 
 unlink("_main.Rmd")
