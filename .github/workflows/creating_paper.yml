@@ -33,7 +33,7 @@ jobs:
       - name: Checkout ${{ github.event.inputs.base_branch }}
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.base_branch }}
+          ref: ${{ github.event.inputs.base_branch || 'main' }}
 
       - name: Calculate renv.lock hash
         id: renv_lock
@@ -67,7 +67,7 @@ jobs:
           driver-opts: image=moby/buildkit:master,network=host
 
       - name: Log in to GHCR
-        if: ${{ github.event.inputs.push_image == 'true' }}
+        if: env.PUSH_IMAGE == 'true'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -84,7 +84,7 @@ jobs:
             --build-arg BASE_IMAGE=rocker/rstudio:4.2.3 \
             --build-arg RENV_LOCK_HASH=${{ env.renv_lock_hash }} \
             --build-arg DOI_CSV_HASH=${{ env.doi_csv_hash }} \
-            --tag ${{ env.IMAGE_NAME }}:${{ BRANCH_NAME }} \
+            --tag ${{ env.IMAGE_NAME }}:${BRANCH_NAME} \
             --tag ${{ env.IMAGE_NAME }}:latest \
             $([ "$PUSH_IMAGE" = "true" ] && echo "--push" || echo "--load") \
             .
