@@ -398,7 +398,7 @@ plot_pres_abs <- ggplot2::ggplot(
   ggplot2::theme(
     legend.title = ggplot2::element_text(size = 14), 
     legend.text = ggplot2::element_text(size = 12), 
-    axis.text.y      = ggplot2::element_text(size = 14),
+    axis.text.y      = ggplot2::element_text(size = 7),
     axis.text.x      = ggplot2::element_text(angle = 45, hjust = 1, size = 14),
         axis.title.x = ggplot2::element_text(size = 14),
         axis.title.y = ggplot2::element_text(size = 14),
@@ -798,6 +798,7 @@ test <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init =  CAPT
                                                                                          "year", "measurement_value", "ocean_simple", "source_authority"),
                                                           parameter_titre_dataset_1 = "FishStat",
                                                           parameter_titre_dataset_2 = "GTA")
+
 ```
 
 ```{r summarydiffiotc, tab.cap="Total captures for each dataset and relative differences", eval=FALSE}
@@ -811,6 +812,8 @@ At the aggregated level, the total catches recorded are slightly higher in FishS
 ```{r timecovindianocean, fig.cap = "Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat and GTA datasets for the period 1950-2023"}
 
 time_cov_indian_ocean <- clean_time_series_plot(test$time_coverage_analysis_list$plots[[1]])
+
+unlink("outputs/time_cov_indian_ocean.pdf")
 
 ggplot2::ggsave(
   filename = "outputs/time_cov_indian_ocean.pdf",
@@ -1477,7 +1480,7 @@ countryspecificdiff <- tab3d %>%
   ) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-    axis.text.y = element_text(size = 14),
+    axis.text.y = element_text(size = 7),
     strip.text = element_text(size = 12, margin = margin(b = 3, t = 3)),
     panel.spacing = grid::unit(0.8, "lines"),
     plot.margin = margin(5, 5, 10, 5)

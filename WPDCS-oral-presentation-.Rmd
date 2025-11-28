@@ -37,7 +37,7 @@ header-includes:
         \vspace{-0.5cm}
         \includegraphics[height=1cm]{inputs/images/Logo_IRD_2016_BLOC_FR_COUL.png}\hfill
         \includegraphics[height=1cm]{inputs/images/iotc-logo.png}\hfill
-        \includegraphics[height=1cm]{inputs/images/FAO_logo.svg.png}
+        \includegraphics[height=1cm]{inputs/images/FAO_logo.png}
       }
 
       % Footline personnalise :
@@ -96,45 +96,54 @@ require(qs)
 ## Understanding Global Fisheries Data Systems
 
 **The Importance of Reliable Catch Statistics**
+
 - Enable tracking of global fishing trends and patterns
 - Support international cooperation and sustainable development goals
 - Essential foundation for: fisheries management, scientific assessments, policy development
 
 **Multiple Data Reporting Frameworks**
-- Different systems have evolved to serve complementary purposes
-- **FAO:** Global statistical overview for all fishery commodities
-- **RFMOs:** Regional management-focused data for specific stocks
-- Both systems rely on national data but apply different processing methodologies
 
----
+- Different systems have evolved to serve complementary purposes
+- **FAO FishStat:** Global statistical overview for all fishery commodities
+- **Global Tuna Atlas (GTA):** Harmonized dataset compiling tuna RFMOs data
+- Both systems rely on national data but apply different processing and validation methodologies
 
 ## Study Focus: Comparing FAO and FIRMS for Indian Ocean 
 
+\small
+
 **Research Objective**
-- Compare FAO Global Capture Production Database vs Fisheries and Resources Monitoring System (FIRMS) Global Tuna dataset
+
+- Compare FAO Global Capture Production Database vs Fisheries and Resources Monitoring System (FIRMS) Global Tuna Atlas dataset
 - Focus on tuna and tuna-like species, globally and, in this paper and presentation, in the Indian Ocean
 - Examine differences from independent but interrelated reporting mechanisms
 
 **Analytical Approach**
+
 - Identify patterns of convergence and divergence in catch estimates
 - Document consistency between different reporting systems
 - Understand how institutional processes influence catch estimates
 
 **Scientific Value**
+
 - Provides insights for **global scientific estimates** and academic research
 - Enhances understanding of data quality in **large-scale fisheries analyses**
 - Supports methodological improvements in **global catch reconstruction studies**
+
+\normalsize
 
 ---
 
 ## FAO FishStat: Key Characteristics
 
 **Source & Governance**
+
 - Annual compilation via National Statistical Questionnaires (NS1)
 - Quality control and harmonization by FAO Statistics Division
 - **Scientific integration:** Tunas include best estimates from regional commissions
 
 **Scope & Data Structure**
+
 - **Global coverage:** Marine and inland capture fisheries
 - **Key dimensions:** Country, species (ASFIS), FAO area
 - **Primary data:** Nominal landings in tonnes (live weight equivalent); some species also in number.
@@ -165,13 +174,18 @@ We use the March 2025 release available through a CSV dataset accessible from th
 
 ## FIRMS Global Tuna Atlas (GTA)
 
+**Source & Governance**
+
 - Harmonized nominal and geo-referenced catch datasets from all **5 t-RFMOs**:
   CCSBT, IATTC, ICCAT, IOTC, WCPFC/SPC.
 - Built under **FAO-FIRMS**, consistent with **CWP standards**.
-- Covers tunas, tuna-like species, billfishes, mackerels, sharks, etc.
 - Open, transparent, reproducible:
   - Datasets on Zenodo with DOIs
   - Full R workflow with DOIs
+
+**Scope & Data Structure**
+
+- Covers tunas, tuna-like species, billfishes, mackerels, sharks, etc.
 - Data structure: **12 descriptive dimensions**:
   
 ## FAO FIRMS Global Tuna Atlas (GTA) - first lines
@@ -493,18 +507,10 @@ cat("
 ")
 ```
 
-<!-- ```{r timeseriestot,  fig.cap = "Comparison of annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat and GTA datasets for the period 1950-2023", out.height='80%'} -->
-
-<!-- knitr::include_graphics("outputs/figs/timeseriestot.pdf") -->
-
-<!-- ``` -->
-
-
 ## Focus on Indian Ocean
 
 - Approximately same geographic coverage, same measurement_type and same time coverage.
-- FishStat total catches in the Indian Ocean are **0.8% higher** than in GTA.  
-- However, **temporal trends are consistent** between both datasets.  
+- Global annual trends and total catches are consistent between both datasets.  
 
 
 ## Focus on Indian Ocean
@@ -526,44 +532,44 @@ Key findings:
 - **Albacore** huge differences overall and in each subareas
 - **Sharks & rays (ISSCAAP 38)**: higher values in total FishStat (with aggregated species) than GTA but higher for a majority of species in GTA, reflects different taxonomic aggregation
 
-## Species-level comparison
+<!-- ## Species-level comparison -->
 
-::: columns
-::: {.column width="0.7"}
+<!-- ::: columns -->
+<!-- ::: {.column width="0.7"} -->
 
-```{r species_level_analysis, echo=FALSE, out.height='85%', out.width='100%'}
+<!-- ```{r species_level_analysis, echo=FALSE, out.height='85%', out.width='100%'} -->
 
-knitr::include_graphics("outputs/species_level_analysis_reduced.png")
-
-
-```
-
-:::
-::: {.column width="0.3"}
-
-```{r speciesleveltitle, results='asis', echo=FALSE}
-
-cat("
-\\begin{table}[ht]
-\\vspace*{2cm}
-\\centering
-\\caption{Comparison of total catch (t) by species between the Global Tuna Atlas and Fishstat database}
-\\end{table}
-")
-
-```
-
-:::
-:::
-
-## Major tuna and tuna-like species 
+<!-- knitr::include_graphics("outputs/species_level_analysis_reduced.png") -->
 
 
-```{r albacore_bigeye, fig.cap="\\scriptsize Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat (red) and GTA (blue) datasets for the period 1950-2023 for Albacore and Bigeye", out.height='75%'}
+<!-- ``` -->
 
-knitr::include_graphics("outputs/albacore_bigeye.pdf")
+<!-- ::: -->
+<!-- ::: {.column width="0.3"} -->
 
-```
+<!-- ```{r speciesleveltitle, results='asis', echo=FALSE} -->
+
+<!-- cat(" -->
+<!-- \\begin{table}[ht] -->
+<!-- \\vspace*{2cm} -->
+<!-- \\centering -->
+<!-- \\caption{Comparison of total catch (t) by species between the Global Tuna Atlas and Fishstat database} -->
+<!-- \\end{table} -->
+<!-- ") -->
+
+<!-- ``` -->
+
+<!-- ::: -->
+<!-- ::: -->
+
+<!-- ## Major tuna and tuna-like species  -->
+
+
+<!-- ```{r albacore_bigeye, fig.cap="\\scriptsize Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat (red) and GTA (blue) datasets for the period 1950-2023 for Albacore and Bigeye", out.height='75%'} -->
+
+<!-- knitr::include_graphics("outputs/albacore_bigeye.pdf") -->
+
+<!-- ``` -->
 
 ## Major tuna and tuna-like species 
 
@@ -605,14 +611,6 @@ cat("
   - FishStat still contains older national submissions  
 - Even excluding the very specific Indonesian catches, the differences remain substantial in the Eastern Indian Ocean.
 
-## Example: Bigeye tuna
-
-```{r compbigeyenoind, fig.width=12, fig.height=8, out.width='100%', fig.align='center', fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches, without Indonesian data", out.height='70%'}
-
-knitr::include_graphics("outputs/figs/compbigeyenoind.pdf")
-
-```
-
 
 ## Example: Bigeye tuna
 
@@ -646,23 +644,29 @@ for bigeye tuna catches in Eastern Indian Ocean.}
 :::
 :::
 
+## Example: Bigeye tuna
 
-## Fleet-level differences
+```{r compbigeyenoind, fig.width=12, fig.height=8, out.width='100%', fig.align='center', fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches, without Indonesian data", out.height='70%'}
+
+knitr::include_graphics("outputs/figs/compbigeyenoind.pdf")
+
+```
+
+
+## Country-specific behaviour for Indian Ocean
 
 - Alignment is high after ~2014.  
 - Remaining differences are concentrated in a few fleets:
 
 <!-- *(tableau flextable converti en PNG)* + graph des diffs entre chaque strate par annee pour expliquer vraiment pourquoi on regarde ÃƒÂ  partir de 2014 avant c'est pas ouf. (Annexe?) -->
 
-## Fleet-level differences
+## Country-specific behaviour for Indian Ocean
 
 ```{r countryspecificdiff, fig.width=12, fig.height=8, out.width='100%', fig.align='center', fig.cap="Country-specific differences in reported catches (GTA vs FishStat, 2012-2023)", out.height='80%'}
 
 knitr::include_graphics("outputs/countryspecificdiff.pdf")
 
 ```
-
-## Fleet-level differences 
 
 ## Country-specific behaviour for Indian Ocean
 
@@ -679,17 +683,10 @@ Although major species do not show clear convergence between FishStat and GTA at
 - **Variable alignment**  
   Alternating periods of agreement and divergence
 
-. **Integration lags**  
+- **Integration lags**  
    - Non-Contracting Parties (Djibouti, Egypt)  
    - Asynchronous updates create temporary gaps
    
-## Country-specific behaviour for Indian Ocean
-
-### Case study: Djibouti
-- **Before**: Yellowfin Tuna reported in both datasets
-- **After**: Reallocated to "Tunas nei" in FishStat only  
-- **Result**: Temporary taxonomic discrepancy
-
 <!-- ### Key insight -->
 
 <!-- Differences are **systematic and structured** rather than random, requiring detailed analysis of underlying reporting flows for each variation type. -->
@@ -727,7 +724,7 @@ Although major species do not show clear convergence between FishStat and GTA at
 - **Systemic, not contradictory**: Most differences reflect procedural timelines and structural choices rather than fundamental data conflicts
 
 
-## Suggestions:
+## Suggestions
 
   - **Optimize data flows**: Currently, GTA could leverage FishStat updates for more frequent revisions (particularly for non-contracting parties), while in the longer term FishStat could benefit from GTA's taxonomic detail for selected species.
   - **Implement annual monitoring**: Conduct yearly re-analysis using this reproducible framework to track dataset evolution and improve understanding of data reconciliation processes.
