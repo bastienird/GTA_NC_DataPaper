@@ -383,11 +383,11 @@ library(dplyr)
 library(knitr)
 library(kableExtra)
 
-# Charger les donnÃ©es depuis les fichiers .qs
+# Charger les donnÃƒÂ©es depuis les fichiers .qs
 totbyspecies_part1 <- qs::qread("outputs/totbyspecies_part1.qs")
 totbyspecies_part2 <- qs::qread("outputs/totbyspecies_part2.qs")
 
-# Extraire les donnÃ©es des objets flextable
+# Extraire les donnÃƒÂ©es des objets flextable
 data_part1 <- totbyspecies_part1$body$dataset
 data_part2 <- totbyspecies_part2$body$dataset
 
@@ -442,7 +442,7 @@ cat("\\end{table}")
 <!-- ```{r bigtable, results='asis', echo=FALSE,tab.cap="Comparison of total catch (x 1,000 t) by taxon between the Global Tuna Atlas and Fishstat database for the 32 retained species and one group of species", out.height='100%'} -->
 <!-- cat("\\begin{columns}[T]\n") -->
 
-<!-- # PremiÃ¨re colonne avec la premiÃ¨re partie -->
+<!-- # PremiÃƒÂ¨re colonne avec la premiÃƒÂ¨re partie -->
 <!-- cat("\\begin{column}{0.48\\textwidth}\n") -->
 <!-- cat("\\textbf{\\small 1) GTA > FS:}\\\\ \\vspace{0.2cm}") -->
 <!-- knitr::kable(data_part1, "latex", booktabs = TRUE) %>% -->
@@ -450,7 +450,7 @@ cat("\\end{table}")
 <!--   print() -->
 <!-- cat("\\end{column}\n") -->
 
-<!-- # DeuxiÃ¨me colonne avec la deuxiÃ¨me partie -->
+<!-- # DeuxiÃƒÂ¨me colonne avec la deuxiÃƒÂ¨me partie -->
 <!-- cat("\\begin{column}{0.48\\textwidth}\n") -->
 <!-- cat("\\textbf{\\small 2) FS > GTA:}\\\\ \\vspace{0.2cm}") -->
 <!-- knitr::kable(data_part2, "latex", booktabs = TRUE) %>% -->
@@ -658,7 +658,7 @@ knitr::include_graphics("outputs/figs/compbigeyenoind.pdf")
 - Alignment is high after ~2014.  
 - Remaining differences are concentrated in a few fleets:
 
-<!-- *(tableau flextable converti en PNG)* + graph des diffs entre chaque strate par annee pour expliquer vraiment pourquoi on regarde ÃƒÂ  partir de 2014 avant c'est pas ouf. (Annexe?) -->
+<!-- *(tableau flextable converti en PNG)* + graph des diffs entre chaque strate par annee pour expliquer vraiment pourquoi on regarde ÃƒÆ’Ã‚Â  partir de 2014 avant c'est pas ouf. (Annexe?) -->
 
 ## Country-specific behaviour for Indian Ocean
 
@@ -744,7 +744,7 @@ Although major species do not show clear convergence between FishStat and GTA at
   
 - Data products used in this comparison are also archived:
   - **Global Tuna Atlas nominal catch dataset (DOI):** https://zenodo.org/records/17494424
-  - **FishStat dataset:** https://www.fao.org/ï¬?shery/static/Data/Capture_2025.1.0.zip  
+  - **FishStat dataset:** https://www.fao.org/fishery/static/Data/Capture_2025.1.0.zip  
   
 - A Docker image is provided with the full environement:
   - **Image reference:** ghcr.io/bastienird/gta_nc_datapaper
