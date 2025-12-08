@@ -1,4 +1,8 @@
-
+source("initialisation/90_LIBS.R")
+setwd("./initialisation/")
+# 
+source("00_CORE.R")
+setwd("..")
 # 1) lecture des données
 setwd(here::here())
 map <- read_csv("mapping.csv")
@@ -72,39 +76,30 @@ CAPTURED_test <- CAPTURED %>% dplyr::filter(fishing_fleet_label%in%FS_not_NC_lab
 CAPTURED <- rbind(CAPTURED_test, CAPTURED %>% dplyr::filter(!fishing_fleet_label%in%FS_not_NC_label))
 
 
-# mapping_FS_NC <- read_csv(here("inputs/mappings/mapping_FS_NC.csv"))
-# 
-# CAPTURED <- CAPTURED%>% dplyr::left_join(mapping_FS_NC, 
-#                                          by = c("fishing_fleet_label" = "Country_FishStatJ")) %>% 
-#   dplyr::mutate(fishing_fleet = ifelse(!is.na(fishing_fleet.y),fishing_fleet.y , fishing_fleet.x)) %>% 
-#   dplyr::mutate(fishing_fleet_label = ifelse(!is.na(Country_GTA),Country_GTA , fishing_fleet_label)) %>% 
-#   dplyr::select(-c(Country_GTA, fishing_fleet.y, fishing_fleet.x))
-# 
-# 
-# NC_not_FS <- setdiff(NCD$fishing_fleet, CAPTURED$fishing_fleet)
-# FS_not_NC <- setdiff(CAPTURED$fishing_fleet, NCD$fishing_fleet)
-# 
-# NC_not_FS_label <- setdiff(NCD$fleet_label, CAPTURED$fishing_fleet_label)
-# FS_not_NC_label <- setdiff(CAPTURED$fishing_fleet_label, NCD$fleet_label)
-
-
-
-
 CAPTURED$species_name <- recode(CAPTURED$species_name,
                                 `True tunas NEI` = "True tunas nei",
                                 `Tunas NEI` = "Tunas nei")
 
 
-# NCD_test <- NCD %>% dplyr::inner_join(as.data.frame(MAPPING_FLEET_FSJ_COUNTRY), by = c("country_code" = "code"))
 
 require(CWP.dataset)
 
 CAPTURED$year <- paste0(CAPTURED$year, "-01-01")
 NCD$year <- paste0(NCD$year, "-01-01")
 
-species_intersect <- c(intersect(unique(CAPTURED$species), unique(NCD$species)), "FRZ")
-
 CAPTURED$species_name <- gsub("NEI", "nei", CAPTURED$species_name)
+
+qs::qsave(CAPTURED, "inputs/data/FSJ/CAPTURED_MAPPED.qs")
+qs::qsave(NCD, "inputs/data/GTA/NCD_MAPPED.qs")
+
+## ALL MAPPING DONE
+
+# Next groupping when no mapping possible
+
+# source("for_each_country.R")
+
+
+species_intersect <- c(intersect(unique(CAPTURED$species), unique(NCD$species)), "FRZ")
 
 CAPTURED_filtered <- CAPTURED %>% dplyr::filter(species %in% species_intersect) %>% 
   dplyr::filter(species != "SBF")
@@ -189,5 +184,35 @@ if(!dir.exists("outputs/figs_final")){
 if(!dir.exists("outputs/figs")){
   dir.create("outputs/figs")
 }
+
+
+oceancaptured <- CAPTURED
+oceancaptured$Ocean <- oceancaptured$ocean_basin
+oceancaptured$gear_type <- "UNK"
+minortable <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = oceancaptured,
+                                                                parameter_final = NCD,
+                                                                parameter_time_dimension = c("year"),
+                                                                print_map = FALSE,
+                                                                parameter_diff_value_or_percent = "Difference in value",
+                                                                parameter_colnames_to_keep = c("species_name",
+                                                                                               "fishing_fleet_label", "measurement_unit",
+                                                                                               "year", "measurement_value", "Ocean", "gear_type"),
+                                                                parameter_titre_dataset_1 = "FishStat",
+                                                                parameter_titre_dataset_2 = "GTA")
+minortabl <- minortable$compare_strata_differences_list$number_init_column_final_column
+minortabl <- dplyr::filter(minortabl, !!names(minortabl)[1] != "Number of gridtype")
+
+
+table_recap <- readr::read_csv(here::here("diff_FSJ_GTA_recap.csv"))
+require(flextable)
+onlyminortabletest <- onlyminortabletest[-nrow(onlyminortabletest), ]
+
+
+species_intersect <- c(unique((NCD %>% dplyr::filter(source_authority == "IOTC"))$species), "FRZ")
+
+percent_non_GTA <- 100 - (sum( (CAPTURED %>% dplyr::filter(species %in% species_intersect) )$measurement_value) * 100 ) /sum(CAPTURED$measurement_value)
+
+captured <- CAPTURED_filtered %>% dplyr::filter(species %in% species_intersect)
+ncd <- NCD_filtered %>% dplyr::filter(species %in% species_intersect)
 
 

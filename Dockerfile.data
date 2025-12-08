@@ -3,70 +3,20 @@ ARG MODE=prod
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE:-rocker/r-ver:4.2.3}
 
+#This dockerfile is to generate only the data used for the paper and for the analysis. It should be ligthered a lot
+
 # Maintainer information
 LABEL org.opencontainers.image.authors="bastien.grasset@ird.fr" org.opencontainers.image.authors="bastien.grasset@ird.fr"
 LABEL maintainer="Grasset Bastien <grasset.bastien@ird.fr>"
 
-RUN apt-get update && apt-get install -y \
-    make \
-    pandoc \
-    git \
-    libicu-dev \
-    libpng-dev \
-    libfontconfig1-dev \
-    libfreetype6-dev \
-    libfribidi-dev \
-    libharfbuzz-dev \
-    libxml2-dev \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libcurl4-openssl-dev \
     libssl-dev \
-    libcurl4-gnutls-dev \
-    libudunits2-dev \
-    libudunits2-0 \
-    udunits-bin \
-    libproj-dev \
-    libgeos-dev \
-    libgdal-dev \
-    libv8-dev \
-    libsodium-dev \
-    libsecret-1-dev \
-    libnetcdf-dev \
-    curl \
-    libjq-dev \
-    cmake \
-    protobuf-compiler \
-    libprotobuf-dev \
-    librdf0 \
-    librdf0-dev \
-    redland-utils \
-    unzip \
-    libcairo2-dev \
-    libpoppler-cpp-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libmagick++-dev \
-    imagemagick \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    texlive-full \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    texlive-latex-extra \
-    && rm -rf /var/lib/apt/lists/*
-
-# Update and upgrade the system
-RUN apt-get update && apt-get upgrade -y
-
-# Install R core package dependencies (e.g. for Shiny)
-RUN install2.r --error --skipinstalled --ncpus -1 \
-    httpuv \
-    tidy
+    libxml2-dev \
+    libicu-dev \
+    git \
+    && rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # Update and upgrade the system
 RUN apt-get update && apt-get upgrade -y
@@ -115,8 +65,6 @@ RUN R -e "renv::activate()"
 # Used to setup the environment (with the path cache) carreful keep in multiple lines
 RUN R -e "renv::restore()"
 RUN R -e "renv::repair()" 
-RUN R -e "renv::isolate()" 
-RUN R -e "renv::status()" 
 
 ARG TEST_SCRIPT_REF=main
 ARG TEST_SCRIPT_URL="https://raw.githubusercontent.com/firms-gta/tunaatlas_pie_map_shiny/${TEST_SCRIPT_REF}/testing_loading_of_all_packages.R"
@@ -129,26 +77,11 @@ COPY R/ R/
 COPY *.Rmd *.yml *.R *.tex *.bib *.csl *.csv ./
 COPY initialisation/ initialisation/
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    texlive-full \
+    && rm -rf /var/lib/apt/lists/*
+    
 # Run the data to donwload GTA data for species label, species group, cwp_shape
 RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
-RUN R -e "source(here::here('./generate_rev2_paper.R'))"
-
-ARG BRANCH
-ENV BUILD_BRANCH=${BRANCH}
-
-RUN echo " MODE is: $MODE" && echo " BRANCH is: $BRANCH" && echo " BUILD_BRANCH is: $BUILD_BRANCH"
-RUN echo " Listing files in /inputs/data/FSJ/ after conversion:" && ls -lh ./inputs/data/FSJ/
-RUN echo " Listing files in ./inputs/data/GTA/ after conversion:" && ls -lh ./inputs/data/GTA/
-RUN echo "MODE is: $MODE" && echo "BRANCH is: $BRANCH" && echo "BUILD_BRANCH is: $BUILD_BRANCH"
-
-RUN mkdir -p /etc/GTA_NC_DataPaper/
-
-RUN if [ "$MODE" = "dev" ]; then R -e "renv::isolate()"; fi
-
-EXPOSE 3838
-EXPOSE 8787
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
+RUN R -e "source(here::here('CAPTURE_QUANTITY_REV3.R'))"

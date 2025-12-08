@@ -20,3 +20,8 @@ This repository is also associated with the WPDCS working paper:
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1234567.svg)](https://doi.org/10.5281/zenodo.1234567)
 *The DOI will be available after the first release*
+
+
+To launch the creation of the analysis please run the generate_rev2_paper.R file.
+
+The for each_country_file.R is tidied dataset and minimal comparison for interested countries.

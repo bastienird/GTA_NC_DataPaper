@@ -104,11 +104,11 @@ require(qs)
 **Multiple Data Reporting Frameworks**
 
 - Different systems have evolved to serve complementary purposes
-- **FAO FishStat:** Global statistical overview for all fishery commodities
+- **FAO FishStat (FS):** Global statistical overview for all fishery commodities
 - **Global Tuna Atlas (GTA):** Harmonized dataset compiling tuna RFMOs data
 - Both systems rely on national data but apply different processing and validation methodologies
 
-## Study Focus: Comparing FAO and FIRMS for Indian Ocean 
+## Study Focus: Comparing FS and GTA for Indian Ocean 
 
 \small
 
@@ -126,9 +126,8 @@ require(qs)
 
 **Scientific Value**
 
-- Provides insights for **global scientific estimates** and academic research
-- Enhances understanding of data quality in **large-scale fisheries analyses**
-- Supports methodological improvements in **global catch reconstruction studies**
+- Provides insights for global scientific estimates and academic research
+- Enhances understanding of data quality in large-scale fisheries analyses
 
 \normalsize
 
@@ -170,7 +169,7 @@ We use the March 2025 release available through a CSV dataset accessible from th
 ## FAO Global Capture Production (FishStat)
 
 - Only marine capture data were retained (excluding inland records), and the analysis focuses on ISSCAAP groups 36 (Tunas and tuna-like species) and 38 (Sharks, rays, chimaeras). 
-- All measurement_value entries represent nominal catches in metric tonnes (t),  feflects landed catches excluding discards
+- All measurement_value entries represent nominal catches in metric tonnes (t),  reflects landed catches excluding discards
 
 ## FIRMS Global Tuna Atlas (GTA)
 
@@ -325,7 +324,7 @@ To ensure comparability between FS and GTA, we harmonized:
 
 ```{r presenceabsence, echo=FALSE, out.height='85%'}
 
-knitr::include_graphics("outputs/presenceabsence.pdf")
+knitr::include_graphics("outputs/presenceabsencepwt.pdf")
 
 ```
 
@@ -664,7 +663,7 @@ knitr::include_graphics("outputs/figs/compbigeyenoind.pdf")
 
 ```{r countryspecificdiff, fig.width=12, fig.height=8, out.width='100%', fig.align='center', fig.cap="Country-specific differences in reported catches (GTA vs FishStat, 2012-2023)", out.height='80%'}
 
-knitr::include_graphics("outputs/countryspecificdiff.pdf")
+knitr::include_graphics("outputs/countryspecificdiff_for_pwt.pdf")
 
 ```
 
@@ -740,7 +739,7 @@ Although major species do not show clear convergence between FishStat and GTA at
 
 - All code used for the analyses and figures is openly available:
   - **Code (GitHub):** https://github.com/bastienird/GTA_NC_DataPaper 
-  - **Code (Zenodo DOI):** Incoming
+  - **Code (Zenodo DOI):** https://doi.org/10.5281/zenodo.17745936  
   
 - Data products used in this comparison are also archived:
   - **Global Tuna Atlas nominal catch dataset (DOI):** https://zenodo.org/records/17494424

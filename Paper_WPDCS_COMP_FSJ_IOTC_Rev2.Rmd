@@ -67,31 +67,47 @@ The GTA currently disseminates catch data for tuna and tuna-like species, includ
 
 The GTA is an open, reproducible data system focused on tuna and tuna-like species. The GTA dataset follows the CWP standards. The data structure is made of 16 columns categorizing catches by using multiple dimensions: species, fleet, gear, fishing_mode, area, and time (Table \@ref(tab:gtafirstlines)). Among these, four temporal columns  *time_start*, *year*, *month*, and *quarter*  deliberately provide redundant but complementary time references which facilitate filtering and aggregation at multiple temporal scales. The exchange format is available as JSON file from the Fisheries Data Interoperability Working Group GitHub Repository^[Available at: https://github.com/fdiwg/fdi-formats/blob/main/cwp_rh_generic_gta_taskI.json].
 
-
-
-
-<!-- # FishStat and the Global Tuna Atlas -->
-
-<!-- As of today, FAO's FishStat database (including the global and regional capture production data) are disseminated through a client application named FishStat. Both FishStat and the Global Tuna Atlas (GTA) are developed by FAO to disseminate fisheries data, but they differ greatly in scope and design. Each encompasses multiple datasets and analytical tools, and both contribute to FAO's global fisheries data governance in complementary ways. -->
-<!-- FishStat is mainly distributed as a desktop application (Windows and macOS), it provides access to standardized time series on global and regional capture production, aquaculture, trade, processed products, and food balance sheets. The data are compiled annually from national statistical offices through standardized FAO forms. For some groups, such as tunas and billfishes, FAO integrates best scientific estimates provided by regional tuna commissions. Besides FishStat, FishStat datasets are also available in CSV format for external analysis, which is the format used in this study. -->
-<!-- The Global Tuna Atlas (GTA), developed under the FAO-FIRMS partnership, is an open, reproducible data system focused on tuna and tuna-like species. It harmonizes catch and effort data from all tuna Regional Fisheries Management Organizations (t-RFMOs) into standardized structures following CWP conventions, providing multiple levels of information: nominal, geo-referenced, and raised datasets. All GTA datasets are openly accessible on Zenodo with complete metadata and transparent versioning, and are outputs of an R data generation workflow and inputs for Shiny applications for visualization and analysis. -->
-
 # Methods
 
 ## Scope and datasets
 
 In this study, we focus only on one specific dataset type shared by both systems, the annual global capture data, to compare their structure, coverage, and consistency. Specifically, we use the datasets *FishStat - Global Capture Production.* [@FAO2025_Captures] and *Global Tuna Atlas - Global nominal catches* [@GTA2025_GlobalNominal], corresponding respectively to FAO's global capture production statistics and the harmonized nominal catch data compiled from t-RFMOs. Only marine capture data were retained (excluding inland records), and the analysis focuses on ISSCAAP groups 36 (Tunas and tuna-like species) and 38 (Sharks, rays, chimaeras). All measurement_value entries represent nominal catches in metric tonnes (t).
 
-```{r setup, echo=FALSE}
-
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-	echo = FALSE,
-	message = FALSE,
-	warning = FALSE
+  echo    = FALSE,   # pas de code
+  message = FALSE,   # pas de messages
+  warning = FALSE,   # pas d'avertissements
+  include = TRUE,    
+  fig.show = "asis"
 )
 options(scipen = 9999)
 
+knitr::knit_hooks$set( #options for curl if needed to put in .R 
+  before = function(options) {
+    # called before the chunk
+    sprintf('cat("---- Beginning of the  chunk: %s ----\\n")\n', options$label)
+  },
+  after = function(options) {
+    # called after the chunk
+    sprintf('cat("---- End of the chunk: %s ----\\n")\n', options$label)
+  }
+)
+
 ```
+
+
+```{r runnning-CAPTURE-QUANTITY-REV3, include=FALSE}
+
+lapply(
+  list.files(here::here("R"), full.names = TRUE),
+  source
+)
+
+source("CAPTURE_QUANTITY_REV3.R") # for the mapping first
+
+```
+
 
 \clearpage
 
@@ -101,35 +117,9 @@ The GTA dataset explicitly includes several descriptive dimensions such as gear_
 
 In contrast, FS provides a more aggregated representation: it does not include specific gear or fleet categories, and the reporting entity corresponds to the national authority. However, some missing dimensions can be inferred indirectly - for example, the tRFMO can generally be deduced from the geographic area code (i.e., FAO Major Fishing area). This correspondence is not always unique in the Pacific Ocean, where RFMO boundaries overlap. Table \@ref(tab:tabrecap) summarizes the correspondence between key dimensions in the two datasets.
 
-
-```{r initialisation, message=FALSE, warning=FALSE, include=FALSE, cache = FALSE}
-# rm(list = ls())
-  # load(here::here(".RData"))
-source(here::here("initialisation/90_LIBS.R"))
-setwd("./initialisation/")
-source("00_CORE.R")
-setwd("..")
-  lapply(
-  list.files(here::here("R"), full.names = TRUE),
-  source
-)
-
-source(here::here("capture_quantity2.R"))
- 
-  
-
-
-```
-
-<!-- The FishStat (FS) dataset is more compact, with only seven columns (Table \@ref(tab:fishStatfirstlines)). It focuses on annual national statistics of capture production. In FS, information on the type of measurement is implicit: all records correspond to nominal catches ("catch"), without discards, and are expressed in metric tons ("t") - the same unit used in the GTA dataset. In GTA, these details are explicitly defined through the columns measurement, measurement_type, and measurement_unit. -->
-
-<!-- In the following document, all measurement_value entries therefore represent nominal catches expressed in metric tonnes (t). -->
-
 ```{=latex}
 \FloatBarrier
 ```
-
-<!-- ## Global comparison of available dimensions -->
 
 \renewcommand{\arraystretch}{1.5}
 \small
@@ -153,42 +143,18 @@ Table: (\#tab:tabrecap) Summary of key structural differences between FS and GTA
 
 ### Taxonomic coverage
 
-FishStat includes 337 species, whereas the GTA dataset lists only 65 (Table: \@ref(tab:tabrecap)).  GTA deliberately focuses on a restricted set of 32 key species, considered the most relevant for tuna and tuna-like fisheries. For the remainder of this analysis, only this 32 species included in both FS and GTA are considered, with specific focus given to the main tuna species in the following sections. (See Appendix \@ref(tab:speciesmain)). Catches of species not present in the GTA, but present in FS, represent 28% of total catches, for over 250 additional species.
+FishStat includes 337 species, whereas the GTA dataset lists only 65 (Table: \@ref(tab:tabrecap)). GTA deliberately focuses on a restricted set of 32 key species, considered the most relevant for tuna and tuna-like fisheries. For the remainder of this analysis, only this 32 species included in both FS and GTA are considered, with specific focus given to the main tuna species in the following sections. (See Appendix \@ref(tab:speciesmain)). Catches of species not present in the GTA, but present in FS, represent 28% of total catches, for over 250 additional species.
 
-```{r numberspecies, eval=FALSE, include=FALSE}
-length(unique(NC_RAW$species))
-length(unique(CAPTURE_RAW$SPECIES.ALPHA_3_CODE))
-```
+```{r filteringoniotcspeciesandintersect, include=FALSE}
 
-<!-- This represents the main conceptual difference between the two datasets: -->
-
-<!-- 1. FS aims to provide an exhaustive global inventory of all captured species, across all fisheries; -->
-
-<!-- 2. GTA aims to provide a consistent, harmonized, and spatially detailed dataset for a limited but policy-relevant subset of species. -->
-
-```{r filteringoniotcspeciesandintersect}
 species_intersect <- c(unique((NCD %>% dplyr::filter(source_authority == "IOTC"))$species), "FRZ")
 
 percent_non_GTA <- 100 - (sum( (CAPTURED %>% dplyr::filter(species %in% species_intersect) )$measurement_value) * 100 ) /sum(CAPTURED$measurement_value)
 
-captured <- CAPTURED_filtered %>% dplyr::filter(species %in% species_intersect)
-ncd <- NCD_filtered %>% dplyr::filter(species %in% species_intersect)
+CAPTURED_INTERSECT <- CAPTURED %>% dplyr::filter(species %in% species_intersect)
+NCD_INTERSECT <- NCD %>% dplyr::filter(species %in% species_intersect)
 
 ```
-
-<!-- ### Spatial data precision -->
-
-<!-- As far as geographical data is concerned, FS (FishStat) is more precise, particularly in terms of longitudes, which are subdivided into several sub-regions (after mapping). -->
-
-```{r geoids, eval=FALSE}
-
-# geo_ids <- unique(ncd$geographic_identifier)
-# oceans  <- unique(captured$ocean_basin)
-# phrase_geo <- paste(geo_ids, collapse = ",\n ")
-# phrase_oce <- paste(oceans,  collapse = ",\n ")
-
-```
-
 
 ### Fleet coverage
 
@@ -226,78 +192,20 @@ Given the differences highlighted earlier, spatial comparisons between GTA and F
 
 ## Filtering of comparable strata
 
-```{r presencedf, include=FALSE, cache=FALSE}
-# Chargement des packages
-library(dplyr)
-library(tidyr)
-library(ggplot2)
+```{r presenceabsencecreation, include=FALSE}
 
-# 1. Combinaison et marquage des sources
+species_intersect_32 <- c(unique((NCD %>% dplyr::filter(source_authority == "IOTC"))$species), "FRZ")
+
+NCD_presence_absence <- NCD %>% dplyr::filter(species%in%species_intersect_32)
+CAPTURED_presence_absence <- CAPTURED %>% dplyr::filter(species%in%species_intersect_32)
+
 df_presence <- bind_rows(
-  ncd       %>% dplyr::select(species_name, ocean_simple) %>% dplyr::mutate(source = "NCD"),
-  captured  %>% dplyr::select(species_name, ocean_simple) %>% dplyr::mutate(source = "Captured")
+  NCD_presence_absence       %>% dplyr::select(species_name, ocean_simple) %>% dplyr::mutate(source = "NCD_presence_absence"),
+  CAPTURED_presence_absence  %>% dplyr::select(species_name, ocean_simple) %>% dplyr::mutate(source = "CAPTURED_presence_absence")
 )
-
-# 2. Creation du tableau complet (including absences)
-all_species <- c(union(ncd$species_name, captured$species_name), "Frigate and bullet tunas")
-all_oceans  <- union(ncd$ocean_simple, captured$ocean_simple)
-
-presence_df_complete <- expand.grid(
-  species_name = all_species,
-  ocean_simple  = all_oceans,
-  stringsAsFactors = FALSE
-) %>%
-  dplyr::left_join(
-    df_presence %>%
-      distinct(species_name, ocean_simple, source) %>%
-      dplyr::mutate(present = 1) %>%
-      pivot_wider(
-        names_from  = source,
-        values_from = present,
-        values_fill = list(present = 0)
-      ) %>%
-      dplyr::mutate(
-        presence = case_when(
-          NCD == 1 & Captured == 1 ~ "Both",
-          NCD == 1               ~ "GTA",
-          Captured == 1          ~ "FS",
-          TRUE                   ~ "None"
-        )
-      ) %>%
-      dplyr::select(species_name, ocean_simple, presence),
-    by = c("species_name", "ocean_simple")
-  )
-
-# 3. Detection des espeÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¨ces toujours en "Both" ou toujours en "None"
-always_both_or_none <- presence_df_complete %>%
-  dplyr::group_by(species_name) %>%
-  dplyr::filter(all(presence %in% c("Both", NA))) %>%
-  dplyr::pull(species_name) %>%
-  unique()
-
-presence_df_complete <- presence_df_complete %>%
-  dplyr::mutate(
-    flag = case_when(
-      species_name %in% always_both_or_none ~ "Common in both datasets",
-      TRUE                           ~ "Other"
-    )
-  )
-
-
-
-```
-
-```{r speciesboth}
-species_both <- presence_df_complete %>% dplyr::select(species_name, flag) %>% dplyr::distinct() %>% dplyr::filter(flag == "Common in both datasets") %>% dplyr::pull(species_name)
-```
-
-
-```{r presenceabsence, fig.cap="Presence and absence of the main species and group of species for each ocean", fig.width=16, fig.height=16, out.width='100%'}
-
-# 1. Combinaison et agregation des valeurs de capture par source
 df_values <- dplyr::bind_rows(
-  ncd      %>% dplyr::select(species_name, ocean_simple, measurement_value) %>% dplyr::mutate(source = "GTA"),
-  captured %>% dplyr::select(species_name, ocean_simple, measurement_value) %>% dplyr::mutate(source = "FS")
+  NCD_presence_absence      %>% dplyr::select(species_name, ocean_simple, measurement_value) %>% dplyr::mutate(source = "GTA"),
+  CAPTURED_presence_absence %>% dplyr::select(species_name, ocean_simple, measurement_value) %>% dplyr::mutate(source = "FS")
 ) %>%
   dplyr::group_by(species_name, ocean_simple, source) %>%
   dplyr::summarise(
@@ -306,8 +214,8 @@ df_values <- dplyr::bind_rows(
   )
 
 # 2. Construction du tableau complet (presence + valeurs)
-all_species <- c(union(ncd$species_name, captured$species_name), "Frigate and bullet tunas")
-all_oceans  <- base::union(ncd$ocean_simple, captured$ocean_simple)
+all_species <- c(union(NCD_presence_absence$species_name, CAPTURED_presence_absence$species_name), "Frigate and bullet tunas")
+all_oceans  <- base::union(NCD_presence_absence$ocean_simple, CAPTURED_presence_absence$ocean_simple)
 
 presence_df <- base::expand.grid(
   species_name = all_species,
@@ -335,6 +243,47 @@ presence_df <- base::expand.grid(
       has_GTA                                ~ "GTA only",
       has_FS                                ~ "FS only",
       TRUE                                   ~ "None"
+    )
+  )
+
+presence_df_complete <- expand.grid(
+  species_name = all_species,
+  ocean_simple  = all_oceans,
+  stringsAsFactors = FALSE
+) %>%
+  dplyr::left_join(
+    df_presence %>%
+      distinct(species_name, ocean_simple, source) %>%
+      dplyr::mutate(present = 1) %>%
+      pivot_wider(
+        names_from  = source,
+        values_from = present,
+        values_fill = list(present = 0)
+      ) %>%
+      dplyr::mutate(
+        presence = case_when(
+          NCD_presence_absence == 1 & CAPTURED_presence_absence == 1 ~ "Both",
+          NCD_presence_absence == 1               ~ "GTA",
+          CAPTURED_presence_absence == 1          ~ "FSJ",
+          TRUE                   ~ "None"
+        )
+      ) %>%
+      dplyr::select(species_name, ocean_simple, presence),
+    by = c("species_name", "ocean_simple")
+  )
+
+# 3. DÃ©tection des espÃ¨ces toujours en "Both" ou toujours en "None"
+always_both_or_none <- presence_df_complete %>%
+  dplyr::group_by(species_name) %>%
+  dplyr::filter(all(presence %in% c("Both", NA))) %>%
+  dplyr::pull(species_name) %>%
+  unique()
+
+presence_df_complete <- presence_df_complete %>%
+  dplyr::mutate(
+    flag = case_when(
+      species_name %in% always_both_or_none ~ "Common in both datasets",
+      TRUE                           ~ "Other"
     )
   )
 
@@ -369,12 +318,12 @@ plot_pres_abs <- ggplot2::ggplot(
 
   ggplot2::theme_minimal() +
   ggplot2::theme(
-    legend.title = ggplot2::element_text(size = 14), 
-    legend.text = ggplot2::element_text(size = 12), 
-    axis.text.y      = ggplot2::element_text(size = 14),
-    axis.text.x      = ggplot2::element_text(angle = 45, hjust = 1, size = 14),
-        axis.title.x = ggplot2::element_text(size = 14),
-        axis.title.y = ggplot2::element_text(size = 14),
+    legend.title = ggplot2::element_text(size = 20),
+    legend.text = ggplot2::element_text(size = 14),
+    axis.text.y      = ggplot2::element_text(size = 16),
+    axis.text.x      = ggplot2::element_text(angle = 45, hjust = 1, size = 16),
+    axis.title.x = ggplot2::element_text(size = 20),
+    axis.title.y = ggplot2::element_text(size = 20),
     panel.grid.major = ggplot2::element_blank(),
     panel.grid.minor = ggplot2::element_blank(), strip.text = ggplot2::element_text(size = 13)
   ) +
@@ -383,18 +332,33 @@ plot_pres_abs <- ggplot2::ggplot(
 
 plot_pres_abs_for_pwt <- plot_pres_abs +
   ggplot2::theme(
-    axis.text.y      = ggplot2::element_text(size = 14)
+    axis.text.y      = ggplot2::element_text(size = 9)
   )
 
 ggplot2::ggsave(
-  filename = "outputs/presenceabsence.pdf",
+  filename = here::here("outputs/presenceabsencepwt.pdf"),
   plot     = plot_pres_abs_for_pwt,
-  width    = 10,
-  height   = 6
+  width    = 12,
+  height   = 8
 )
 
+ggplot2::ggsave(
+  filename = here::here("outputs/presenceabsence.pdf"),
+  plot     = plot_pres_abs,
+  width    = 18,
+  height   = 18
+)
 
-plot_pres_abs
+rm(NCD_presence_absence)
+rm(CAPTURED_presence_absence)
+
+```
+
+
+
+```{r presenceabsence, fig.cap="Presence and absence of the 32 retain species and group of species for each ocean", fig.width=16, fig.height=16, out.width='100%'}
+
+knitr::include_graphics(here::here("outputs/presenceabsence.pdf"))
 
 ```
 
@@ -429,7 +393,7 @@ aggregated_species <- c(
 
 NCD_groupped <- NCD %>% dplyr::filter(species_name %in% aggregated_species) %>% dplyr::mutate(species_name = ifelse(species_name == "Hammerhead sharks, etc. nei", "Hammerhead sharks nei", species_name)) %>% dplyr::mutate(species = ifelse(species_name %in% c("Hammerhead sharks, etc. nei", "Hammerhead sharks nei"),"SPN ; SPY", species)) %>% dplyr::group_by(species_name, species, year, measurement_unit) %>% dplyr::summarise(measurement_value = sum(measurement_value))
 
-CAPTURED_groupped <- oceancaptured%>% dplyr::filter(species_name %in% aggregated_species)  %>% dplyr::mutate(species = ifelse(species_name %in% c("Hammerhead sharks, etc. nei", "Hammerhead sharks nei"),"SPN ; SPY", species))%>% dplyr::group_by(species_name, species, year, measurement_unit)%>% dplyr::summarise(measurement_value = sum(measurement_value))
+CAPTURED_groupped <- CAPTURED%>% dplyr::filter(species_name %in% aggregated_species)  %>% dplyr::mutate(species = ifelse(species_name %in% c("Hammerhead sharks, etc. nei", "Hammerhead sharks nei"),"SPN ; SPY", species))%>% dplyr::group_by(species_name, species, year, measurement_unit)%>% dplyr::summarise(measurement_value = sum(measurement_value))
 
 
 Groupped_nei_data <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_groupped,
@@ -450,6 +414,7 @@ totbyspecies_groupped_nei <- table_groupped_nei%>% dplyr::ungroup()%>% dplyr::se
 totbyspecies_groupped_nei <- CWP.dataset::qflextable2(totbyspecies_groupped_nei, grouped_data = c( "Loss / Gain"), columns_to_color = c("Difference (in %)"))
 
 image <- save_as_image(totbyspecies_groupped_nei, path = "outputs/totbyspecies_groupped_nei.png")
+qs <- qs::qsave(totbyspecies_groupped_nei, "outputs/totbyspecies_groupped_nei.qs")
 
 ```
 
@@ -457,41 +422,20 @@ For other broadly aggregated taxa such as "Bonitos nei", "Tunas nei", or "Rays, 
 
 The goal of this comparison is to illustrate the broader coverage of FishStat and to justify the application of a harmonized filtering by area and species in the subsequent analyses, rather than to infer which dataset is superior. We choose not to include the fishing_fleet dimension in this filtering step, because it is not always possible to verify that fleets are not reported under 'Other nei' (Not Elsewhere Included) in one of the datasets. For species, we therefore remove all 'UNK' categories to avoid ambiguities.
 
-<!-- ## Data harmonization and filtering methodology -->
-
-<!-- To compare the two datasets, it is necessary to establish mappings for each variable, in order to better understand their differences. The datasets are first mapped with the corresponding labels for each column, then harmonized. -->
-
-<!-- ### Mapping geographic_dimensions -->
-
-<!-- Given the partial mismatches described above, the spatial correspondence between GTA and FS was simplified to the ocean-basin level (Atlantic, Indian, and Pacific). -->
-<!-- Only two regions - the Indian Ocean (IOTC_WEST and IOTC_EAST) and the Mediterranean (MD) - show an exact correspondence and could be kept as distinct zones. -->
-<!-- For all other areas, the analysis is conducted at the broader ocean scale, with the objective of identifying overall trends rather than precise spatial differences. -->
-
-<!-- ## Filtering strategy -->
-
-<!-- At both the temporal and taxonomic levels, some species-year-ocean triplets are reported in only one of the two datasets. In the subsequent, overall analysis, we therefore retain only the triplets that are present in both datasets. Consequently, we first exclude all data prior to 1950, and then, for each ocean, we check whether a species is present in one dataset but not in the other; in such cases, we discard that species-ocean combination. -->
-
-<!-- We choose not to include the fishing_fleet dimension in this filtering step, because it is not always possible to verify that fleets are not reported under NEI in one of the datasets. For species, we therefore remove all UNK categories to avoid ambiguities. -->
-
-<!-- ### Conclusion on filtering  -->
-
-<!-- The global comparison is performed on the 31 species shared between the two datasets (32 species reported in GTA, excluding the bigeye thresher, which is unique to GTA). -->
-<!-- Only data from 1950 onwards are retained, and for each ocean basin, only species-ocean combinations present in both datasets are considered. -->
-<!-- This filtering ensures that the observed differences are not due to discrepancies in spatial or taxonomic coverage, but rather reflect true differences in values between FishStat and GTA. -->
 
 # Global comparison of captures
 
-In the following subsections we detail the results obtained by comparing the remaining rows of the initial FS and GTA datasets, after applying the previous filters (see explanations in previous section).
+In the following subsections we detail the results obtained by comparing the remaining rows of the initial FS and GTA datasets, after applying the previous filters (see explanations in previous section). 
 
 ```{r joiningfilteringoncommonspeciesocean}
 
-couple_species_ocean <- rbind(ncd %>% dplyr::select(ocean_simple, species) %>% dplyr::distinct() %>% 
-  dplyr::inner_join(captured%>% dplyr::select(ocean_simple, species)%>% dplyr::distinct(), 
+couple_species_ocean <- rbind(NCD %>% dplyr::select(ocean_simple, species) %>% dplyr::distinct() %>% 
+  dplyr::inner_join(CAPTURED%>% dplyr::select(ocean_simple, species)%>% dplyr::distinct(), 
                     by = c("ocean_simple", "species")), c("Indian Ocean", "FRZ"), c("Indian Ocean", "FRZ")) %>% dplyr::filter(!(ocean_simple == "Mediterranean and Black Sea" & species == "BLT"))
 
 
-NCD_filtered_much <- ncd %>% dplyr::inner_join(couple_species_ocean) %>% dplyr::filter(year >1949)
-CAPTURED_filtered_much <- captured %>% dplyr::inner_join(couple_species_ocean)%>% dplyr::filter(year >1949)
+NCD_filtered_COUPLE_SPECIES_OCEAN_TIME <- NCD%>% dplyr::filter(species %in% species_intersect)%>% dplyr::inner_join(couple_species_ocean) %>% dplyr::filter(year >1949)
+CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME <- CAPTURED%>% dplyr::filter(species %in% species_intersect) %>% dplyr::inner_join(couple_species_ocean)%>% dplyr::filter(year >1949)
 
 # join <- inner_join(CAPTURED_filtered %>% dplyr::select(ocean_simple, species) %>% dplyr::distinct(), NCD_filtered %>% dplyr::select(ocean_simple, species)%>% dplyr::distinct())
 
@@ -502,8 +446,8 @@ CAPTURED_filtered_much <- captured %>% dplyr::inner_join(couple_species_ocean)%>
 
 ```{r comparisonfiltereddata}
 # adding one line with NEI FRZ to be able to print FRZ in table where there is loss not disappearing data
-test <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_much,
-                                                          parameter_final = rbind(head(NCD_filtered_much,1) %>% dplyr::mutate(species = "FRZ", measurement_value = 0.001, fishing_fleet_label = "NEI", species_name = "Frigate and bullet tunas"),NCD_filtered_much),
+COMP_COUPLE_SPECIES_OCEAN_TIME <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME,
+                                                          parameter_final = rbind(head(NCD_filtered_COUPLE_SPECIES_OCEAN_TIME,1) %>% dplyr::mutate(species = "FRZ", measurement_value = 0.001, fishing_fleet_label = "NEI", species_name = "Frigate and bullet tunas"),NCD_filtered_COUPLE_SPECIES_OCEAN_TIME),
                                                           parameter_time_dimension = c("year"),
                                                           print_map = FALSE,
                                                           parameter_diff_value_or_percent = "Difference in value",
@@ -518,18 +462,23 @@ test <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTU
 
 
 
-```{r totaldiff, tab.cap="Total catch (t) for each dataset and relative differences", echo=FALSE}
+```{r totaldiffcreation}
 
-df_totaldiff <- test$summary_of_differences %>%
+df_totaldiff <- COMP_COUPLE_SPECIES_OCEAN_TIME$summary_of_differences %>%
   dplyr::select(-measurement_unit)
 
 
 df_totaldiff <- CWP.dataset::qflextable2(df_totaldiff)
 # Save for reuse later in oral presentation
 
-unlink("outputs/summary_of_differences.png")
-image <- save_as_image(df_totaldiff, path = "outputs/summary_of_differences.png") # alloue a un objet pour ne pas avoir l output
+qs::qsave(df_totaldiff,"outputs/totaldiff.qs")
 
+```
+
+
+```{r totaldiff, tab.cap="Total catch (t) for each dataset and relative differences", echo=FALSE}
+
+df_totaldiff <- qs::qread("outputs/totaldiff.qs")
 df_totaldiff
 
 ```
@@ -542,18 +491,18 @@ When considering total global captures over the entire time series from 1950 to 
 
 ## Temporal evolution of global captures
 
-```{r timeseriestot,  fig.cap = "Comparison of annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat and GTA datasets for the period 1950-2023", echo=FALSE}
-
-timeseriestot <- clean_time_series_plot(test$time_coverage_analysis_list$plots[[1]])
+```{r timeseriestotcreation}
+timeseriestot <- clean_time_series_plot(COMP_COUPLE_SPECIES_OCEAN_TIME$time_coverage_analysis_list$plots[[1]])
 unlink("outputs/timeseriestot.pdf")
 ggplot2::ggsave(
   filename = "outputs/timeseriestot.pdf",
   plot     = timeseriestot,
-  width    = 10,
-  height   = 6
 )
+```
 
-timeseriestot
+```{r timeseriestot,  fig.cap = "Comparison of annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat and GTA datasets for the period 1950-2023", echo=FALSE}
+
+knitr::include_graphics(here::here("outputs/timeseriestot.pdf"))
 
 ```
 
@@ -565,41 +514,49 @@ The temporal trends in total catches (Figure: \@ref(fig:timeseriestot)) confirm 
 
 \footnotesize
 
-```{r totbyspecies, tab.cap="Comparison of total catch (t) by taxon between the Global Tuna Atlas and Fishstat database for the 32 retained species and one group of species", echo=FALSE, out.height='85%'}
+```{r totbyspeciescreation}
+table_COMP_COUPLE_SPECIES_OCEAN_TIME <- CWP.dataset::compare_dimension_differences(COMP_COUPLE_SPECIES_OCEAN_TIME$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 18)$Groupped_all_not_disap_or_app_to_dysplay %>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`)%>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
 
-table <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 18)$Groupped_all_not_disap_or_app_to_dysplay %>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`)%>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
-
-totbyspecies <- table%>% dplyr::ungroup()%>% dplyr::select(-c(measurement_unit, Dimension))
+totbyspecies <- table_COMP_COUPLE_SPECIES_OCEAN_TIME%>% dplyr::ungroup()%>% dplyr::select(-c(measurement_unit, Dimension))
 
 totbyspecies <- CWP.dataset::qflextable2(totbyspecies, grouped_data = c( "Loss / Gain"), columns_to_color = c("Difference (in %)"))
 
 
 ## tres grand tableau, plusieurs lignes 
 # Pour les 18 premiÃ¨res lignes
-totbyspecies_part1 <- table %>%dplyr::slice(1:18)  %>% 
+totbyspecies_part1 <- table_COMP_COUPLE_SPECIES_OCEAN_TIME %>%dplyr::slice(1:18)  %>% 
   dplyr::select(-c(measurement_unit, Dimension)) %>%
   CWP.dataset::qflextable2(grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
 
 # Pour les lignes restantes
-totbyspecies_part2 <- table %>%dplyr::slice(19:n()) %>% 
+totbyspecies_part2 <- table_COMP_COUPLE_SPECIES_OCEAN_TIME %>%dplyr::slice(19:n()) %>% 
   dplyr::select(-c(measurement_unit, Dimension)) %>%
   CWP.dataset::qflextable2(grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
 image <- save_as_image(totbyspecies, path = "outputs/totbyspecies.png")
 
+qs <- qs::qsave(totbyspecies,"outputs/totbyspecies.qs")
+
 qs <- qs::qsave(totbyspecies_part1,"outputs/totbyspecies_part1.qs")
 qs <- qs::qsave(totbyspecies_part2,"outputs/totbyspecies_part2.qs")
 
-totbyspecies_part1 <- table %>%dplyr::slice(1:18)  %>% 
+totbyspecies_part1 <- table_COMP_COUPLE_SPECIES_OCEAN_TIME %>%dplyr::slice(1:18)  %>% 
   dplyr::select(-c(measurement_unit, Dimension,"Loss / Gain")) %>%
   CWP.dataset::qflextable2(columns_to_color = c("Difference (in %)"))
-totbyspecies_part2 <- table  %>%dplyr::slice(19:n())  %>% 
+totbyspecies_part2 <- table_COMP_COUPLE_SPECIES_OCEAN_TIME  %>%dplyr::slice(19:n())  %>% 
   dplyr::select(-c(measurement_unit, Dimension,"Loss / Gain")) %>%
   CWP.dataset::qflextable2(columns_to_color = c("Difference (in %)"))
 
 image <- save_as_image(totbyspecies_part1, path = "outputs/totbyspecies_part1.png")
 image <- save_as_image(totbyspecies_part2, path = "outputs/totbyspecies_part2.png")
 
+```
+
+
+```{r totbyspecies, tab.cap="Comparison of total catch (t) by taxon between the Global Tuna Atlas and Fishstat database for the 32 retained species and one group of species", echo=FALSE, out.height='85%'}
+
+totbyspecies <- qs::qread("outputs/totbyspecies.qs")
 totbyspecies
+
 
 ```
 
@@ -616,12 +573,20 @@ Finally, the highest percentage differences occur for species with the lowest ca
 
 In summary, the observed discrepancies are primarily structural and linked to the level of taxonomic resolution adopted by each database. The choice of dataset directly influences catch estimates depending on whether species-level detail or the retention of historical aggregated categories is prioritized.
 
+```{r totbyoceancreation}
+table_totbyocean <- CWP.dataset::compare_dimension_differences(COMP_COUPLE_SPECIES_OCEAN_TIME$groupping_differences_list$Groupped_all, "ocean_simple", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay %>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(Area = Precision)
+
+table_totbyocean_tidied <- CWP.dataset::qflextable2(table_totbyocean%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit) %>% dplyr::mutate(Dimension = "Ocean") %>% dplyr::select(-Dimension), grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
+
+qs::qsave(table_totbyocean_tidied, "outputs/table_totbyocean_tidied.qs")
+
+```
+
+
 ```{r totbyocean, tab.cap="Comparison of total catch (t) by Area between the Global Tuna Atlas and Fishstat database for a set of selected taxa"}
 
-table <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "ocean_simple", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay %>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(Area = Precision)
-
-CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit) %>% dplyr::mutate(Dimension = "Ocean") %>% dplyr::select(-Dimension), grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
-
+table_totbyocean_tidied <- qs::qread("outputs/table_totbyocean_tidied.qs")
+table_totbyocean_tidied
 
 ```
 
@@ -631,11 +596,21 @@ CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement
 
 When aggregated by ocean basin, the overall distribution of catches shows moderate differences between the two datasets (Table \@ref(tab:totbyocean)). The Atlantic Ocean, along with the Mediterranean and Black Sea, shows slightly higher totals in the GTA ; by 3.4% and 2.7% respectively. In contrast, the Pacific and Indian Oceans show marginally higher totals in FishStat, with differences of -1.8% and -0.5% relative to the GTA. It is noteworthy that the Pacific Ocean, being the largest contributor to global catches, accounts for the greatest absolute difference. 
 
+```{r totbyfleetcreation}
+table_totbyfleet <- CWP.dataset::compare_dimension_differences(COMP_COUPLE_SPECIES_OCEAN_TIME$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay %>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per fishing fleet` = Precision ) %>% dplyr::ungroup()
+
+totbyfleet_tidied <- CWP.dataset::qflextable2(table_totbyfleet%>% dplyr::ungroup()%>% dplyr::select(-c(measurement_unit, Dimension)), grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
+
+qs::qsave(totbyfleet_tidied, "outputs/totbyfleet_tidied.qs")
+
+
+```
+
+
 ```{r totbyfleet, tab.cap="Comparison of total catch (t) by fishing fleet between the Global Tuna Atlas and Fishstat database for a set of selected taxa"}
 
-table <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay %>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per fishing fleet` = Precision ) %>% dplyr::ungroup()
-
-CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-c(measurement_unit, Dimension)), grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
+totbyfleet_tidied <- qs::qread("outputs/totbyfleet_tidied.qs")
+totbyfleet_tidied
 
 ```
 
@@ -671,26 +646,19 @@ After assessing global patterns, this section focuses on the Indian Ocean Tuna C
 
 ## Definition of the harmonized comparison scope
 
-This regional focus on the Indian Ocean is particularly relevant because both datasets share approximately the same geographical coverage (FAO areas 51 and 57) and the same temporal extent (1950-2023), which allows for a straightforward spatial and temporal comparison. Both datasets also report the same measurement type, corresponding to Nominal Landings, ensuring conceptual consistency in the comparison of catch values. The analysis therefore uses the same subset of 32 common species identified in the global comparison, ensuring consistency in taxonomic scope across scales.
+This regional focus on the Indian Ocean is particularly relevant because both datasets share approximately the same geographical coverage (FAO areas 51 and 57) and the same temporal extent (1950-2023), which allows for a straightforward spatial and temporal comparison. Both datasets also report the same measurement type, corresponding to Nominal Landings, ensuring conceptual consistency in the comparison of catch values. The analysis therefore uses the same subset of 32 common species (and one group of species) identified in the global comparison (See Appendix \@ref(tab:speciesmain)), ensuring consistency in taxonomic scope across scales.
 
 ```{r filteringIOTCdata}
 NC_RAW <- NC_RAW%>% dplyr::filter(source_authority == "IOTC")
 CAPTURE_RAW <- CAPTURE_RAW%>% dplyr::filter(AREA.CODE %in% c("57", "58", "51"))
 
-NC <- NC%>% dplyr::filter(source_authority == "IOTC")
-CAPTURED <- CAPTURED%>% dplyr::filter(source_authority == "IOTC")
+NCD_IOTC <- NCD%>% dplyr::filter(source_authority == "IOTC")
+CAPTURED_IOTC <- CAPTURED%>% dplyr::filter(source_authority == "IOTC")
 
-
-
-NCD <- NCD%>% dplyr::filter(source_authority == "IOTC")
-CAPTURED <- CAPTURED%>% dplyr::filter(source_authority == "IOTC")
-
-CAPTURED <- CAPTURED %>% dplyr::mutate(ocean_iotc = case_when(ocean_basin == "Indian Ocean, Western" ~ "Western Indian Ocean",
+NCD_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC <- NCD_filtered_COUPLE_SPECIES_OCEAN_TIME%>% dplyr::filter(source_authority == "IOTC")
+CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC <- CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME%>% dplyr::filter(source_authority == "IOTC")%>% dplyr::mutate(ocean_iotc = case_when(ocean_basin == "Indian Ocean, Western" ~ "Western Indian Ocean",
                                                                                        ocean_basin == "Indian Ocean, Eastern" ~ "Eastern Indian Ocean",
                                                               TRUE ~ ocean_basin))
-
-NCD_filtered <- NCD_filtered%>% dplyr::filter(source_authority == "IOTC")
-CAPTURED_filtered <- CAPTURED_filtered%>% dplyr::filter(source_authority == "IOTC")
 
 
 
@@ -698,8 +666,8 @@ CAPTURED_filtered <- CAPTURED_filtered%>% dplyr::filter(source_authority == "IOT
 
 ```{r onlyminortableiotc}
 
-onlyminortableiotc <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED,
-                                                                    parameter_final = NCD,
+onlyminortableiotc <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC,
+                                                                    parameter_final = NCD_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC,
                                                                     parameter_time_dimension = c("year"),
                                                                     print_map = FALSE,
                                                                     parameter_diff_value_or_percent = "Difference in value",
@@ -720,6 +688,8 @@ onlyminortableiotc <- onlyminortableiotc %>%
     ))
   )
 
+qs::qsave(onlyminortableiotc, "outputs/onlyminortableiotc.qs")
+
 ```
 
 Before applying any filtering, it is worth noting that, when restricted to FAO areas 51 and 57, the FishStat dataset still includes a greater number of species and fleets than GTA (Appendix: Table \@ref(tab:nmberdimIOTCannexe)). This observation is consistent with the global comparison presented earlier and confirms that the broader taxonomic scope of FishStat persists even within a single regional focus. For the subsequent analyses, this difference is acknowledged but not further detailed, as it primarily reflects the structural design of the two datasets rather than a regional anomaly.
@@ -728,13 +698,16 @@ Before applying any filtering, it is worth noting that, when restricted to FAO a
 
 ```{r iotcdatacomparison}
 
-species_intersect <- c(intersect(unique(NCD$species), unique(CAPTURED$species)), "FRZ")
+species_intersect <- c(intersect(unique(NCD_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC$species), unique(CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC$species)), "FRZ")
 
-CAPTURED <- CAPTURED %>% dplyr::filter(species %in% species_intersect)
-NCD <- NCD %>% dplyr::filter(species %in% species_intersect)
+CAPTURED_IOTC_intersect <- CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC %>% dplyr::filter(species %in% species_intersect)
+NCD_IOTC_intersect <- NCD_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC %>% dplyr::filter(species %in% species_intersect)
 
-test <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init =  CAPTURED,
-                                                          parameter_final = rbind(head(NCD,1) %>% dplyr::mutate(species = "FRZ", measurement_value = 0.001, fishing_fleet_label = "NEI", species_name = "Frigate and bullet tunas"),NCD),
+rm(CAPTURED_IOTC)
+rm(NCD_IOTC)
+
+COMP_IOTC_INTERSECT <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init =  CAPTURED_IOTC_intersect,
+                                                          parameter_final = rbind(head(NCD_IOTC_intersect,1) %>% dplyr::mutate(species = "FRZ", measurement_value = 0.001, fishing_fleet_label = "NEI", species_name = "Frigate and bullet tunas"),NCD_IOTC_intersect),
                                                           parameter_time_dimension = c("year"),
                                                           print_map = FALSE,
                                                           parameter_diff_value_or_percent = "Difference in value",
@@ -744,30 +717,37 @@ test <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init =  CAPT
                                                           parameter_titre_dataset_1 = "FishStat",
                                                           parameter_titre_dataset_2 = "GTA")
 
+table_COMP_IOTC_INTERSECT_tidied <- CWP.dataset::qflextable2(COMP_IOTC_INTERSECT$summary_of_differences%>% dplyr::select(-measurement_unit))
+
+qs::qsave(table_COMP_IOTC_INTERSECT_tidied, "outputs/table_COMP_IOTC_INTERSECT_tidied.qs")
+
 ```
 
 ```{r summarydiffiotc, tab.cap="Total captures for each dataset and relative differences", eval=FALSE}
 
-CWP.dataset::qflextable2(test$summary_of_differences%>% dplyr::select(-measurement_unit))
+table_COMP_IOTC_INTERSECT_tidied <- qs::qread("outputs/table_COMP_IOTC_INTERSECT_tidied.qs")
+table_COMP_IOTC_INTERSECT_tidied
 
 ```
 
 At the aggregated level, the total catches recorded are slightly higher in FishStat than those in GTA, with a difference of about 0.5% (Table \@ref(tab:totbyocean)). This discrepancy, although moderate, indicates that the datasets are broadly consistent in magnitude. However, such global differences may conceal higher variations when disaggregated by species, fleet, or year.
 
-```{r timecovindianocean, fig.cap = "Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat and GTA datasets for the period 1950-2023"}
-
-time_cov_indian_ocean <- clean_time_series_plot(test$time_coverage_analysis_list$plots[[1]])
+```{r timecovindianoceancreation}
+time_cov_indian_ocean <- clean_time_series_plot(COMP_IOTC_INTERSECT$time_coverage_analysis_list$plots[[1]])
 
 unlink("outputs/time_cov_indian_ocean.pdf")
 
 ggplot2::ggsave(
   filename = "outputs/time_cov_indian_ocean.pdf",
   plot     = time_cov_indian_ocean,
-  width    = 10,
-  height   = 6
 )
 
-time_cov_indian_ocean
+```
+
+
+```{r timecovindianocean, fig.cap = "Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat and GTA datasets for the period 1950-2023"}
+
+knitr::include_graphics(here::here("outputs/time_cov_indian_ocean.pdf"))
 
 ```
 
@@ -779,11 +759,10 @@ To better understand the origin of these differences, the analysis is further di
 
 ## Species-level analysis
 
-```{r iotcspecieslevelanalysis, tab.cap="Comparison of total catch (t) by species between the Global Tuna Atlas and Fishstat database for a set of selected taxa", echo=FALSE}
+```{r iotcspecieslevelanalysiscreation}
+table <- CWP.dataset::compare_dimension_differences(COMP_IOTC_INTERSECT$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 14)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
 
-table <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 14)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
-
-table_reduced <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 3)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
+table_reduced <- CWP.dataset::compare_dimension_differences(COMP_IOTC_INTERSECT$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 3)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
 
 
 species_level_analysis <- table%>% dplyr::ungroup()%>% dplyr::select(-c(measurement_unit, Dimension))
@@ -797,7 +776,14 @@ species_level_analysis_reduced <- CWP.dataset::qflextable2(species_level_analysi
 image <- save_as_image(species_level_analysis, "outputs/species_level_analysis.png")
 image_reduced <- save_as_image(species_level_analysis_reduced, "outputs/species_level_analysis_reduced.png")
 
+qs::qsave(species_level_analysis, "outputs/species_level_analysis.qs")
+```
 
+
+```{r iotcspecieslevelanalysis, tab.cap="Comparison of total catch (t) by species between the Global Tuna Atlas and Fishstat database for a set of selected taxa", echo=FALSE}
+
+
+species_level_analysis <- qs::qread("outputs/species_level_analysis.qs")
 species_level_analysis
 
 ```
@@ -820,9 +806,9 @@ Notably, some of the discrepancies highlighted previously at the global scale ar
 To facilitate a clearer comparison of temporal trends across countries and ocean basins, the analysis now focuses on the major tuna and tuna-like species - albacore, bigeye, skipjack, yellowfin, and swordfish. These species are among the most consistently reported across all oceans and constitute the core taxa of the Global Tuna Atlas. Focusing on this subset allows a more detailed examination of inter-dataset consistency, both spatially and temporally, while minimizing noise from irregularly documented species.
 
 ```{r majoruntasinit}
-NCD_filtered_much_much <- NCD
+NCD_filtered_much_much <- NCD_IOTC_intersect
 
-CAPTURED_filtered_much_much <- CAPTURED
+CAPTURED_filtered_much_much <- CAPTURED_IOTC_intersect
 ```
 
 ```{r majortunascomp}
@@ -858,14 +844,20 @@ major_tunas <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init 
                                                           parameter_titre_dataset_2 = "GTA")
 ```
 
-```{r majortunascomptable, tab.cap="Total captures (t) for each dataset and relative differences, for datasets filtered on major species", echo=FALSE}
-
+```{r majortunascomptablecreation}
 major_tunas_summmary_diff <- major_tunas$summary_of_differences %>% dplyr::select(-measurement_unit)
 
 major_tunas_summmary_diff <- CWP.dataset::qflextable2(major_tunas_summmary_diff)
 
 image <- save_as_image(major_tunas_summmary_diff, "outputs/major_tunas_summmary_diff.png")
+qs <- qs::qsave(major_tunas_summmary_diff, "outputs/major_tunas_summmary_diff.qs")
 
+```
+
+
+```{r majortunascomptable, tab.cap="Total captures (t) for each dataset and relative differences, for datasets filtered on major species", echo=FALSE}
+
+major_tunas_summmary_diff <- qs::qread("outputs/major_tunas_summmary_diff.qs")
 major_tunas_summmary_diff
 
 ```
@@ -877,6 +869,7 @@ major_tunas_summmary_diff
 ### Precision and temporal dynamics
 
 ```{r imagepermajortunas}
+
   skipjack <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_much_much ,
                                                                         parameter_final = NCD_filtered_much_much,
                                                                         parameter_filtering = list(species_name = "Skipjack tuna"),
@@ -997,9 +990,6 @@ gg5 <- ggplot() +
   theme_void() +
   annotation_custom(rasterGrob(swordfish1 %>%
   as_raster()), xmin=-Inf, xmax=Inf, ymin=-Inf, ymax=Inf)
-# test <- cowplot::plot_grid(g1, gg1)
-#
-# cowplot::plot_grid(g1, gg1, g2, gg2, g3, gg3, g4, gg4, nrow = 2, ncol = 4, labels = c("A) skipjack", "B) Albacore", "C) bigeye", "D) yellowfin"))
 ```
 
 ```{r tabmajortunas}
@@ -1056,7 +1046,7 @@ gg5 <- patchwork::wrap_elements(
 ```
 
 
-```{r finalplot,    echo=FALSE,   warning=FALSE,   message=FALSE,  fig.width=16,   fig.height=16,out.height='100%',   out.width='100%', fig.cap="Evolutions of values for the dimension year and differences by ocean for 5 major species between FS (red) and GTA (Blue)"}
+```{r finalplotcreation}
 # 1. Chargez cowplot (et non ggpubr pour get_legend avec return_all)
 library(cowplot)
 library(patchwork)
@@ -1111,6 +1101,14 @@ ggplot2::ggsave(
   height   = 6
 )
 
+qs::qsave(final_plot,"outputs/final_plot.qs")
+
+```
+
+
+```{r finalplot,    echo=FALSE,   warning=FALSE,   message=FALSE,  fig.width=16,   fig.height=16,out.height='100%',   out.width='100%', fig.cap="Evolutions of values for the dimension year and differences by ocean for 5 major species between FS (red) and GTA (Blue)"}
+
+final_plot <- qs::qread("outputs/final_plot.qs")
 final_plot
 
 
@@ -1162,13 +1160,13 @@ bigeyewestern <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_ini
                                                                         parameter_titre_dataset_2 = "GTA", topnumber = 10)
 ```
 
-```{r compbigeye, fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches", fig.width=12, fig.height=6}
+```{r compbigeyecreation}
 library(cowplot)
 
 p1 <- clean_time_series_plot(bigeyewestern$time_coverage_analysis_list$plots[[1]])
 p2 <- clean_time_series_plot(bigeyeeastern$time_coverage_analysis_list$plots[[1]])
 
-cowplot::plot_grid(
+compbigeyeplot <- cowplot::plot_grid(
   p1, p2,
   labels   = c("a) Western Indian Ocean", "b) Eastern Indian Ocean"),
   ncol     = 2,
@@ -1177,19 +1175,36 @@ cowplot::plot_grid(
   hjust    = 0
 )
 
+qs::qsave(compbigeyeplot, "outputs/compbigeyeplot.qs")
+
 ```
 
+
+```{r compbigeye, fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches", fig.width=12, fig.height=6}
+
+compbigeyeplot <- qs::qread("outputs/compbigeyeplot.qs")
+compbigeyeplot
+
+```
+
+```{r fleetbreakdownbigeyeeasterncreation}
+
+tablebigeye <- CWP.dataset::compare_dimension_differences(bigeyeeastern$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per fishing fleet` = Precision ) %>% dplyr::ungroup()
+
+bigeytable_tidy <- CWP.dataset::qflextable2(tablebigeye%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit) %>% dplyr::select(-Dimension), grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
+
+
+image <- save_as_image(bigeytable_tidy, "outputs/bigeytable_tidy.png")
+qs <- qs::qsave(bigeytable_tidy, "outputs/bigeytable_tidy.qs")
+
+
+```
+
+
 ```{r fleetbreakdownbigeyeeastern, tab.cap="Major differences break down by fishing_fleet_label between FS and GTA datasets, for bigeye tuna catches in Eastern Indian Ocean"}
-table <- CWP.dataset::compare_dimension_differences(bigeyeeastern$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per fishing fleet` = Precision ) %>% dplyr::ungroup()
 
-bigeytable <- table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit) %>% dplyr::select(-Dimension)
-
-bigeytable <- CWP.dataset::qflextable2(bigeytable, grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
-
-
-image <- save_as_image(bigeytable, "outputs/bigeyetable.png")
-
-bigeytable
+bigeytable_tidy <- qs::qread("outputs/bigeytable_tidy.qs")
+bigeytable_tidy
 
 ```
 
@@ -1224,7 +1239,7 @@ bigeyewesternwithoutindo <- CWP.dataset::comprehensive_cwp_dataframe_analysis(pa
                                                                         parameter_titre_dataset_2 = "GTA", topnumber = 10)
 ```
 
-```{r compbigeyenoind, fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches, without Indonesian data", fig.width=12, fig.height=6}
+```{r compbigeyenoindcreation}
 library(cowplot)
 
 p1 <- clean_time_series_plot(bigeyewesternwithoutindo$time_coverage_analysis_list$plots[[1]])
@@ -1246,6 +1261,14 @@ ggplot2::ggsave(
   height   = 6
 )
 
+qs::qsave(withoutindo, "outputs/withoutindo.qs")
+
+```
+
+
+```{r compbigeyenoind, fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches, without Indonesian data", fig.width=12, fig.height=6}
+
+withoutindo <- qs::qread("outputs/withoutindo.qs")
 withoutindo
 
 ```
@@ -1253,65 +1276,6 @@ withoutindo
 
 When excluding the Indonesian data from the bigeye tuna series, the overall alignment between GTA and FishStat substantially improves, confirming that the observed discrepancy was largely driven by this fleet. Nevertheless, noticeable differences persist in the Western Indian Ocean, suggesting that additional factors, such as spatial aggregation, reporting updates and use of 'Other nei' data may still play a role (Figure: \@ref(fig:compbigeyenoind)). 
 
-
-<!-- #### Focus on Albacore -->
-
-<!-- ```{r tab.cap="Major differences break down by fishing_fleet_label between FS (Dataset 1) and GTA (Dataset 2) datasets for Albacore catches in Indian Ocean"} -->
-
-<!-- table <- CWP.dataset::compare_dimension_differences(Albacore$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per fishing fleet` = Precision ) %>% dplyr::ungroup() -->
-
-<!-- CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit)%>% dplyr::select(-Dimension), grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)")) -->
-
-<!-- ``` -->
-
-<!-- ```{r} -->
-<!-- Albacorewestern <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_much_much %>% dplyr::filter(ocean_iotc == "Western Indian Ocean") ,  -->
-<!--                                                                         parameter_final = NCD_filtered_much_much %>% dplyr::filter(ocean_iotc == "Western Indian Ocean") , -->
-<!--                                                                         parameter_filtering = list(species_name = "Albacore"), -->
-<!--                                                                         parameter_time_dimension = c("year"),  -->
-<!--                                                                         parameter_diff_value_or_percent = "Difference in value", -->
-<!--                                                                         parameter_colnames_to_keep = c("species_name",  -->
-<!--                                                                                                        "fishing_fleet_label", "measurement_unit",  -->
-<!--                                                                                                        "year", "measurement_value", "ocean_iotc", "source_authority"), -->
-<!--                                                                         print_map = FALSE,  -->
-<!--                                                                         parameter_titre_dataset_1 = "FishStat",  -->
-<!--                                                                         parameter_titre_dataset_2 = "GTA", topnumber = 10) -->
-
-<!--     Albacoreeastern <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_much_much %>% dplyr::filter(ocean_iotc == "Eastern Indian Ocean") ,  -->
-<!--                                                                         parameter_final = NCD_filtered_much_much %>% dplyr::filter(ocean_iotc == "Eastern Indian Ocean") , -->
-<!--                                                                         parameter_filtering = list(species_name = "Albacore"), -->
-<!--                                                                         parameter_time_dimension = c("year"),  -->
-<!--                                                                         parameter_diff_value_or_percent = "Difference in value", -->
-<!--                                                                         parameter_colnames_to_keep = c("species_name",  -->
-<!--                                                                                                        "fishing_fleet_label", "measurement_unit",  -->
-<!--                                                                                                        "year", "measurement_value", "ocean_iotc", "source_authority"), -->
-<!--                                                                         print_map = FALSE,  -->
-<!--                                                                         parameter_titre_dataset_1 = "FishStat",  -->
-<!--                                                                         parameter_titre_dataset_2 = "GTA", topnumber = 10) -->
-<!-- ``` -->
-
-<!-- For Albacore, discrepancies are observed in both subareas of the Indian Ocean and appear over roughly the same time period. The main contributors to the observed differences are the Taiwan Province of China and Indonesia, whose reported catches are systematically higher in GTA than in FishStat (by +19.5% and +32.3%, respectively). Other fleets, such as those from Japan, the Republic of Korea, and Mauritius, show smaller but consistent increases. -->
-
-<!-- ```{r compwesteasteforalb, fig.cap="Comparison of Western and Eastern Indian Ocean for Albacore catches", fig.width=12, fig.height=6} -->
-<!-- library(cowplot) -->
-
-<!-- p1 <- clean_time_series_plot(Albacorewestern$time_coverage_analysis_list$plots[[1]]) -->
-<!-- p2 <- clean_time_series_plot(Albacoreeastern$time_coverage_analysis_list$plots[[1]]) -->
-
-<!-- cowplot::plot_grid( -->
-<!--   p1, p2, -->
-<!--   labels   = c("a) Western Indian Ocean", "b) Eastern Indian Ocean"), -->
-<!--   ncol     = 2, -->
-<!--   label_x  = c(0, 0),       -->
-<!--   label_y  = c(1.05, 1.05), -->
-<!--   hjust    = 0            -->
-<!-- ) -->
-
-<!-- ``` -->
-
-<!-- At the temporal level, both datasets exhibit similar long-term trends in total catches (Figure: \@ref(fig:compwesteasteforalb)), with comparable interannual variability until the early 2000s. However, marked differences are visible in amplitude and timing, particularly in the Western Indian Ocean, where GTA tends to report higher peaks during the late 1990s and early 2000s. In contrast, the Eastern Indian Ocean shows more sporadic deviations, but the datasets appear to converge from 2014 onwards, suggesting that both series may have relied on a shared or harmonized data source in recent years. -->
-
-<!-- The coexistence of both spatially and temporally aligned differences may reflect divergent interpretations of national submissions. As for bigeye tuna, further examination of national data -particularly for Taiwan and Indonesia- would help clarify the origin of these differences. -->
 
 The following results also suggest a progressive convergence between the two datasets in recent years. For several major tuna and tuna-like species -such as albacore, bigeye, and to some extent skipjack -the (see Figure: \@ref(fig:finalplot))) values reported by FishStat and GTA become nearly identical after 2014, indicating that both datasets may increasingly rely on similar or shared data sources.
 
@@ -1393,8 +1357,7 @@ tab3d <- make_diff_table_3d(
 
 ```
 
-```{r countryspecificdiff, fig.width=16, fig.height=14, out.width='100%', fig.align='center', fig.cap="Country-specific differences in reported catches (GTA vs FishStat, 2012-2023)"}
-
+```{r countryspecificdiffcreation}
 `%notin%` <- Negate(`%in%`)
 library(grid)   # pour unit()
 
@@ -1424,8 +1387,8 @@ countryspecificdiff <- tab3d %>%
   ) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-    axis.text.y = element_text(size = 9),
-    strip.text = element_text(size = 12, margin = margin(b = 3, t = 3)),
+    axis.text.y = element_text(size = 12),
+    strip.text = element_text(size = 14, margin = margin(b = 3, t = 3)),
     panel.spacing = grid::unit(0.8, "lines"),
     plot.margin = margin(5, 5, 10, 5)
   )
@@ -1434,15 +1397,27 @@ countryspecificdiff_for_pwt <-  countryspecificdiff +
   ggplot2::theme(
     axis.text.y = element_text(size = 10)
   )
-
+ggplot2::ggsave(
+  filename = "outputs/countryspecificdiff_for_pwt.pdf",
+  plot     = countryspecificdiff_for_pwt,
+  width    = 12,
+  height   = 8
+)
 
 ggplot2::ggsave(
   filename = "outputs/countryspecificdiff.pdf",
   plot     = countryspecificdiff,
-  width    = 10,
-  height   = 6
+  width    = 16,
+  height   = 16
 )
 
+qs::qsave(countryspecificdiff, "outputs/countryspecificdiff.qs")
+```
+
+
+```{r countryspecificdiff, fig.width=16, fig.height=14, out.width='100%', fig.align='center', fig.cap="Country-specific differences in reported catches (GTA vs FishStat, 2012-2023)"}
+
+countryspecificdiff <- qs::qread("outputs/countryspecificdiff.qs")
 countryspecificdiff
 
 ```
@@ -1477,7 +1452,7 @@ ALBFS2015 <- FS2014 %>% dplyr::filter(year == "2015" & species_name == "Albacore
 ALBNCD2015 <- NCD2014 %>% dplyr::filter(year == "2015" & species_name == "Albacore")
 
 
-test <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = ALBFS2015 %>% dplyr::mutate(year = "2015-01-01"),
+ALBACORE_2015 <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = ALBFS2015 %>% dplyr::mutate(year = "2015-01-01"),
                                                           parameter_final = ALBNCD2015%>% dplyr::mutate(year = "2015-01-01"),
                                                           parameter_time_dimension = c("year"),
                                                           print_map = FALSE,
@@ -1535,12 +1510,19 @@ This work has received funding from the European Union's Horizon Europe research
 
 # Appendix {-}
 
-```{r gtafirstlines, tab.cap="Extract of the Global Tuna Atlas dataset, with redundant temporal columns (year, month, quarter) omitted", results='asis', echo=FALSE}
+
+```{r gtafirstlinescreation}
 
 headGTA <- head(NC_RAW %>% dplyr::select(-c(year, month, quarter)))
 qs::qsave(headGTA, "outputs/headGTA.qs")
 
 image <- save_as_image(flextable(headGTA), "outputs/headGTA.png")
+```
+
+
+```{r gtafirstlines, tab.cap="Extract of the Global Tuna Atlas dataset, with redundant temporal columns (year, month, quarter) omitted", results='asis', echo=FALSE}
+
+headGTA <- qs::qread("outputs/headGTA.qs")
 
 if (knitr::is_latex_output()) {
   cat("\\begin{landscape}\n")
@@ -1565,34 +1547,69 @@ knitr::kable(headGTA, booktabs = TRUE) %>%
 ```
 
 ```{r fishStatfirstlines-prep, include=FALSE}
+
 headfsj <- head(CAPTURE_RAW %>% dplyr::filter(AREA.CODE == "57"))
 image <- save_as_image(flextable(headfsj), "outputs/headfsj.png")
 qs::qsave(headfsj, "outputs/headfsj.qs")
+
 ```
 
 ```{r fishStatfirstlines, tab.cap="First lines of the FS dataset", echo=FALSE}
+
+headfsj <- qs::qread("outputs/headfsj.qs")
+
 knitr::kable(headfsj, booktabs = TRUE) %>%
   kableExtra::kable_styling(latex_options = "scale_down")
+
 ```
+
+```{r speciesmaincreation}
+speciesmain <- NCD_filtered_COUPLE_SPECIES_OCEAN_TIME %>% 
+  dplyr::select(species_name, species) %>% 
+  dplyr::distinct()
+
+# On ajoute la nouvelle ligne
+speciesmain <- speciesmain %>% 
+  dplyr::add_row(
+    species_name = "Frigate and bullet tunas",
+    species = "FRZ"
+  ) %>%
+  dplyr::mutate(
+    Group = ifelse(species == "FRZ", "Group of two species", "")
+  ) %>%
+  dplyr::mutate(n = dplyr::row_number()) %>%
+  dplyr::select(n, "Species name" = species_name, "Species code" = species, Group) %>% dplyr::arrange(desc("Species name"))
+
+qs::qsave(speciesmain, "outputs/speciesmain.qs")
+
+
+```
+
 
 ```{r speciesmain, tab.cap="Species retained for the comparative analysis between FishStat and the Global Tuna Atlas (n = 32)"}
 
-knitr::kable(NCD_filtered %>% dplyr::select(species_name, species) %>% dplyr::distinct()) %>%
+speciesmain <- qs::qread("outputs/speciesmain.qs")
+knitr::kable(df, booktabs = TRUE) %>% 
   kableExtra::kable_styling(latex_options = "scale_down")
+
 
 ```
 
 ```{r aggregatedcatches, tab.cap="Sample of aggregated species group removed for the comparative analysis between GTA and FS"}
+
+totbyspecies_groupped_nei <-qs::qread("outputs/totbyspecies_groupped_nei.qs")
 
 totbyspecies_groupped_nei
 
 ```
 
 
-```{r}
+```{r Mapping-from-FS-to-nc}
+
 library(readr)
 Mapping_from_FS_to_nc <- read_delim("inputs/mappings/Mapping_from_fsj_to_nc.csv",
     delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% dplyr::select(-"...3")
+
 ```
 
 \renewcommand{\arraystretch}{1.5}
@@ -1624,51 +1641,81 @@ knitr::kable(
 
 ```{r nmberdimIOTCannexe, tab.cap="Number of dimensions for each dataset filtered on FAO areas 51 and 57, after mapping of fishing_fleet for FS"}
 
+onlyminortableiotc <- qs::qread("outputs/onlyminortableiotc.qs")
+
+
 qflextable(onlyminortableiotc)
+
+```
+
+
+```{r fleetbreakdownbigeyetotalcreation}
+table_fleetbreakdownbigeyetotal <- CWP.dataset::compare_dimension_differences(bigeye$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 10)$Groupped_all_not_disap_or_app_to_dysplay
+
+table_fleetbreakdownbigeyetotal_tidied <- CWP.dataset::qflextable2(table_fleetbreakdownbigeyetotal%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
+
+qs::qsave(table_fleetbreakdownbigeyetotal_tidied, "outputs/table_fleetbreakdownbigeyetotal_tidied.qs")
 
 ```
 
 
 ```{r fleetbreakdownbigeyetotal, tab.cap="Major differences break down by fishing_fleet between FS and GTA datasets, filtered on species-oceans commons pairs", echo=FALSE}
 
-table <- CWP.dataset::compare_dimension_differences(bigeye$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 10)$Groupped_all_not_disap_or_app_to_dysplay
-
-CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
+table_fleetbreakdownbigeyetotal_tidied <- qs::qread("outputs/table_fleetbreakdownbigeyetotal_tidied.qs")
+table_fleetbreakdownbigeyetotal_tidied
 
 ```
 
+```{r verifalb2015creation, tab.cap="Major differences break down by fishing_fleet between FishStat and GTA for albacore tuna data catches for year 2015"}
+table_verifalb2015 <- CWP.dataset::compare_dimension_differences(ALBACORE_2015$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay
+
+table_verifalb2015_tidied <- CWP.dataset::qflextable2(table_verifalb2015%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
+
+qs::qsave(table_verifalb2015_tidied, "outputs/table_verifalb2015_tidied.qs")
+```
+
+
 ```{r verifalb2015, tab.cap="Major differences break down by fishing_fleet between FishStat and GTA for albacore tuna data catches for year 2015"}
 
-table <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay
 
-CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
+table_verifalb2015_tidied <- qs::qread("outputs/table_verifalb2015_tidied.qs")
+table_verifalb2015_tidied
 
 ```
 
 <!-- ## Western ocean bigeye -->
 
 
-```{r bigeyewesterwithoutindonesia, tab.cap="Major differences break down by fishing_fleet between FishStat and GTA for bigeye tuna in western indian ocean"}
-table <- CWP.dataset::compare_dimension_differences(bigeyewestern$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 10)$Groupped_all_not_disap_or_app_to_dysplay
+```{r bigeyewesterwithoutindonesiacreation}
+table_bigeyewesterwithoutindonesia <- CWP.dataset::compare_dimension_differences(bigeyewestern$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 10)$Groupped_all_not_disap_or_app_to_dysplay
 
-CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
+table_bigeyewesterwithoutindonesia_tidied <- CWP.dataset::qflextable2(table_bigeyewesterwithoutindonesia%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
+
+qs::qsave(table_bigeyewesterwithoutindonesia_tidied, "outputs/table_bigeyewesterwithoutindonesia_tidied.qs")
+
+```
+
+
+```{r bigeyewesterwithoutindonesia, tab.cap="Major differences break down by fishing_fleet between FishStat and GTA for bigeye tuna in western indian ocean"}
+
+table_bigeyewesterwithoutindonesia_tidied <- qs::qread("outputs/table_bigeyewesterwithoutindonesia_tidied.qs")
+table_bigeyewesterwithoutindonesia_tidied
 
 ```
 
 
 <!-- ## Diff general by year -->
 
-```{r generaldiffbyyear, fig.cap="Comparison of species-to-species differences between GTA and FishStat datasets"}
-
+```{r generaldiffbyyearcreation}
 year_plot_data <- c %>%
-  group_by(year, diff_category) %>%
-  summarise(n = n(), .groups = "drop_last") %>%
-  mutate(percentage = 100 * n / sum(n)) %>%
-  ungroup()
+  dplyr::group_by(year, diff_category) %>%
+  dplyr::summarise(n = n(), .groups = "drop_last") %>%
+  dplyr::mutate(percentage = 100 * n / sum(n)) %>%
+  dplyr::ungroup()
 
-ggplot(year_plot_data, aes(x = year, y = percentage, fill = diff_category)) +
+ggplot_year_plot_data <- ggplot(year_plot_data, aes(x = year, y = percentage, fill = diff_category)) +
   geom_col(position = "fill") +
-  scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+  scale_y_continuous(labels = scales::percent_format(scale = 100)) +
   scale_fill_manual(values = c("Exact" = "darkgreen",
                                "<0.1%" = "lightgreen",
                                "<1%" = "orange",
@@ -1682,10 +1729,19 @@ ggplot(year_plot_data, aes(x = year, y = percentage, fill = diff_category)) +
   theme_minimal(base_size = 13) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
+qs::qsave(ggplot_year_plot_data, "outputs/ggplot_year_plot_data.qs")
 ```
 
-```{r Dominant-difference-category-by-species-a-year, fig.cap = "Dominant difference category by species a year"}
-ggplot(res$long , aes(x = year, y = species_name, fill = diff_category)) +
+
+```{r generaldiffbyyear, fig.cap="Comparison of species-to-species differences between GTA and FishStat datasets"}
+
+ggplot_year_plot_data <- qs::qread("outputs/ggplot_year_plot_data.qs")
+ggplot_year_plot_data
+
+```
+
+```{r Dominant-difference-category-by-species-a-yearcreation}
+Dominant_difference_category_by_species_a_year <- ggplot(res$long , aes(x = year, y = species_name, fill = diff_category)) +
   geom_tile(color = "white") +
   scale_fill_manual(
     values = c(
@@ -1702,6 +1758,17 @@ ggplot(res$long , aes(x = year, y = species_name, fill = diff_category)) +
   ) +
   theme_minimal(base_size = 12) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+qs::qsave(Dominant_difference_category_by_species_a_year, "outputs/Dominant_difference_category_by_species_a_year.qs")
+```
+
+
+```{r Dominant-difference-category-by-species-a-year, fig.cap = "Dominant difference category by species a year"}
+
+Dominant_difference_category_by_species_a_year <- qs::qread("outputs/Dominant_difference_category_by_species_a_year.qs")
+
+Dominant_difference_category_by_species_a_year
+
 ```
 
 
@@ -1751,6 +1818,7 @@ species_table <- data.frame(
     "Thunnus albacares", "Auxis thazard and Auxis rochei"
   )
 )
+
 knitr::kable(
   species_table,
   booktabs = TRUE,
@@ -1758,10 +1826,10 @@ knitr::kable(
 )
 ```
 
-```{r djiboutidata}
+```{r djiboutidata, include=FALSE}
 
-djibouti_FS <- CAPTURED %>% dplyr::filter(fishing_fleet_label== "Djibouti" & species_name == "Yellowfin tuna")
-djibouti_GTA <- NCD %>% dplyr::filter(fishing_fleet_label== "Djibouti" & species_name == "Yellowfin tuna")
+djibouti_FS <- CAPTURED_filtered_much_much %>% dplyr::filter(fishing_fleet_label== "Djibouti" & species_name == "Yellowfin tuna")
+djibouti_GTA <- NCD_filtered_much_much %>% dplyr::filter(fishing_fleet_label== "Djibouti" & species_name == "Yellowfin tuna")
 
 
 Djibouti <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = djibouti_FS,
@@ -1775,11 +1843,16 @@ Djibouti <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = d
                                                           parameter_titre_dataset_1 = "FishStat-Djibouti",
                                                           parameter_titre_dataset_2 = "GTA-Djibouti")
 
+Djibouti_time_cov <- Djibouti$time_coverage_analysis_list[[2]][[1]]
+
+qs::qsave(Djibouti_time_cov, "outputs/Djibouti_time_cov.qs")
+
 ```
 
 ```{r djiboutitimecov, fig.cap="Comparison of annual time series of catch (t) of Yellowfin tuna for Djibouti fleet between for FishStat and GTA datasets for the period 1980-2023"}
 
-Djibouti$time_coverage_analysis_list[[2]]
+Djibouti_time_cov <- qs::qread("outputs/Djibouti_time_cov.qs")
+Djibouti_time_cov
 
 ```
 
@@ -2044,7 +2117,7 @@ FS_less_1_pct <- FS2014 %>% dplyr::inner_join(less_1_pt)
 NCD_less_1_pct <- NCD2014 %>% dplyr::inner_join(less_1_pt)
 
 
-test <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = FS_less_1_pct,
+COMP_LESS_1_PCT <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = FS_less_1_pct,
                                                           parameter_final = NCD_less_1_pct,
                                                           parameter_time_dimension = c("year"),
                                                           print_map = FALSE,
@@ -2058,12 +2131,12 @@ test <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = FS_le
 ```
 
 ```{r attentioncestunesomme}
-test$other_dimension_analysis_list
+ALBACORE_2015$other_dimension_analysis_list
 ```
 
 ```{r tab.cap="Major differences break down by fishing_fleet_label between less_1_pct datasets"}
 
-table <- CWP.dataset::compare_dimension_differences(test$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay
+table <- CWP.dataset::compare_dimension_differences(ALBACORE_2015$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay
 
 CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
 
