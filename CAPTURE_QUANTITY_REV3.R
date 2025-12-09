@@ -107,6 +107,6 @@ NCD$year <- paste0(NCD$year, "-01-01")
 
 CAPTURED$species_name <- gsub("NEI", "nei", CAPTURED$species_name)
 
-qs::qsave(CAPTURED, here::here("inputs/data/FSJ/CAPTURED_MAPPED.qs"))
+qs::qsave(CAPTURED, here::here("inputs/data/FSJ/FS_MAPPED.qs"))
 qs::qsave(NCD, here::here("inputs/data/GTA/NCD_MAPPED.qs"))
 
