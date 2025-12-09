@@ -43,7 +43,7 @@ vignettes/*.pdf
 *.html
 *.pdf
 outputs/
-.Rbuildignore
+# .Rbuildignore
 renv/.gitignore
 *.log
 *.tex
