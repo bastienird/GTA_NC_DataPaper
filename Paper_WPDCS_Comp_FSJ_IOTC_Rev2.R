@@ -1708,7 +1708,7 @@ cat("---- End of the chunk: speciesmaincreation---------------------------------
 
 cat("---- Beginning of the chunk: speciesmain\n")
 speciesmain <- qs::qread("outputs/speciesmain.qs")
-knitr::kable(df, booktabs = TRUE) %>% 
+knitr::kable(speciesmain, booktabs = TRUE) %>% 
   kableExtra::kable_styling(latex_options = "scale_down")
 
 

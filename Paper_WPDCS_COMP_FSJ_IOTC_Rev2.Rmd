@@ -1589,7 +1589,7 @@ qs::qsave(speciesmain, "outputs/speciesmain.qs")
 ```{r speciesmain, tab.cap="Species retained for the comparative analysis between FishStat and the Global Tuna Atlas (n = 32)"}
 
 speciesmain <- qs::qread("outputs/speciesmain.qs")
-knitr::kable(df, booktabs = TRUE) %>% 
+knitr::kable(speciesmain, booktabs = TRUE) %>% 
   kableExtra::kable_styling(latex_options = "scale_down")
 
 
