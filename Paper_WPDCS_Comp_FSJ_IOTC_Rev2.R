@@ -2017,344 +2017,344 @@ cat("---- End of the chunk: djiboutitimecov\n")
 cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
 knitr::knit_exit()
 
+#' #' 
+#' #' \clearpage
+#' #' 
+#' #' # Deprecated
+#' #' 
+#' cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' ## ----tabrecap, results='asis', echo=FALSE, warning=FALSE, message=FALSE,tab.cap="Recap of matching dimensions for FS and GTA datasets"-------
+#' cat("---- Beginning of the chunk: tabrecap\n")
+#' library(flextable)
+#' library(dplyr)
 #' 
-#' \clearpage
+#' # construction du flextable reduit
+#' ft_recap <-
+#'   qflextable(table_recap) %>%
+#'   flextable::autofit() %>%
+#'   flextable::set_table_properties(
+#'     layout = "autofit",
+#'     width  = 0.9
+#'   ) %>%
+#'   flextable::fontsize(size = 7, part = "all")
 #' 
-#' # Deprecated
+#' ft_recap
 #' 
-cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----tabrecap, results='asis', echo=FALSE, warning=FALSE, message=FALSE,tab.cap="Recap of matching dimensions for FS and GTA datasets"-------
-cat("---- Beginning of the chunk: tabrecap\n")
-library(flextable)
-library(dplyr)
-
-# construction du flextable reduit
-ft_recap <-
-  qflextable(table_recap) %>%
-  flextable::autofit() %>%
-  flextable::set_table_properties(
-    layout = "autofit",
-    width  = 0.9
-  ) %>%
-  flextable::fontsize(size = 7, part = "all")
-
-ft_recap
-
+#' #' 
+#' #' 
+#' cat("---- End of the chunk: tabrecap\n")
+#' ## ----numberdim, tab.cap="Number of dimensions for each dataset, after mapping of fishing_fleet"----------------------------------------------
+#' 
+#' cat("---- Beginning of the chunk: numberdim\n")
+#' qflextable(minortabl)
 #' 
 #' 
-cat("---- End of the chunk: tabrecap\n")
-## ----numberdim, tab.cap="Number of dimensions for each dataset, after mapping of fishing_fleet"----------------------------------------------
-
-cat("---- Beginning of the chunk: numberdim\n")
-qflextable(minortabl)
-
-
+#' #' 
+#' #' ## Diff general by year all species and continuous
+#' #' 
+#' cat("---- End of the chunk: numberdim\n")
+#' ## --------------------------------------------------------------------------------------------------------------------------------------------
+#' cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' ggplot(tab3d %>% dplyr::filter(species_name%in%c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = diff_category)) +
+#'   geom_tile() +
+#'   facet_wrap(~ fishing_fleet_label) +
+#'   scale_fill_manual(
+#'     values = c(
+#'       "Exact" = "#1b7837",
+#'       "<0.1%" = "#a6dba0",
+#'       "<1%" = "#fdb863",
+#'       ">1%" = "#d7191c"
+#'     )
+#'   ) +
+#'   theme_minimal()
 #' 
-#' ## Diff general by year all species and continuous
+#' #' 
+#' cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' ## ----makecomcontinuous-----------------------------------------------------------------------------------------------------------------------
+#' cat("---- Beginning of the chunk: makecomcontinuous-----------------------------------------------------------------------------------------------------------------------\n")
+#' c <- make_comparison_df_continuous(
+#'   df1 = FS2014,
+#'   df2 = NCD2014,
+#'   by = c("year", "species_name")
+#' )
 #' 
-cat("---- End of the chunk: numberdim\n")
-## --------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-ggplot(tab3d %>% dplyr::filter(species_name%in%c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = diff_category)) +
-  geom_tile() +
-  facet_wrap(~ fishing_fleet_label) +
-  scale_fill_manual(
-    values = c(
-      "Exact" = "#1b7837",
-      "<0.1%" = "#a6dba0",
-      "<1%" = "#fdb863",
-      ">1%" = "#d7191c"
-    )
-  ) +
-  theme_minimal()
-
 #' 
-cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----makecomcontinuous-----------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: makecomcontinuous-----------------------------------------------------------------------------------------------------------------------\n")
-c <- make_comparison_df_continuous(
-  df1 = FS2014,
-  df2 = NCD2014,
-  by = c("year", "species_name")
-)
-
-
+#' #' 
+#' cat("---- End of the chunk: makecomcontinuous-----------------------------------------------------------------------------------------------------------------------\n")
+#' ## ----relativediff----------------------------------------------------------------------------------------------------------------------------
+#' cat("---- Beginning of the chunk: relativediff----------------------------------------------------------------------------------------------------------------------------\n")
+#' library(ggplot2)
 #' 
-cat("---- End of the chunk: makecomcontinuous-----------------------------------------------------------------------------------------------------------------------\n")
-## ----relativediff----------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: relativediff----------------------------------------------------------------------------------------------------------------------------\n")
-library(ggplot2)
-
-ggplot(c, aes(x = year, y = species_name, fill = perc_diff)) +
-  geom_tile(color = "white") +
-scale_fill_gradientn(
-  colours = c("#1b7837", "#b2df8a", "#fdb863", "#d7191c"),
-  values  = scales::rescale(c(0, 5, 10, 100)),  # milieu vers 5-10%
-  trans   = "log10",
-  limits  = c(0.01, 100),
-  na.value = "grey90",
-  name = "Relative difference (%)"
-)+
-  labs(
-    x = "Year",
-    y = "Species",
-    title = "Relative difference between sum.x and sum.y (continuous scale)"
-  ) +
-  theme_minimal(base_size = 13) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
+#' ggplot(c, aes(x = year, y = species_name, fill = perc_diff)) +
+#'   geom_tile(color = "white") +
+#' scale_fill_gradientn(
+#'   colours = c("#1b7837", "#b2df8a", "#fdb863", "#d7191c"),
+#'   values  = scales::rescale(c(0, 5, 10, 100)),  # milieu vers 5-10%
+#'   trans   = "log10",
+#'   limits  = c(0.01, 100),
+#'   na.value = "grey90",
+#'   name = "Relative difference (%)"
+#' )+
+#'   labs(
+#'     x = "Year",
+#'     y = "Species",
+#'     title = "Relative difference between sum.x and sum.y (continuous scale)"
+#'   ) +
+#'   theme_minimal(base_size = 13) +
+#'   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 #' 
-cat("---- End of the chunk: relativediff----------------------------------------------------------------------------------------------------------------------------\n")
-## ----continuous------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: continuous------------------------------------------------------------------------------------------------------------------------------\n")
-c3d <- make_comparison_df_continuous(
-  df1 = FS2014,
-  df2 = NCD2014,
-  by = c("year", "species_name", "fishing_fleet_label")
-)
-
-c3d <- c3d %>%
-dplyr::mutate(
-perc_diff_clipped = dplyr::case_when(
-perc_diff < 0.01 ~ 0.01, # 1e-2
-perc_diff > 100 ~ 100,
-TRUE ~ perc_diff
-)
-)
-
-ggplot(c3d%>% dplyr::filter(species_name %in% c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = perc_diff_clipped)) +
-  geom_tile(color = "white") +
-  facet_wrap(~ fishing_fleet_label) +
-scale_fill_gradientn(
-  colours = c("#1b7837", "#b2df8a", "#fdb863", "#d7191c"),
-  values  = scales::rescale(c(0, 5, 10, 100)),  # milieu vers 5-10%
-  trans   = "log10",
-  limits  = c(0.01, 100),
-  na.value = "grey90",
-  name = "Relative difference (%)"
-) +
-  labs(
-    x = "Year",
-    y = "Species",
-    title = "Relative difference by species a year a fishing fleet"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
 #' 
-cat("---- End of the chunk: continuous------------------------------------------------------------------------------------------------------------------------------\n")
-## ----plottingcontinuous----------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: plottingcontinuous----------------------------------------------------------------------------------------------------------------------\n")
-ggplot(c3d%>% dplyr::filter(species_name %notin% c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = perc_diff_clipped)) +
-  geom_tile(color = "white") +
-  facet_wrap(~ fishing_fleet_label) +
-scale_fill_gradientn(
-  colours = c("#1b7837", "#b2df8a", "#fdb863", "#d7191c"),
-  values  = scales::rescale(c(0, 5, 10, 100)),  # milieu vers 5-10%
-  trans   = "log10",
-  limits  = c(0.01, 100),
-  na.value = "grey90",
-  name = "Relative difference (%)"
-) +
-  labs(
-    x = "Year",
-    y = "Species",
-    title = "Relative difference by species a year a fishing fleet"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-
+#' #' 
+#' cat("---- End of the chunk: relativediff----------------------------------------------------------------------------------------------------------------------------\n")
+#' ## ----continuous------------------------------------------------------------------------------------------------------------------------------
+#' cat("---- Beginning of the chunk: continuous------------------------------------------------------------------------------------------------------------------------------\n")
+#' c3d <- make_comparison_df_continuous(
+#'   df1 = FS2014,
+#'   df2 = NCD2014,
+#'   by = c("year", "species_name", "fishing_fleet_label")
+#' )
 #' 
-#' ## Recap by year species diff
+#' c3d <- c3d %>%
+#' dplyr::mutate(
+#' perc_diff_clipped = dplyr::case_when(
+#' perc_diff < 0.01 ~ 0.01, # 1e-2
+#' perc_diff > 100 ~ 100,
+#' TRUE ~ perc_diff
+#' )
+#' )
 #' 
-cat("---- End of the chunk: plottingcontinuous----------------------------------------------------------------------------------------------------------------------\n")
-## --------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-library(dplyr)
-
-recap_global <- c %>%
-  mutate(
-    perc_diff = 100 * abs(sum.x - sum.y) / pmax(abs(sum.x), abs(sum.y))
-  ) %>%
-  summarise(
-    exact_equal     = sum(sum.x == sum.y),
-    diff_lt_0_1pct  = sum(perc_diff < 0.1 & sum.x != sum.y),
-    diff_lt_1pct    = sum(perc_diff >= 0.1 & perc_diff < 1),
-    diff_ge_1pct    = sum(perc_diff >= 1),
-    total           = n()
-  )
-
-recap_by_species_name <- c %>%
-  mutate(
-    perc_diff = 100 * abs(sum.x - sum.y) / pmax(abs(sum.x), abs(sum.y))
-  ) %>%
-  group_by(species_name) %>%
-  summarise(
-    exact_equal     = sum(sum.x == sum.y),
-    diff_lt_0_1pct  = sum(perc_diff < 0.1 & sum.x != sum.y),
-    diff_lt_1pct    = sum(perc_diff >= 0.1 & perc_diff < 1),
-    diff_ge_1pct    = sum(perc_diff >= 1),
-    total           = n()
-  ) %>%
-  ungroup()
-
-
+#' ggplot(c3d%>% dplyr::filter(species_name %in% c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = perc_diff_clipped)) +
+#'   geom_tile(color = "white") +
+#'   facet_wrap(~ fishing_fleet_label) +
+#' scale_fill_gradientn(
+#'   colours = c("#1b7837", "#b2df8a", "#fdb863", "#d7191c"),
+#'   values  = scales::rescale(c(0, 5, 10, 100)),  # milieu vers 5-10%
+#'   trans   = "log10",
+#'   limits  = c(0.01, 100),
+#'   na.value = "grey90",
+#'   name = "Relative difference (%)"
+#' ) +
+#'   labs(
+#'     x = "Year",
+#'     y = "Species",
+#'     title = "Relative difference by species a year a fishing fleet"
+#'   ) +
+#'   theme_minimal(base_size = 12) +
+#'   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 #' 
-cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
-## recap_by_species_name %>% dplyr::arrange(diff_ge_1pct)
-
 #' 
-## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
-## recap_global %>% dplyr::arrange(diff_ge_1pct)
-
+#' #' 
+#' cat("---- End of the chunk: continuous------------------------------------------------------------------------------------------------------------------------------\n")
+#' ## ----plottingcontinuous----------------------------------------------------------------------------------------------------------------------
+#' cat("---- Beginning of the chunk: plottingcontinuous----------------------------------------------------------------------------------------------------------------------\n")
+#' ggplot(c3d%>% dplyr::filter(species_name %notin% c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = perc_diff_clipped)) +
+#'   geom_tile(color = "white") +
+#'   facet_wrap(~ fishing_fleet_label) +
+#' scale_fill_gradientn(
+#'   colours = c("#1b7837", "#b2df8a", "#fdb863", "#d7191c"),
+#'   values  = scales::rescale(c(0, 5, 10, 100)),  # milieu vers 5-10%
+#'   trans   = "log10",
+#'   limits  = c(0.01, 100),
+#'   na.value = "grey90",
+#'   name = "Relative difference (%)"
+#' ) +
+#'   labs(
+#'     x = "Year",
+#'     y = "Species",
+#'     title = "Relative difference by species a year a fishing fleet"
+#'   ) +
+#'   theme_minimal(base_size = 12) +
+#'   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 #' 
-## --------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-ggplot(res$long %>% dplyr::filter(species_name%in%c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = diff_category)) +
-  geom_tile(color = "white") +
-  scale_fill_manual(
-    values = c(
-      "Exact" = "#1b7837",
-      "<0.1%" = "#a6dba0",
-      "<1%" = "#fdb863",
-      ">1%" = "#d7191c"
-    ),
-    name = "Relative difference"
-  ) +
-  labs(
-    x = "Year",
-    y = "Species",
-    title = "Dominant difference category by species a year"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
 #' 
-#' ## Now we look at all species/year pairs that have less than 1% difference.
+#' #' 
+#' #' ## Recap by year species diff
+#' #' 
+#' cat("---- End of the chunk: plottingcontinuous----------------------------------------------------------------------------------------------------------------------\n")
+#' ## --------------------------------------------------------------------------------------------------------------------------------------------
+#' cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' library(dplyr)
 #' 
-cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-## --------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-less_1_pt <- c %>% dplyr::filter(perc_diff < 1 )%>% dplyr::select(year, species_name) %>% dplyr::distinct()
-
+#' recap_global <- c %>%
+#'   mutate(
+#'     perc_diff = 100 * abs(sum.x - sum.y) / pmax(abs(sum.x), abs(sum.y))
+#'   ) %>%
+#'   summarise(
+#'     exact_equal     = sum(sum.x == sum.y),
+#'     diff_lt_0_1pct  = sum(perc_diff < 0.1 & sum.x != sum.y),
+#'     diff_lt_1pct    = sum(perc_diff >= 0.1 & perc_diff < 1),
+#'     diff_ge_1pct    = sum(perc_diff >= 1),
+#'     total           = n()
+#'   )
 #' 
-cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
-## # 2) Donnees pour le barplot empile (proportions internes a chaque espece)
-## species_name_plot_data <- c %>%
-##   dplyr::count(species_name, diff_category, name = "n") %>%
-##   dplyr::group_by(species_name) %>%
-##   dplyr::mutate(percentage = 100 * n / sum(n)) %>%
-##   dplyr::ungroup()
-## 
-## # 3) ORDRE = proportion de lignes "rouges" (>1%) par espece
-## red_share <- c %>%
-##   dplyr::group_by(species_name) %>%
-##   dplyr::summarise(red_prop = mean(perc_diff >= 1, na.rm = TRUE), .groups = "drop")
-## 
-## # Avec coord_flip(), le 1er niveau est en BAS.
-## order_levels <- red_share %>%
-##   dplyr::arrange(dplyr::desc(red_prop), species_name) %>%  # du + rouge au - rouge
-##   dplyr::pull(species_name)
-## 
-## # 4) Appliquer l'ordre + figer l'ordre des categories
-## species_name_plot_data <- species_name_plot_data %>%
-##   dplyr::mutate(
-##     species_name = factor(species_name, levels = order_levels),
-##     diff_category = factor(diff_category, levels = c("Exact", "<0.1%", "<1%", ">1%" ))
-##   )
-## 
-## # 5) Plot
-## ggplot2::ggplot(species_name_plot_data, ggplot2::aes(x = species_name, y = percentage, fill = diff_category)) +
-##   ggplot2::geom_col() +
-##   ggplot2::coord_flip() +
-##   ggplot2::scale_fill_manual(
-##     values = c("Exact" = "#1b7837", "<0.1%" = "#a6dba0", "<1%" = "#fdb863", ">1%" = "#d7191c"),
-##     name = "Relative difference"
-##   ) +
-##   ggplot2::labs(
-##     x = "Species", y = "Share of records (%)",
-##     title = "Differences between sum.x and sum.y by species_name"
-##   ) +
-##   ggplot2::theme_minimal(base_size = 13) +
-##   ggplot2::theme(
-##     legend.position = "top",
-##     plot.title = ggplot2::element_text(face = "bold", hjust = 0.5)
-##   )
-## 
-
+#' recap_by_species_name <- c %>%
+#'   mutate(
+#'     perc_diff = 100 * abs(sum.x - sum.y) / pmax(abs(sum.x), abs(sum.y))
+#'   ) %>%
+#'   group_by(species_name) %>%
+#'   summarise(
+#'     exact_equal     = sum(sum.x == sum.y),
+#'     diff_lt_0_1pct  = sum(perc_diff < 0.1 & sum.x != sum.y),
+#'     diff_lt_1pct    = sum(perc_diff >= 0.1 & perc_diff < 1),
+#'     diff_ge_1pct    = sum(perc_diff >= 1),
+#'     total           = n()
+#'   ) %>%
+#'   ungroup()
 #' 
-## --------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-FS_less_1_pct <- FS2014 %>% dplyr::inner_join(less_1_pt)
-NCD_less_1_pct <- NCD2014 %>% dplyr::inner_join(less_1_pt)
-
-
-COMP_LESS_1_PCT <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = FS_less_1_pct,
-                                                          parameter_final = NCD_less_1_pct,
-                                                          parameter_time_dimension = c("year"),
-                                                          print_map = FALSE,
-                                                          parameter_diff_value_or_percent = "Difference in value",
-                                                          parameter_colnames_to_keep = c(
-                                                                                         "fishing_fleet_label", "measurement_unit", "species_name",
-                                                                                         "year", "measurement_value"),
-                                                          parameter_titre_dataset_1 = "FishStat",
-                                                          parameter_titre_dataset_2 = "GTA")
-
-
 #' 
-cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----attentioncestunesomme-------------------------------------------------------------------------------------------------------------------
-
-cat("---- Beginning of the chunk: attentioncestunesomme-------------------------------------------------------------------------------------------------------------------\n")
-ALBACORE_2015$other_dimension_analysis_list
-
-
+#' #' 
+#' cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' ## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
+#' ## recap_by_species_name %>% dplyr::arrange(diff_ge_1pct)
 #' 
-cat("---- End of the chunk: attentioncestunesomme-------------------------------------------------------------------------------------------------------------------\n")
-## ----albacoretable2015, tab.cap="Major differences break down by fishing_fleet_label between less_1_pct datasets"----------------------------
-
-cat("---- Beginning of the chunk: albacoretable2015\n")
-table <- CWP.dataset::compare_dimension_differences(ALBACORE_2015$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay
-
-CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
-
-
+#' #' 
+#' ## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
+#' ## recap_global %>% dplyr::arrange(diff_ge_1pct)
 #' 
-cat("---- End of the chunk: albacoretable2015\n")
-## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
-## year_plot_data <- c %>%
-##   group_by(year, diff_category) %>%
-##   summarise(n = n(), .groups = "drop_last") %>%
-##   mutate(percentage = 100 * n / sum(n)) %>%
-##   ungroup()
-## 
-## ggplot(year_plot_data, aes(x = year, y = percentage, fill = diff_category)) +
-##   geom_col(position = "fill") +
-##   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-##   scale_fill_manual(values = c("Exact" = "darkgreen",
-##                                "<0.1%" = "lightgreen",
-##                                "<1%" = "orange",
-##                                ">1%" = "red")) +
-##   labs(
-##     x = "Year",
-##     y = "Relative part (%) of year",
-##     fill = "Relative difference",
-##     title = "Comparison of differences between sum.x and sum.y by year"
-##   ) +
-##   theme_minimal(base_size = 13) +
-##   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-## 
-
+#' #' 
+#' ## --------------------------------------------------------------------------------------------------------------------------------------------
+#' cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' ggplot(res$long %>% dplyr::filter(species_name%in%c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = diff_category)) +
+#'   geom_tile(color = "white") +
+#'   scale_fill_manual(
+#'     values = c(
+#'       "Exact" = "#1b7837",
+#'       "<0.1%" = "#a6dba0",
+#'       "<1%" = "#fdb863",
+#'       ">1%" = "#d7191c"
+#'     ),
+#'     name = "Relative difference"
+#'   ) +
+#'   labs(
+#'     x = "Year",
+#'     y = "Species",
+#'     title = "Dominant difference category by species a year"
+#'   ) +
+#'   theme_minimal(base_size = 12) +
+#'   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 #' 
-#' ## Pourcentage de strates completement equivalentes.
+#' #' 
+#' #' ## Now we look at all species/year pairs that have less than 1% difference.
+#' #' 
+#' cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' ## --------------------------------------------------------------------------------------------------------------------------------------------
+#' cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' less_1_pt <- c %>% dplyr::filter(perc_diff < 1 )%>% dplyr::select(year, species_name) %>% dplyr::distinct()
 #' 
-#' ### Dimensions temps/especes
+#' #' 
+#' cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' ## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
+#' ## # 2) Donnees pour le barplot empile (proportions internes a chaque espece)
+#' ## species_name_plot_data <- c %>%
+#' ##   dplyr::count(species_name, diff_category, name = "n") %>%
+#' ##   dplyr::group_by(species_name) %>%
+#' ##   dplyr::mutate(percentage = 100 * n / sum(n)) %>%
+#' ##   dplyr::ungroup()
+#' ## 
+#' ## # 3) ORDRE = proportion de lignes "rouges" (>1%) par espece
+#' ## red_share <- c %>%
+#' ##   dplyr::group_by(species_name) %>%
+#' ##   dplyr::summarise(red_prop = mean(perc_diff >= 1, na.rm = TRUE), .groups = "drop")
+#' ## 
+#' ## # Avec coord_flip(), le 1er niveau est en BAS.
+#' ## order_levels <- red_share %>%
+#' ##   dplyr::arrange(dplyr::desc(red_prop), species_name) %>%  # du + rouge au - rouge
+#' ##   dplyr::pull(species_name)
+#' ## 
+#' ## # 4) Appliquer l'ordre + figer l'ordre des categories
+#' ## species_name_plot_data <- species_name_plot_data %>%
+#' ##   dplyr::mutate(
+#' ##     species_name = factor(species_name, levels = order_levels),
+#' ##     diff_category = factor(diff_category, levels = c("Exact", "<0.1%", "<1%", ">1%" ))
+#' ##   )
+#' ## 
+#' ## # 5) Plot
+#' ## ggplot2::ggplot(species_name_plot_data, ggplot2::aes(x = species_name, y = percentage, fill = diff_category)) +
+#' ##   ggplot2::geom_col() +
+#' ##   ggplot2::coord_flip() +
+#' ##   ggplot2::scale_fill_manual(
+#' ##     values = c("Exact" = "#1b7837", "<0.1%" = "#a6dba0", "<1%" = "#fdb863", ">1%" = "#d7191c"),
+#' ##     name = "Relative difference"
+#' ##   ) +
+#' ##   ggplot2::labs(
+#' ##     x = "Species", y = "Share of records (%)",
+#' ##     title = "Differences between sum.x and sum.y by species_name"
+#' ##   ) +
+#' ##   ggplot2::theme_minimal(base_size = 13) +
+#' ##   ggplot2::theme(
+#' ##     legend.position = "top",
+#' ##     plot.title = ggplot2::element_text(face = "bold", hjust = 0.5)
+#' ##   )
+#' ## 
 #' 
-#' ### Dimensions temps/especes/pavillons
+#' #' 
+#' ## --------------------------------------------------------------------------------------------------------------------------------------------
+#' cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' FS_less_1_pct <- FS2014 %>% dplyr::inner_join(less_1_pt)
+#' NCD_less_1_pct <- NCD2014 %>% dplyr::inner_join(less_1_pt)
 #' 
-#' ## Pour les donnees equivalentes en temps/especes, quels sont les differences de pavillons
+#' 
+#' COMP_LESS_1_PCT <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = FS_less_1_pct,
+#'                                                           parameter_final = NCD_less_1_pct,
+#'                                                           parameter_time_dimension = c("year"),
+#'                                                           print_map = FALSE,
+#'                                                           parameter_diff_value_or_percent = "Difference in value",
+#'                                                           parameter_colnames_to_keep = c(
+#'                                                                                          "fishing_fleet_label", "measurement_unit", "species_name",
+#'                                                                                          "year", "measurement_value"),
+#'                                                           parameter_titre_dataset_1 = "FishStat",
+#'                                                           parameter_titre_dataset_2 = "GTA")
+#' 
+#' 
+#' #' 
+#' cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+#' ## ----attentioncestunesomme-------------------------------------------------------------------------------------------------------------------
+#' 
+#' cat("---- Beginning of the chunk: attentioncestunesomme-------------------------------------------------------------------------------------------------------------------\n")
+#' ALBACORE_2015$other_dimension_analysis_list
+#' 
+#' 
+#' #' 
+#' cat("---- End of the chunk: attentioncestunesomme-------------------------------------------------------------------------------------------------------------------\n")
+#' ## ----albacoretable2015, tab.cap="Major differences break down by fishing_fleet_label between less_1_pct datasets"----------------------------
+#' 
+#' cat("---- Beginning of the chunk: albacoretable2015\n")
+#' table <- CWP.dataset::compare_dimension_differences(ALBACORE_2015$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay
+#' 
+#' CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
+#' 
+#' 
+#' #' 
+#' cat("---- End of the chunk: albacoretable2015\n")
+#' ## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
+#' ## year_plot_data <- c %>%
+#' ##   group_by(year, diff_category) %>%
+#' ##   summarise(n = n(), .groups = "drop_last") %>%
+#' ##   mutate(percentage = 100 * n / sum(n)) %>%
+#' ##   ungroup()
+#' ## 
+#' ## ggplot(year_plot_data, aes(x = year, y = percentage, fill = diff_category)) +
+#' ##   geom_col(position = "fill") +
+#' ##   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+#' ##   scale_fill_manual(values = c("Exact" = "darkgreen",
+#' ##                                "<0.1%" = "lightgreen",
+#' ##                                "<1%" = "orange",
+#' ##                                ">1%" = "red")) +
+#' ##   labs(
+#' ##     x = "Year",
+#' ##     y = "Relative part (%) of year",
+#' ##     fill = "Relative difference",
+#' ##     title = "Comparison of differences between sum.x and sum.y by year"
+#' ##   ) +
+#' ##   theme_minimal(base_size = 13) +
+#' ##   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+#' ## 
+#' 
+#' #' 
+#' #' ## Pourcentage de strates completement equivalentes.
+#' #' 
+#' #' ### Dimensions temps/especes
+#' #' 
+#' #' ### Dimensions temps/especes/pavillons
+#' #' 
+#' #' ## Pour les donnees equivalentes en temps/especes, quels sont les differences de pavillons
