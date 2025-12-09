@@ -471,6 +471,7 @@ df_totaldiff <- COMP_COUPLE_SPECIES_OCEAN_TIME$summary_of_differences %>%
 df_totaldiff <- CWP.dataset::qflextable2(df_totaldiff)
 # Save for reuse later in oral presentation
 
+image <- save_as_image(df_totaldiff, path = "outputs/totaldiff.png")
 qs::qsave(df_totaldiff,"outputs/totaldiff.qs")
 
 ```

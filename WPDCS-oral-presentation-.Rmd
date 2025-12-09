@@ -500,7 +500,7 @@ cat("\\end{table}")
 cat("
 \\begin{table}[ht]
 \\centering
-\\includegraphics[width=0.9\\textwidth]{outputs/summary_of_differences.png}
+\\includegraphics[width=0.9\\textwidth]{outputs/totaldiff.png}
 \\caption{Total catch (t) for each dataset and relative differences for global comparable datasets}
 \\end{table}
 ")
