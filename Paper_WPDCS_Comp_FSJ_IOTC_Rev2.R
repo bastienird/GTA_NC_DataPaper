@@ -1,6 +1,6 @@
 # Generated with purl_with_logs() from 'Paper_WPDCS_COMP_FSJ_IOTC_Rev2.Rmd'
-# Source Rmd: /home/jovyan/firms-gta/GTA_NC_DataPaper_Brepo/Paper_WPDCS_COMP_FSJ_IOTC_Rev2.Rmd
-# Generated on: 2025-12-08 16:12:20
+# Source Rmd: /home/jovyan/GTA_NC_DataPaperBRepo/Paper_WPDCS_COMP_FSJ_IOTC_Rev2.Rmd
+# Generated on: 2025-12-09 07:08:28
 
 #' ---
 #' title: "Following the tuna trail: Contrasting global catch estimates from FAO and RFMOs"
@@ -77,7 +77,7 @@
 #' 
 #' In this study, we focus only on one specific dataset type shared by both systems, the annual global capture data, to compare their structure, coverage, and consistency. Specifically, we use the datasets *FishStat - Global Capture Production.* [@FAO2025_Captures] and *Global Tuna Atlas - Global nominal catches* [@GTA2025_GlobalNominal], corresponding respectively to FAO's global capture production statistics and the harmonized nominal catch data compiled from t-RFMOs. Only marine capture data were retained (excluding inland records), and the analysis focuses on ISSCAAP groups 36 (Tunas and tuna-like species) and 38 (Sharks, rays, chimaeras). All measurement_value entries represent nominal catches in metric tonnes (t).
 #' 
-## ----setup, include=FALSE----------------------------------------------------------------------------------------------------------------------------
+## ----setup, include=FALSE--------------------------------------------------------------------------------------------------------------------
 cat("---- Beginning of the chunk: setup\n")
 knitr::opts_chunk$set(
   echo    = FALSE,   # pas de code
@@ -103,7 +103,7 @@ knitr::knit_hooks$set( #options for curl if needed to put in .R
 #' 
 #' 
 cat("---- End of the chunk: setup\n")
-## ----runnning-CAPTURE-QUANTITY-REV3, include=FALSE---------------------------------------------------------------------------------------------------
+## ----runnning-CAPTURE-QUANTITY-REV3, include=FALSE-------------------------------------------------------------------------------------------
 
 cat("---- Beginning of the chunk: runnning-CAPTURE-QUANTITY-REV3\n")
 lapply(
@@ -153,7 +153,7 @@ source("CAPTURE_QUANTITY_REV3.R") # for the mapping first
 #' FishStat includes 337 species, whereas the GTA dataset lists only 65 (Table: \@ref(tab:tabrecap)). GTA deliberately focuses on a restricted set of 32 key species, considered the most relevant for tuna and tuna-like fisheries. For the remainder of this analysis, only this 32 species included in both FS and GTA are considered, with specific focus given to the main tuna species in the following sections. (See Appendix \@ref(tab:speciesmain)). Catches of species not present in the GTA, but present in FS, represent 28% of total catches, for over 250 additional species.
 #' 
 cat("---- End of the chunk: runnning-CAPTURE-QUANTITY-REV3\n")
-## ----filteringoniotcspeciesandintersect, include=FALSE-----------------------------------------------------------------------------------------------
+## ----filteringoniotcspeciesandintersect, include=FALSE---------------------------------------------------------------------------------------
 
 cat("---- Beginning of the chunk: filteringoniotcspeciesandintersect\n")
 species_intersect <- c(unique((NCD %>% dplyr::filter(source_authority == "IOTC"))$species), "FRZ")
@@ -202,7 +202,7 @@ NCD_INTERSECT <- NCD %>% dplyr::filter(species %in% species_intersect)
 #' ## Filtering of comparable strata
 #' 
 cat("---- End of the chunk: filteringoniotcspeciesandintersect\n")
-## ----presenceabsencecreation, include=FALSE----------------------------------------------------------------------------------------------------------
+## ----presenceabsencecreation, include=FALSE--------------------------------------------------------------------------------------------------
 
 cat("---- Beginning of the chunk: presenceabsencecreation\n")
 species_intersect_32 <- c(unique((NCD %>% dplyr::filter(source_authority == "IOTC"))$species), "FRZ")
@@ -382,9 +382,9 @@ knitr::include_graphics(here::here("outputs/presenceabsence.pdf"))
 #' As an illustration, a specific case of data aggregation was encountered with Frigate and Bullet tunas, which were reported jointly for many years in FishStat under the combined FAO code 'FRZ'. We made an exception to retain this aggregated category in our comparison given its relevance for major tuna species and its direct equivalency in the GTA dataset. However, for the 'Mediterranean and Black Sea' basin, data for both individual species and the 'FRZ' group were removed, as only bullet tuna is represented in GTA dataset for that area.
 #' 
 cat("---- End of the chunk: presenceabsence\n")
-## ----aggregatedspecies-------------------------------------------------------------------------------------------------------------------------------
+## ----aggregatedspecies-----------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: aggregatedspecies-------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: aggregatedspecies-----------------------------------------------------------------------------------------------------------------------\n")
 aggregated_species <- c(
   "Various sharks nei",
   "Tunas nei", 
@@ -442,10 +442,10 @@ qs <- qs::qsave(totbyspecies_groupped_nei, "outputs/totbyspecies_groupped_nei.qs
 #' 
 #' In the following subsections we detail the results obtained by comparing the remaining rows of the initial FS and GTA datasets, after applying the previous filters (see explanations in previous section). 
 #' 
-cat("---- End of the chunk: aggregatedspecies-------------------------------------------------------------------------------------------------------------------------------\n")
-## ----joiningfilteringoncommonspeciesocean------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: aggregatedspecies-----------------------------------------------------------------------------------------------------------------------\n")
+## ----joiningfilteringoncommonspeciesocean----------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: joiningfilteringoncommonspeciesocean------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: joiningfilteringoncommonspeciesocean----------------------------------------------------------------------------------------------------\n")
 couple_species_ocean <- rbind(NCD %>% dplyr::select(ocean_simple, species) %>% dplyr::distinct() %>% 
   dplyr::inner_join(CAPTURED%>% dplyr::select(ocean_simple, species)%>% dplyr::distinct(), 
                     by = c("ocean_simple", "species")), c("Indian Ocean", "FRZ"), c("Indian Ocean", "FRZ")) %>% dplyr::filter(!(ocean_simple == "Mediterranean and Black Sea" & species == "BLT"))
@@ -461,10 +461,10 @@ CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME <- CAPTURED%>% dplyr::filter(species
 
 
 #' 
-cat("---- End of the chunk: joiningfilteringoncommonspeciesocean------------------------------------------------------------------------------------------------------------\n")
-## ----comparisonfiltereddata--------------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: joiningfilteringoncommonspeciesocean----------------------------------------------------------------------------------------------------\n")
+## ----comparisonfiltereddata------------------------------------------------------------------------------------------------------------------
 # adding one line with NEI FRZ to be able to print FRZ in table where there is loss not disappearing data
-cat("---- Beginning of the chunk: comparisonfiltereddata--------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: comparisonfiltereddata------------------------------------------------------------------------------------------------------------------\n")
 COMP_COUPLE_SPECIES_OCEAN_TIME <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME,
                                                           parameter_final = rbind(head(NCD_filtered_COUPLE_SPECIES_OCEAN_TIME,1) %>% dplyr::mutate(species = "FRZ", measurement_value = 0.001, fishing_fleet_label = "NEI", species_name = "Frigate and bullet tunas"),NCD_filtered_COUPLE_SPECIES_OCEAN_TIME),
                                                           parameter_time_dimension = c("year"),
@@ -481,10 +481,10 @@ COMP_COUPLE_SPECIES_OCEAN_TIME <- CWP.dataset::comprehensive_cwp_dataframe_analy
 #' 
 #' 
 #' 
-cat("---- End of the chunk: comparisonfiltereddata--------------------------------------------------------------------------------------------------------------------------\n")
-## ----totaldiffcreation-------------------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: comparisonfiltereddata------------------------------------------------------------------------------------------------------------------\n")
+## ----totaldiffcreation-----------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: totaldiffcreation-------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: totaldiffcreation-----------------------------------------------------------------------------------------------------------------------\n")
 df_totaldiff <- COMP_COUPLE_SPECIES_OCEAN_TIME$summary_of_differences %>%
   dplyr::select(-measurement_unit)
 
@@ -497,8 +497,8 @@ qs::qsave(df_totaldiff,"outputs/totaldiff.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: totaldiffcreation-------------------------------------------------------------------------------------------------------------------------------\n")
-## ----totaldiff, tab.cap="Total catch (t) for each dataset and relative differences", echo=FALSE------------------------------------------------------
+cat("---- End of the chunk: totaldiffcreation-----------------------------------------------------------------------------------------------------------------------\n")
+## ----totaldiff, tab.cap="Total catch (t) for each dataset and relative differences", echo=FALSE----------------------------------------------
 
 cat("---- Beginning of the chunk: totaldiff\n")
 df_totaldiff <- qs::qread("outputs/totaldiff.qs")
@@ -515,8 +515,8 @@ df_totaldiff
 #' ## Temporal evolution of global captures
 #' 
 cat("---- End of the chunk: totaldiff\n")
-## ----timeseriestotcreation---------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: timeseriestotcreation---------------------------------------------------------------------------------------------------------------------------\n")
+## ----timeseriestotcreation-------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: timeseriestotcreation-------------------------------------------------------------------------------------------------------------------\n")
 timeseriestot <- clean_time_series_plot(COMP_COUPLE_SPECIES_OCEAN_TIME$time_coverage_analysis_list$plots[[1]])
 unlink("outputs/timeseriestot.pdf")
 ggplot2::ggsave(
@@ -525,7 +525,7 @@ ggplot2::ggsave(
 )
 
 #' 
-cat("---- End of the chunk: timeseriestotcreation---------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: timeseriestotcreation-------------------------------------------------------------------------------------------------------------------\n")
 ## ----timeseriestot,  fig.cap = "Comparison of annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat and GTA datasets for the period 1950-2023", echo=FALSE----
 
 cat("---- Beginning of the chunk: timeseriestot\n")
@@ -542,8 +542,8 @@ knitr::include_graphics(here::here("outputs/timeseriestot.pdf"))
 #' \footnotesize
 #' 
 cat("---- End of the chunk: timeseriestot\n")
-## ----totbyspeciescreation----------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: totbyspeciescreation----------------------------------------------------------------------------------------------------------------------------\n")
+## ----totbyspeciescreation--------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: totbyspeciescreation--------------------------------------------------------------------------------------------------------------------\n")
 table_COMP_COUPLE_SPECIES_OCEAN_TIME <- CWP.dataset::compare_dimension_differences(COMP_COUPLE_SPECIES_OCEAN_TIME$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 18)$Groupped_all_not_disap_or_app_to_dysplay %>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`)%>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
 
 totbyspecies <- table_COMP_COUPLE_SPECIES_OCEAN_TIME%>% dplyr::ungroup()%>% dplyr::select(-c(measurement_unit, Dimension))
@@ -581,7 +581,7 @@ image <- save_as_image(totbyspecies_part2, path = "outputs/totbyspecies_part2.pn
 
 #' 
 #' 
-cat("---- End of the chunk: totbyspeciescreation----------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: totbyspeciescreation--------------------------------------------------------------------------------------------------------------------\n")
 ## ----totbyspecies, tab.cap="Comparison of total catch (t) by taxon between the Global Tuna Atlas and Fishstat database for the 32 retained species and one group of species", echo=FALSE, out.height='85%'----
 
 cat("---- Beginning of the chunk: totbyspecies\n")
@@ -605,8 +605,8 @@ totbyspecies
 #' In summary, the observed discrepancies are primarily structural and linked to the level of taxonomic resolution adopted by each database. The choice of dataset directly influences catch estimates depending on whether species-level detail or the retention of historical aggregated categories is prioritized.
 #' 
 cat("---- End of the chunk: totbyspecies\n")
-## ----totbyoceancreation------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: totbyoceancreation------------------------------------------------------------------------------------------------------------------------------\n")
+## ----totbyoceancreation----------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: totbyoceancreation----------------------------------------------------------------------------------------------------------------------\n")
 table_totbyocean <- CWP.dataset::compare_dimension_differences(COMP_COUPLE_SPECIES_OCEAN_TIME$groupping_differences_list$Groupped_all, "ocean_simple", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay %>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(Area = Precision)
 
 table_totbyocean_tidied <- CWP.dataset::qflextable2(table_totbyocean%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit) %>% dplyr::mutate(Dimension = "Ocean") %>% dplyr::select(-Dimension), grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
@@ -616,8 +616,8 @@ qs::qsave(table_totbyocean_tidied, "outputs/table_totbyocean_tidied.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: totbyoceancreation------------------------------------------------------------------------------------------------------------------------------\n")
-## ----totbyocean, tab.cap="Comparison of total catch (t) by Area between the Global Tuna Atlas and Fishstat database for a set of selected taxa"------
+cat("---- End of the chunk: totbyoceancreation----------------------------------------------------------------------------------------------------------------------\n")
+## ----totbyocean, tab.cap="Comparison of total catch (t) by Area between the Global Tuna Atlas and Fishstat database for a set of selected taxa"----
 
 cat("---- Beginning of the chunk: totbyocean\n")
 table_totbyocean_tidied <- qs::qread("outputs/table_totbyocean_tidied.qs")
@@ -632,8 +632,8 @@ table_totbyocean_tidied
 #' When aggregated by ocean basin, the overall distribution of catches shows moderate differences between the two datasets (Table \@ref(tab:totbyocean)). The Atlantic Ocean, along with the Mediterranean and Black Sea, shows slightly higher totals in the GTA ; by 3.4% and 2.7% respectively. In contrast, the Pacific and Indian Oceans show marginally higher totals in FishStat, with differences of -1.8% and -0.5% relative to the GTA. It is noteworthy that the Pacific Ocean, being the largest contributor to global catches, accounts for the greatest absolute difference. 
 #' 
 cat("---- End of the chunk: totbyocean\n")
-## ----totbyfleetcreation------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: totbyfleetcreation------------------------------------------------------------------------------------------------------------------------------\n")
+## ----totbyfleetcreation----------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: totbyfleetcreation----------------------------------------------------------------------------------------------------------------------\n")
 table_totbyfleet <- CWP.dataset::compare_dimension_differences(COMP_COUPLE_SPECIES_OCEAN_TIME$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay %>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per fishing fleet` = Precision ) %>% dplyr::ungroup()
 
 totbyfleet_tidied <- CWP.dataset::qflextable2(table_totbyfleet%>% dplyr::ungroup()%>% dplyr::select(-c(measurement_unit, Dimension)), grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
@@ -644,7 +644,7 @@ qs::qsave(totbyfleet_tidied, "outputs/totbyfleet_tidied.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: totbyfleetcreation------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: totbyfleetcreation----------------------------------------------------------------------------------------------------------------------\n")
 ## ----totbyfleet, tab.cap="Comparison of total catch (t) by fishing fleet between the Global Tuna Atlas and Fishstat database for a set of selected taxa"----
 
 cat("---- Beginning of the chunk: totbyfleet\n")
@@ -688,8 +688,8 @@ totbyfleet_tidied
 #' This regional focus on the Indian Ocean is particularly relevant because both datasets share approximately the same geographical coverage (FAO areas 51 and 57) and the same temporal extent (1950-2023), which allows for a straightforward spatial and temporal comparison. Both datasets also report the same measurement type, corresponding to Nominal Landings, ensuring conceptual consistency in the comparison of catch values. The analysis therefore uses the same subset of 32 common species (and one group of species) identified in the global comparison (See Appendix \@ref(tab:speciesmain)), ensuring consistency in taxonomic scope across scales.
 #' 
 cat("---- End of the chunk: totbyfleet\n")
-## ----filteringIOTCdata-------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: filteringIOTCdata-------------------------------------------------------------------------------------------------------------------------------\n")
+## ----filteringIOTCdata-----------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: filteringIOTCdata-----------------------------------------------------------------------------------------------------------------------\n")
 NC_RAW <- NC_RAW%>% dplyr::filter(source_authority == "IOTC")
 CAPTURE_RAW <- CAPTURE_RAW%>% dplyr::filter(AREA.CODE %in% c("57", "58", "51"))
 
@@ -705,10 +705,10 @@ CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC <- CAPTURED_filtered_COUPLE_SPE
 
 
 #' 
-cat("---- End of the chunk: filteringIOTCdata-------------------------------------------------------------------------------------------------------------------------------\n")
-## ----onlyminortableiotc------------------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: filteringIOTCdata-----------------------------------------------------------------------------------------------------------------------\n")
+## ----onlyminortableiotc----------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: onlyminortableiotc------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: onlyminortableiotc----------------------------------------------------------------------------------------------------------------------\n")
 onlyminortableiotc <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC,
                                                                     parameter_final = NCD_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC,
                                                                     parameter_time_dimension = c("year"),
@@ -739,10 +739,10 @@ qs::qsave(onlyminortableiotc, "outputs/onlyminortableiotc.qs")
 #' 
 #' ## Nominal landings values comparison
 #' 
-cat("---- End of the chunk: onlyminortableiotc------------------------------------------------------------------------------------------------------------------------------\n")
-## ----iotcdatacomparison------------------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: onlyminortableiotc----------------------------------------------------------------------------------------------------------------------\n")
+## ----iotcdatacomparison----------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: iotcdatacomparison------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: iotcdatacomparison----------------------------------------------------------------------------------------------------------------------\n")
 species_intersect <- c(intersect(unique(NCD_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC$species), unique(CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC$species)), "FRZ")
 
 CAPTURED_IOTC_intersect <- CAPTURED_filtered_COUPLE_SPECIES_OCEAN_TIME_IOTC %>% dplyr::filter(species %in% species_intersect)
@@ -768,18 +768,18 @@ qs::qsave(table_COMP_IOTC_INTERSECT_tidied, "outputs/table_COMP_IOTC_INTERSECT_t
 
 
 #' 
-cat("---- End of the chunk: iotcdatacomparison------------------------------------------------------------------------------------------------------------------------------\n")
-## ----summarydiffiotc, tab.cap="Total captures for each dataset and relative differences", eval=FALSE-------------------------------------------------
-# 
-# table_COMP_IOTC_INTERSECT_tidied <- qs::qread("outputs/table_COMP_IOTC_INTERSECT_tidied.qs")
-# table_COMP_IOTC_INTERSECT_tidied
-# 
+cat("---- End of the chunk: iotcdatacomparison----------------------------------------------------------------------------------------------------------------------\n")
+## ----summarydiffiotc, tab.cap="Total captures for each dataset and relative differences", eval=FALSE-----------------------------------------
+## 
+## table_COMP_IOTC_INTERSECT_tidied <- qs::qread("outputs/table_COMP_IOTC_INTERSECT_tidied.qs")
+## table_COMP_IOTC_INTERSECT_tidied
+## 
 
 #' 
 #' At the aggregated level, the total catches recorded are slightly higher in FishStat than those in GTA, with a difference of about 0.5% (Table \@ref(tab:totbyocean)). This discrepancy, although moderate, indicates that the datasets are broadly consistent in magnitude. However, such global differences may conceal higher variations when disaggregated by species, fleet, or year.
 #' 
-## ----timecovindianoceancreation----------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: timecovindianoceancreation----------------------------------------------------------------------------------------------------------------------\n")
+## ----timecovindianoceancreation--------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: timecovindianoceancreation--------------------------------------------------------------------------------------------------------------\n")
 time_cov_indian_ocean <- clean_time_series_plot(COMP_IOTC_INTERSECT$time_coverage_analysis_list$plots[[1]])
 
 unlink("outputs/time_cov_indian_ocean.pdf")
@@ -792,7 +792,7 @@ ggplot2::ggsave(
 
 #' 
 #' 
-cat("---- End of the chunk: timecovindianoceancreation----------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: timecovindianoceancreation--------------------------------------------------------------------------------------------------------------\n")
 ## ----timecovindianocean, fig.cap = "Comparison of the annual time series of catch (t) of tuna and tuna-like species in the Indian Ocean between for FishStat and GTA datasets for the period 1950-2023"----
 
 cat("---- Beginning of the chunk: timecovindianocean\n")
@@ -809,8 +809,8 @@ knitr::include_graphics(here::here("outputs/time_cov_indian_ocean.pdf"))
 #' ## Species-level analysis
 #' 
 cat("---- End of the chunk: timecovindianocean\n")
-## ----iotcspecieslevelanalysiscreation----------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: iotcspecieslevelanalysiscreation----------------------------------------------------------------------------------------------------------------\n")
+## ----iotcspecieslevelanalysiscreation--------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: iotcspecieslevelanalysiscreation--------------------------------------------------------------------------------------------------------\n")
 table <- CWP.dataset::compare_dimension_differences(COMP_IOTC_INTERSECT$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 14)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
 
 table_reduced <- CWP.dataset::compare_dimension_differences(COMP_IOTC_INTERSECT$groupping_differences_list$Groupped_all, "species_name", parameter_diff_value_or_percent = "Difference in value", topn = 3)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per species` = Precision ) %>% dplyr::ungroup()
@@ -831,7 +831,7 @@ qs::qsave(species_level_analysis, "outputs/species_level_analysis.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: iotcspecieslevelanalysiscreation----------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: iotcspecieslevelanalysiscreation--------------------------------------------------------------------------------------------------------\n")
 ## ----iotcspecieslevelanalysis, tab.cap="Comparison of total catch (t) by species between the Global Tuna Atlas and Fishstat database for a set of selected taxa", echo=FALSE----
 
 
@@ -859,17 +859,17 @@ species_level_analysis
 #' To facilitate a clearer comparison of temporal trends across countries and ocean basins, the analysis now focuses on the major tuna and tuna-like species - albacore, bigeye, skipjack, yellowfin, and swordfish. These species are among the most consistently reported across all oceans and constitute the core taxa of the Global Tuna Atlas. Focusing on this subset allows a more detailed examination of inter-dataset consistency, both spatially and temporally, while minimizing noise from irregularly documented species.
 #' 
 cat("---- End of the chunk: iotcspecieslevelanalysis\n")
-## ----majoruntasinit----------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: majoruntasinit----------------------------------------------------------------------------------------------------------------------------------\n")
+## ----majoruntasinit--------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: majoruntasinit--------------------------------------------------------------------------------------------------------------------------\n")
 NCD_filtered_much_much <- NCD_IOTC_intersect
 
 CAPTURED_filtered_much_much <- CAPTURED_IOTC_intersect
 
 #' 
-cat("---- End of the chunk: majoruntasinit----------------------------------------------------------------------------------------------------------------------------------\n")
-## ----majortunascomp----------------------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: majoruntasinit--------------------------------------------------------------------------------------------------------------------------\n")
+## ----majortunascomp--------------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: majortunascomp----------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: majortunascomp--------------------------------------------------------------------------------------------------------------------------\n")
 CAPTURED_filtered_much_much <- CAPTURED_filtered_much_much %>% dplyr::mutate(ocean_iotc = case_when(ocean_basin == "Indian Ocean, Western" ~ "Western Indian Ocean",
                                                                                        ocean_basin == "Indian Ocean, Eastern" ~ "Eastern Indian Ocean",
                                                                                        TRUE~ocean_iotc))
@@ -901,9 +901,9 @@ major_tunas <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init 
                                                           parameter_titre_dataset_2 = "GTA")
 
 #' 
-cat("---- End of the chunk: majortunascomp----------------------------------------------------------------------------------------------------------------------------------\n")
-## ----majortunascomptablecreation---------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: majortunascomptablecreation---------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: majortunascomp--------------------------------------------------------------------------------------------------------------------------\n")
+## ----majortunascomptablecreation-------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: majortunascomptablecreation-------------------------------------------------------------------------------------------------------------\n")
 major_tunas_summmary_diff <- major_tunas$summary_of_differences %>% dplyr::select(-measurement_unit)
 
 major_tunas_summmary_diff <- CWP.dataset::qflextable2(major_tunas_summmary_diff)
@@ -914,7 +914,7 @@ qs <- qs::qsave(major_tunas_summmary_diff, "outputs/major_tunas_summmary_diff.qs
 
 #' 
 #' 
-cat("---- End of the chunk: majortunascomptablecreation---------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: majortunascomptablecreation-------------------------------------------------------------------------------------------------------------\n")
 ## ----majortunascomptable, tab.cap="Total captures (t) for each dataset and relative differences, for datasets filtered on major species", echo=FALSE----
 
 cat("---- Beginning of the chunk: majortunascomptable\n")
@@ -930,9 +930,9 @@ major_tunas_summmary_diff
 #' ### Precision and temporal dynamics
 #' 
 cat("---- End of the chunk: majortunascomptable\n")
-## ----imagepermajortunas------------------------------------------------------------------------------------------------------------------------------
+## ----imagepermajortunas----------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: imagepermajortunas------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: imagepermajortunas----------------------------------------------------------------------------------------------------------------------\n")
   skipjack <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_much_much ,
                                                                         parameter_final = NCD_filtered_much_much,
                                                                         parameter_filtering = list(species_name = "Skipjack tuna"),
@@ -993,7 +993,7 @@ cat("---- Beginning of the chunk: imagepermajortunas----------------------------
                                                                         parameter_titre_dataset_2 = "GTA", topnumber = 10)
 
 #' 
-cat("---- End of the chunk: imagepermajortunas------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: imagepermajortunas----------------------------------------------------------------------------------------------------------------------\n")
 ## ----figtunadifferences, fig.cap="Temporal evolution of catches in tons for skipjack (A), albacore (B), bigeye (C), yellowfin (D) and swordfish (E) from both FS and GTA datasets."----
 
 cat("---- Beginning of the chunk: figtunadifferences\n")
@@ -1012,7 +1012,7 @@ g5 <- clean_time_series_plot(swordfish$time_coverage_analysis_list$plots[[1]])
 
 #' 
 cat("---- End of the chunk: figtunadifferences\n")
-## ----tabtunadifferencesfirst, fig.cap="Summary of catches in tons for major tunas from FS and GTA datasets."-----------------------------------------
+## ----tabtunadifferencesfirst, fig.cap="Summary of catches in tons for major tunas from FS and GTA datasets."---------------------------------
 cat("---- Beginning of the chunk: tabtunadifferencesfirst\n")
 library(gridExtra)
 # g1 <- tableGrob(skipjack$summary_of_differences%>% dplyr::select(-measurement_unit) %>% dplyr::mutate_if(is.numeric, round))
@@ -1034,7 +1034,7 @@ swordfish1 <- CWP.dataset::qflextable2(CWP.dataset::compare_dimension_difference
 
 #' 
 cat("---- End of the chunk: tabtunadifferencesfirst\n")
-## ----tabtunadifferences, fig.cap="Summary of catches in tons for major tunas from FS and GTA datasets."----------------------------------------------
+## ----tabtunadifferences, fig.cap="Summary of catches in tons for major tunas from FS and GTA datasets."--------------------------------------
 
 cat("---- Beginning of the chunk: tabtunadifferences\n")
 library(grid)
@@ -1062,8 +1062,8 @@ gg5 <- ggplot() +
 
 #' 
 cat("---- End of the chunk: tabtunadifferences\n")
-## ----tabmajortunas-----------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: tabmajortunas-----------------------------------------------------------------------------------------------------------------------------------\n")
+## ----tabmajortunas---------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: tabmajortunas---------------------------------------------------------------------------------------------------------------------------\n")
 library(grid)
 library(gridExtra)
 
@@ -1117,10 +1117,10 @@ gg5 <- patchwork::wrap_elements(
 
 #' 
 #' 
-cat("---- End of the chunk: tabmajortunas-----------------------------------------------------------------------------------------------------------------------------------\n")
-## ----finalplotcreation-------------------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: tabmajortunas---------------------------------------------------------------------------------------------------------------------------\n")
+## ----finalplotcreation-----------------------------------------------------------------------------------------------------------------------
 # 1. Chargez cowplot (et non ggpubr pour get_legend avec return_all)
-cat("---- Beginning of the chunk: finalplotcreation-------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: finalplotcreation-----------------------------------------------------------------------------------------------------------------------\n")
 library(cowplot)
 library(patchwork)
 
@@ -1179,7 +1179,7 @@ qs::qsave(final_plot,"outputs/final_plot.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: finalplotcreation-------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: finalplotcreation-----------------------------------------------------------------------------------------------------------------------\n")
 ## ----finalplot,    echo=FALSE,   warning=FALSE,   message=FALSE,  fig.width=16,   fig.height=16,out.height='100%',   out.width='100%', fig.cap="Evolutions of values for the dimension year and differences by ocean for 5 major species between FS (red) and GTA (Blue)"----
 
 cat("---- Beginning of the chunk: finalplot\n")
@@ -1210,8 +1210,8 @@ final_plot
 #' As discussed previously, the case of Indonesia remains the most significant: its lower totals in GTA likely reflect historical revisions to Indian Ocean catch data that have been integrated into GTA but are not yet reflected in FishStat.
 #' 
 cat("---- End of the chunk: finalplot\n")
-## ----bigeyeperocean----------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: bigeyeperocean----------------------------------------------------------------------------------------------------------------------------------\n")
+## ----bigeyeperocean--------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: bigeyeperocean--------------------------------------------------------------------------------------------------------------------------\n")
 bigeyewestern <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_much_much %>% dplyr::filter(ocean_iotc == "Western Indian Ocean") ,
                                                                         parameter_final = NCD_filtered_much_much %>% dplyr::filter(ocean_iotc == "Western Indian Ocean") ,
                                                                         parameter_filtering = list(species_name = "Bigeye tuna"),
@@ -1237,9 +1237,9 @@ bigeyewestern <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_ini
                                                                         parameter_titre_dataset_2 = "GTA", topnumber = 10)
 
 #' 
-cat("---- End of the chunk: bigeyeperocean----------------------------------------------------------------------------------------------------------------------------------\n")
-## ----compbigeyecreation------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: compbigeyecreation------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: bigeyeperocean--------------------------------------------------------------------------------------------------------------------------\n")
+## ----compbigeyecreation----------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: compbigeyecreation----------------------------------------------------------------------------------------------------------------------\n")
 library(cowplot)
 
 p1 <- clean_time_series_plot(bigeyewestern$time_coverage_analysis_list$plots[[1]])
@@ -1259,8 +1259,8 @@ qs::qsave(compbigeyeplot, "outputs/compbigeyeplot.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: compbigeyecreation------------------------------------------------------------------------------------------------------------------------------\n")
-## ----compbigeye, fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches", fig.width=12, fig.height=6------------------------
+cat("---- End of the chunk: compbigeyecreation----------------------------------------------------------------------------------------------------------------------\n")
+## ----compbigeye, fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches", fig.width=12, fig.height=6----------------
 
 cat("---- Beginning of the chunk: compbigeye\n")
 compbigeyeplot <- qs::qread("outputs/compbigeyeplot.qs")
@@ -1269,9 +1269,9 @@ compbigeyeplot
 
 #' 
 cat("---- End of the chunk: compbigeye\n")
-## ----fleetbreakdownbigeyeeasterncreation-------------------------------------------------------------------------------------------------------------
+## ----fleetbreakdownbigeyeeasterncreation-----------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: fleetbreakdownbigeyeeasterncreation-------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: fleetbreakdownbigeyeeasterncreation-----------------------------------------------------------------------------------------------------\n")
 tablebigeye <- CWP.dataset::compare_dimension_differences(bigeyeeastern$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay%>% dplyr::rename(`Values dataset 1 (FS)` = `Values dataset 1`) %>% dplyr::rename(`Values dataset 2 (GTA)` = `Values dataset 2`) %>% dplyr::rename(`Per fishing fleet` = Precision ) %>% dplyr::ungroup()
 
 bigeytable_tidy <- CWP.dataset::qflextable2(tablebigeye%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit) %>% dplyr::select(-Dimension), grouped_data = c("Loss / Gain"), columns_to_color = c("Difference (in %)"))
@@ -1284,7 +1284,7 @@ qs <- qs::qsave(bigeytable_tidy, "outputs/bigeytable_tidy.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: fleetbreakdownbigeyeeasterncreation-------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: fleetbreakdownbigeyeeasterncreation-----------------------------------------------------------------------------------------------------\n")
 ## ----fleetbreakdownbigeyeeastern, tab.cap="Major differences break down by fishing_fleet_label between FS and GTA datasets, for bigeye tuna catches in Eastern Indian Ocean"----
 
 cat("---- Beginning of the chunk: fleetbreakdownbigeyeeastern\n")
@@ -1299,8 +1299,8 @@ bigeytable_tidy
 #' ### Focus on bigeye tuna without Indonesia data
 #' 
 cat("---- End of the chunk: fleetbreakdownbigeyeeastern\n")
-## ----bigeyewithoutindo-------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: bigeyewithoutindo-------------------------------------------------------------------------------------------------------------------------------\n")
+## ----bigeyewithoutindo-----------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: bigeyewithoutindo-----------------------------------------------------------------------------------------------------------------------\n")
 bigeyewesternwithoutindo <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_init = CAPTURED_filtered_much_much %>% dplyr::filter(fishing_fleet_label != "Indonesia") %>% dplyr::filter(ocean_iotc == "Western Indian Ocean") ,
                                                                         parameter_final = NCD_filtered_much_much %>% dplyr::filter(fishing_fleet_label != "Indonesia")%>% dplyr::filter(ocean_iotc == "Western Indian Ocean") ,
                                                                         parameter_filtering = list(species_name = "Bigeye tuna"),
@@ -1326,9 +1326,9 @@ bigeyewesternwithoutindo <- CWP.dataset::comprehensive_cwp_dataframe_analysis(pa
                                                                         parameter_titre_dataset_2 = "GTA", topnumber = 10)
 
 #' 
-cat("---- End of the chunk: bigeyewithoutindo-------------------------------------------------------------------------------------------------------------------------------\n")
-## ----compbigeyenoindcreation-------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: compbigeyenoindcreation-------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: bigeyewithoutindo-----------------------------------------------------------------------------------------------------------------------\n")
+## ----compbigeyenoindcreation-----------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: compbigeyenoindcreation-----------------------------------------------------------------------------------------------------------------\n")
 library(cowplot)
 
 p1 <- clean_time_series_plot(bigeyewesternwithoutindo$time_coverage_analysis_list$plots[[1]])
@@ -1355,7 +1355,7 @@ qs::qsave(withoutindo, "outputs/withoutindo.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: compbigeyenoindcreation-------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: compbigeyenoindcreation-----------------------------------------------------------------------------------------------------------------\n")
 ## ----compbigeyenoind, fig.cap="Comparison of Western and Eastern Indian Ocean for bigeye tuna catches, without Indonesian data", fig.width=12, fig.height=6----
 
 cat("---- Beginning of the chunk: compbigeyenoind\n")
@@ -1377,8 +1377,8 @@ withoutindo
 #' We restrict the analysis to data from 2014 onwards, since this is where the two series visually converge for all major species. On top of that, for all species the differences are lower from this year (See Appendix: Figure: \@ref(fig:generaldiffbyyear))
 #' 
 cat("---- End of the chunk: compbigeyenoind\n")
-## ----fsj2014-----------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: fsj2014-----------------------------------------------------------------------------------------------------------------------------------------\n")
+## ----fsj2014---------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: fsj2014---------------------------------------------------------------------------------------------------------------------------------\n")
 FS2014 <- CAPTURED_filtered_much_much%>% dplyr::filter(year > 2000)
 NCD2014 <- NCD_filtered_much_much %>% dplyr::filter(year > 2000)
 
@@ -1394,10 +1394,10 @@ c <- inner_join(a, b, by = c("year", "species_name")) %>% dplyr::mutate(diff = a
 
 
 #' 
-cat("---- End of the chunk: fsj2014-----------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----similarities2014--------------------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: fsj2014---------------------------------------------------------------------------------------------------------------------------------\n")
+## ----similarities2014------------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: similarities2014--------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: similarities2014------------------------------------------------------------------------------------------------------------------------\n")
 c <- c %>%
   dplyr::ungroup() %>%
   dplyr::mutate(
@@ -1415,9 +1415,9 @@ c <- c %>%
 #' 
 #' ### Country-specific behaviour for Indian Ocean
 #' 
-cat("---- End of the chunk: similarities2014--------------------------------------------------------------------------------------------------------------------------------\n")
-## ----countryspec-------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: countryspec-------------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: similarities2014------------------------------------------------------------------------------------------------------------------------\n")
+## ----countryspec-----------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: countryspec-----------------------------------------------------------------------------------------------------------------------------\n")
 res <- make_diff_table(
   data = c,
   row_var = "species_name",
@@ -1428,9 +1428,9 @@ res <- make_diff_table(
 # res$long   # pour ggplot
 
 #' 
-cat("---- End of the chunk: countryspec-------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----comparison--------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: comparison--------------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: countryspec-----------------------------------------------------------------------------------------------------------------------------\n")
+## ----comparison------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: comparison------------------------------------------------------------------------------------------------------------------------------\n")
 c <- make_comparison_df(
   df1 = FS2014,
   df2 = NCD2014,
@@ -1445,9 +1445,9 @@ c3d <- make_comparison_df(
 
 
 #' 
-cat("---- End of the chunk: comparison--------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----difftable---------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: difftable---------------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: comparison------------------------------------------------------------------------------------------------------------------------------\n")
+## ----difftable-------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: difftable-------------------------------------------------------------------------------------------------------------------------------\n")
 tab3d <- make_diff_table_3d(
   data  = c3d,
   dim1  = "species_name",
@@ -1458,9 +1458,9 @@ tab3d <- make_diff_table_3d(
 
 
 #' 
-cat("---- End of the chunk: difftable---------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----countryspecificdiffcreation---------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: countryspecificdiffcreation---------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: difftable-------------------------------------------------------------------------------------------------------------------------------\n")
+## ----countryspecificdiffcreation-------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: countryspecificdiffcreation-------------------------------------------------------------------------------------------------------------\n")
 `%notin%` <- Negate(`%in%`)
 library(grid)   # pour unit()
 
@@ -1518,7 +1518,7 @@ qs::qsave(countryspecificdiff, "outputs/countryspecificdiff.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: countryspecificdiffcreation---------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: countryspecificdiffcreation-------------------------------------------------------------------------------------------------------------\n")
 ## ----countryspecificdiff, fig.width=16, fig.height=14, out.width='100%', fig.align='center', fig.cap="Country-specific differences in reported catches (GTA vs FishStat, 2012-2023)"----
 
 cat("---- Beginning of the chunk: countryspecificdiff\n")
@@ -1542,10 +1542,10 @@ countryspecificdiff
 #' Overall, this analysis confirms that while convergence between GTA and FishStat is evident for many country-species combinations, differences remain and are not uniformly distributed. Understanding for each, whether these variations stem from harmonization updates, national resubmissions, or methodological differences in data integration will require a detailed comparison of the underlying reporting flows.
 #' 
 cat("---- End of the chunk: countryspecificdiff\n")
-## ----eval=FALSE--------------------------------------------------------------------------------------------------------------------------------------
-# 
-# View(c)
-# 
+## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
+## 
+## View(c)
+## 
 
 #' 
 #' ### Verification example: identical strata
@@ -1553,8 +1553,8 @@ cat("---- End of the chunk: countryspecificdiff\n")
 #' To conclude, a final verification was carried out on a single year-species pair to confirm whether identical values between datasets correspond to complete equivalence across all dimensions. We selected albacore in 2015, a representative case where total catches are identical in FishStat and GTA.
 #' 
 #' 
-## ----alb2015-----------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: alb2015-----------------------------------------------------------------------------------------------------------------------------------------\n")
+## ----alb2015---------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: alb2015---------------------------------------------------------------------------------------------------------------------------------\n")
 ALBFS2015 <- FS2014 %>% dplyr::filter(year == "2015" & species_name == "Albacore")
 ALBNCD2015 <- NCD2014 %>% dplyr::filter(year == "2015" & species_name == "Albacore")
 
@@ -1618,10 +1618,10 @@ ALBACORE_2015 <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_ini
 #' # Appendix {-}
 #' 
 #' 
-cat("---- End of the chunk: alb2015-----------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----gtafirstlinescreation---------------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: alb2015---------------------------------------------------------------------------------------------------------------------------------\n")
+## ----gtafirstlinescreation-------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: gtafirstlinescreation---------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: gtafirstlinescreation-------------------------------------------------------------------------------------------------------------------\n")
 headGTA <- head(NC_RAW %>% dplyr::select(-c(year, month, quarter)))
 qs::qsave(headGTA, "outputs/headGTA.qs")
 
@@ -1629,7 +1629,7 @@ image <- save_as_image(flextable(headGTA), "outputs/headGTA.png")
 
 #' 
 #' 
-cat("---- End of the chunk: gtafirstlinescreation---------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: gtafirstlinescreation-------------------------------------------------------------------------------------------------------------------\n")
 ## ----gtafirstlines, tab.cap="Extract of the Global Tuna Atlas dataset, with redundant temporal columns (year, month, quarter) omitted", results='asis', echo=FALSE----
 
 cat("---- Beginning of the chunk: gtafirstlines\n")
@@ -1658,7 +1658,7 @@ knitr::kable(headGTA, booktabs = TRUE) %>%
 
 #' 
 cat("---- End of the chunk: gtafirstlines\n")
-## ----fishStatfirstlines-prep, include=FALSE----------------------------------------------------------------------------------------------------------
+## ----fishStatfirstlines-prep, include=FALSE--------------------------------------------------------------------------------------------------
 
 cat("---- Beginning of the chunk: fishStatfirstlines-prep\n")
 headfsj <- head(CAPTURE_RAW %>% dplyr::filter(AREA.CODE == "57"))
@@ -1668,7 +1668,7 @@ qs::qsave(headfsj, "outputs/headfsj.qs")
 
 #' 
 cat("---- End of the chunk: fishStatfirstlines-prep\n")
-## ----fishStatfirstlines, tab.cap="First lines of the FS dataset", echo=FALSE-------------------------------------------------------------------------
+## ----fishStatfirstlines, tab.cap="First lines of the FS dataset", echo=FALSE-----------------------------------------------------------------
 
 cat("---- Beginning of the chunk: fishStatfirstlines\n")
 headfsj <- qs::qread("outputs/headfsj.qs")
@@ -1679,8 +1679,8 @@ knitr::kable(headfsj, booktabs = TRUE) %>%
 
 #' 
 cat("---- End of the chunk: fishStatfirstlines\n")
-## ----speciesmaincreation-----------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: speciesmaincreation-----------------------------------------------------------------------------------------------------------------------------\n")
+## ----speciesmaincreation---------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: speciesmaincreation---------------------------------------------------------------------------------------------------------------------\n")
 speciesmain <- NCD_filtered_COUPLE_SPECIES_OCEAN_TIME %>% 
   dplyr::select(species_name, species) %>% 
   dplyr::distinct()
@@ -1703,8 +1703,8 @@ qs::qsave(speciesmain, "outputs/speciesmain.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: speciesmaincreation-----------------------------------------------------------------------------------------------------------------------------\n")
-## ----speciesmain, tab.cap="Species retained for the comparative analysis between FishStat and the Global Tuna Atlas (n = 32)"------------------------
+cat("---- End of the chunk: speciesmaincreation---------------------------------------------------------------------------------------------------------------------\n")
+## ----speciesmain, tab.cap="Species retained for the comparative analysis between FishStat and the Global Tuna Atlas (n = 32)"----------------
 
 cat("---- Beginning of the chunk: speciesmain\n")
 speciesmain <- qs::qread("outputs/speciesmain.qs")
@@ -1715,7 +1715,7 @@ knitr::kable(df, booktabs = TRUE) %>%
 
 #' 
 cat("---- End of the chunk: speciesmain\n")
-## ----aggregatedcatches, tab.cap="Sample of aggregated species group removed for the comparative analysis between GTA and FS"-------------------------
+## ----aggregatedcatches, tab.cap="Sample of aggregated species group removed for the comparative analysis between GTA and FS"-----------------
 
 cat("---- Beginning of the chunk: aggregatedcatches\n")
 totbyspecies_groupped_nei <-qs::qread("outputs/totbyspecies_groupped_nei.qs")
@@ -1726,9 +1726,9 @@ totbyspecies_groupped_nei
 #' 
 #' 
 cat("---- End of the chunk: aggregatedcatches\n")
-## ----Mapping-from-FS-to-nc---------------------------------------------------------------------------------------------------------------------------
+## ----Mapping-from-FS-to-nc-------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: Mapping-from-FS-to-nc---------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: Mapping-from-FS-to-nc-------------------------------------------------------------------------------------------------------------------\n")
 library(readr)
 Mapping_from_FS_to_nc <- read_delim("inputs/mappings/Mapping_from_fsj_to_nc.csv",
     delim = ";", escape_double = FALSE, trim_ws = TRUE) %>% dplyr::select(-"...3")
@@ -1751,10 +1751,10 @@ Mapping_from_FS_to_nc <- read_delim("inputs/mappings/Mapping_from_fsj_to_nc.csv"
 #' \normalsize
 #' \renewcommand{\arraystretch}{1.0}
 #' 
-cat("---- End of the chunk: Mapping-from-FS-to-nc---------------------------------------------------------------------------------------------------------------------------\n")
-## ----mappingFStonc-----------------------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: Mapping-from-FS-to-nc-------------------------------------------------------------------------------------------------------------------\n")
+## ----mappingFStonc---------------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: mappingFStonc-----------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: mappingFStonc---------------------------------------------------------------------------------------------------------------------------\n")
 knitr::kable(
   Mapping_from_FS_to_nc,
   booktabs = TRUE,
@@ -1764,8 +1764,8 @@ knitr::kable(
 
 #' 
 #' 
-cat("---- End of the chunk: mappingFStonc-----------------------------------------------------------------------------------------------------------------------------------\n")
-## ----nmberdimIOTCannexe, tab.cap="Number of dimensions for each dataset filtered on FAO areas 51 and 57, after mapping of fishing_fleet for FS"------
+cat("---- End of the chunk: mappingFStonc---------------------------------------------------------------------------------------------------------------------------\n")
+## ----nmberdimIOTCannexe, tab.cap="Number of dimensions for each dataset filtered on FAO areas 51 and 57, after mapping of fishing_fleet for FS"----
 
 cat("---- Beginning of the chunk: nmberdimIOTCannexe\n")
 onlyminortableiotc <- qs::qread("outputs/onlyminortableiotc.qs")
@@ -1777,8 +1777,8 @@ qflextable(onlyminortableiotc)
 #' 
 #' 
 cat("---- End of the chunk: nmberdimIOTCannexe\n")
-## ----fleetbreakdownbigeyetotalcreation---------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: fleetbreakdownbigeyetotalcreation---------------------------------------------------------------------------------------------------------------\n")
+## ----fleetbreakdownbigeyetotalcreation-------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: fleetbreakdownbigeyetotalcreation-------------------------------------------------------------------------------------------------------\n")
 table_fleetbreakdownbigeyetotal <- CWP.dataset::compare_dimension_differences(bigeye$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 10)$Groupped_all_not_disap_or_app_to_dysplay
 
 table_fleetbreakdownbigeyetotal_tidied <- CWP.dataset::qflextable2(table_fleetbreakdownbigeyetotal%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
@@ -1788,7 +1788,7 @@ qs::qsave(table_fleetbreakdownbigeyetotal_tidied, "outputs/table_fleetbreakdownb
 
 #' 
 #' 
-cat("---- End of the chunk: fleetbreakdownbigeyetotalcreation---------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: fleetbreakdownbigeyetotalcreation-------------------------------------------------------------------------------------------------------\n")
 ## ----fleetbreakdownbigeyetotal, tab.cap="Major differences break down by fishing_fleet between FS and GTA datasets, filtered on species-oceans commons pairs", echo=FALSE----
 
 cat("---- Beginning of the chunk: fleetbreakdownbigeyetotal\n")
@@ -1809,7 +1809,7 @@ qs::qsave(table_verifalb2015_tidied, "outputs/table_verifalb2015_tidied.qs")
 #' 
 #' 
 cat("---- End of the chunk: verifalb2015creation\n")
-## ----verifalb2015, tab.cap="Major differences break down by fishing_fleet between FishStat and GTA for albacore tuna data catches for year 2015"-----
+## ----verifalb2015, tab.cap="Major differences break down by fishing_fleet between FishStat and GTA for albacore tuna data catches for year 2015"----
 
 
 cat("---- Beginning of the chunk: verifalb2015\n")
@@ -1822,8 +1822,8 @@ table_verifalb2015_tidied
 #' 
 #' 
 cat("---- End of the chunk: verifalb2015\n")
-## ----bigeyewesterwithoutindonesiacreation------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: bigeyewesterwithoutindonesiacreation------------------------------------------------------------------------------------------------------------\n")
+## ----bigeyewesterwithoutindonesiacreation----------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: bigeyewesterwithoutindonesiacreation----------------------------------------------------------------------------------------------------\n")
 table_bigeyewesterwithoutindonesia <- CWP.dataset::compare_dimension_differences(bigeyewestern$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 10)$Groupped_all_not_disap_or_app_to_dysplay
 
 table_bigeyewesterwithoutindonesia_tidied <- CWP.dataset::qflextable2(table_bigeyewesterwithoutindonesia%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
@@ -1833,7 +1833,7 @@ qs::qsave(table_bigeyewesterwithoutindonesia_tidied, "outputs/table_bigeyewester
 
 #' 
 #' 
-cat("---- End of the chunk: bigeyewesterwithoutindonesiacreation------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: bigeyewesterwithoutindonesiacreation----------------------------------------------------------------------------------------------------\n")
 ## ----bigeyewesterwithoutindonesia, tab.cap="Major differences break down by fishing_fleet between FishStat and GTA for bigeye tuna in western indian ocean"----
 
 cat("---- Beginning of the chunk: bigeyewesterwithoutindonesia\n")
@@ -1846,8 +1846,8 @@ table_bigeyewesterwithoutindonesia_tidied
 #' <!-- ## Diff general by year -->
 #' 
 cat("---- End of the chunk: bigeyewesterwithoutindonesia\n")
-## ----generaldiffbyyearcreation-----------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: generaldiffbyyearcreation-----------------------------------------------------------------------------------------------------------------------\n")
+## ----generaldiffbyyearcreation---------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: generaldiffbyyearcreation---------------------------------------------------------------------------------------------------------------\n")
 year_plot_data <- c %>%
   dplyr::group_by(year, diff_category) %>%
   dplyr::summarise(n = n(), .groups = "drop_last") %>%
@@ -1874,8 +1874,8 @@ qs::qsave(ggplot_year_plot_data, "outputs/ggplot_year_plot_data.qs")
 
 #' 
 #' 
-cat("---- End of the chunk: generaldiffbyyearcreation-----------------------------------------------------------------------------------------------------------------------\n")
-## ----generaldiffbyyear, fig.cap="Comparison of species-to-species differences between GTA and FishStat datasets"-------------------------------------
+cat("---- End of the chunk: generaldiffbyyearcreation---------------------------------------------------------------------------------------------------------------\n")
+## ----generaldiffbyyear, fig.cap="Comparison of species-to-species differences between GTA and FishStat datasets"-----------------------------
 
 cat("---- Beginning of the chunk: generaldiffbyyear\n")
 ggplot_year_plot_data <- qs::qread("outputs/ggplot_year_plot_data.qs")
@@ -1884,8 +1884,8 @@ ggplot_year_plot_data
 
 #' 
 cat("---- End of the chunk: generaldiffbyyear\n")
-## ----Dominant-difference-category-by-species-a-yearcreation------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: Dominant-difference-category-by-species-a-yearcreation------------------------------------------------------------------------------------------\n")
+## ----Dominant-difference-category-by-species-a-yearcreation----------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: Dominant-difference-category-by-species-a-yearcreation----------------------------------------------------------------------------------\n")
 Dominant_difference_category_by_species_a_year <- ggplot(res$long , aes(x = year, y = species_name, fill = diff_category)) +
   geom_tile(color = "white") +
   scale_fill_manual(
@@ -1908,8 +1908,8 @@ qs::qsave(Dominant_difference_category_by_species_a_year, "outputs/Dominant_diff
 
 #' 
 #' 
-cat("---- End of the chunk: Dominant-difference-category-by-species-a-yearcreation------------------------------------------------------------------------------------------\n")
-## ----Dominant-difference-category-by-species-a-year, fig.cap = "Dominant difference category by species a year"--------------------------------------
+cat("---- End of the chunk: Dominant-difference-category-by-species-a-yearcreation----------------------------------------------------------------------------------\n")
+## ----Dominant-difference-category-by-species-a-year, fig.cap = "Dominant difference category by species a year"------------------------------
 
 cat("---- Beginning of the chunk: Dominant-difference-category-by-species-a-year\n")
 Dominant_difference_category_by_species_a_year <- qs::qread("outputs/Dominant_difference_category_by_species_a_year.qs")
@@ -1920,9 +1920,9 @@ Dominant_difference_category_by_species_a_year
 #' 
 #' 
 cat("---- End of the chunk: Dominant-difference-category-by-species-a-year\n")
-## ----species-codes-----------------------------------------------------------------------------------------------------------------------------------
+## ----species-codes---------------------------------------------------------------------------------------------------------------------------
 
-cat("---- Beginning of the chunk: species-codes-----------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- Beginning of the chunk: species-codes---------------------------------------------------------------------------------------------------------------------------\n")
 species_codes <- c(
   "ALB", "BET", "BLM", "BLT", "BUM", "COM", "FRI", "GUT", "KAW", "LOT",
   "MLS", "SBF", "SFA", "SKJ", "SWO", "YFT", "FRZ"
@@ -1975,8 +1975,8 @@ knitr::kable(
 )
 
 #' 
-cat("---- End of the chunk: species-codes-----------------------------------------------------------------------------------------------------------------------------------\n")
-## ----djiboutidata, include=FALSE---------------------------------------------------------------------------------------------------------------------
+cat("---- End of the chunk: species-codes---------------------------------------------------------------------------------------------------------------------------\n")
+## ----djiboutidata, include=FALSE-------------------------------------------------------------------------------------------------------------
 
 cat("---- Beginning of the chunk: djiboutidata\n")
 djibouti_FS <- CAPTURED_filtered_much_much %>% dplyr::filter(fishing_fleet_label== "Djibouti" & species_name == "Yellowfin tuna")
@@ -2013,8 +2013,8 @@ Djibouti_time_cov
 #' 
 #' 
 cat("---- End of the chunk: djiboutitimecov\n")
-## ----------------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
+## --------------------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
 knitr::knit_exit()
 
 #' 
@@ -2022,8 +2022,8 @@ knitr::knit_exit()
 #' 
 #' # Deprecated
 #' 
-cat("---- End of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----tabrecap, results='asis', echo=FALSE, warning=FALSE, message=FALSE,tab.cap="Recap of matching dimensions for FS and GTA datasets"---------------
+cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+## ----tabrecap, results='asis', echo=FALSE, warning=FALSE, message=FALSE,tab.cap="Recap of matching dimensions for FS and GTA datasets"-------
 cat("---- Beginning of the chunk: tabrecap\n")
 library(flextable)
 library(dplyr)
@@ -2043,7 +2043,7 @@ ft_recap
 #' 
 #' 
 cat("---- End of the chunk: tabrecap\n")
-## ----numberdim, tab.cap="Number of dimensions for each dataset, after mapping of fishing_fleet"------------------------------------------------------
+## ----numberdim, tab.cap="Number of dimensions for each dataset, after mapping of fishing_fleet"----------------------------------------------
 
 cat("---- Beginning of the chunk: numberdim\n")
 qflextable(minortabl)
@@ -2053,8 +2053,8 @@ qflextable(minortabl)
 #' ## Diff general by year all species and continuous
 #' 
 cat("---- End of the chunk: numberdim\n")
-## ----------------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
+## --------------------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
 ggplot(tab3d %>% dplyr::filter(species_name%in%c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = diff_category)) +
   geom_tile() +
   facet_wrap(~ fishing_fleet_label) +
@@ -2069,9 +2069,9 @@ ggplot(tab3d %>% dplyr::filter(species_name%in%c("Yellowfin tuna", "Albacore", "
   theme_minimal()
 
 #' 
-cat("---- End of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----makecomcontinuous-------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: makecomcontinuous-------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+## ----makecomcontinuous-----------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: makecomcontinuous-----------------------------------------------------------------------------------------------------------------------\n")
 c <- make_comparison_df_continuous(
   df1 = FS2014,
   df2 = NCD2014,
@@ -2080,9 +2080,9 @@ c <- make_comparison_df_continuous(
 
 
 #' 
-cat("---- End of the chunk: makecomcontinuous-------------------------------------------------------------------------------------------------------------------------------\n")
-## ----relativediff------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: relativediff------------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: makecomcontinuous-----------------------------------------------------------------------------------------------------------------------\n")
+## ----relativediff----------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: relativediff----------------------------------------------------------------------------------------------------------------------------\n")
 library(ggplot2)
 
 ggplot(c, aes(x = year, y = species_name, fill = perc_diff)) +
@@ -2105,9 +2105,9 @@ scale_fill_gradientn(
 
 
 #' 
-cat("---- End of the chunk: relativediff------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----continuous--------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: continuous--------------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: relativediff----------------------------------------------------------------------------------------------------------------------------\n")
+## ----continuous------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: continuous------------------------------------------------------------------------------------------------------------------------------\n")
 c3d <- make_comparison_df_continuous(
   df1 = FS2014,
   df2 = NCD2014,
@@ -2144,9 +2144,9 @@ scale_fill_gradientn(
 
 
 #' 
-cat("---- End of the chunk: continuous--------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----plottingcontinuous------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: plottingcontinuous------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: continuous------------------------------------------------------------------------------------------------------------------------------\n")
+## ----plottingcontinuous----------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: plottingcontinuous----------------------------------------------------------------------------------------------------------------------\n")
 ggplot(c3d%>% dplyr::filter(species_name %notin% c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = perc_diff_clipped)) +
   geom_tile(color = "white") +
   facet_wrap(~ fishing_fleet_label) +
@@ -2170,9 +2170,9 @@ scale_fill_gradientn(
 #' 
 #' ## Recap by year species diff
 #' 
-cat("---- End of the chunk: plottingcontinuous------------------------------------------------------------------------------------------------------------------------------\n")
-## ----------------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: plottingcontinuous----------------------------------------------------------------------------------------------------------------------\n")
+## --------------------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
 library(dplyr)
 
 recap_global <- c %>%
@@ -2203,17 +2203,17 @@ recap_by_species_name <- c %>%
 
 
 #' 
-cat("---- End of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----eval=FALSE--------------------------------------------------------------------------------------------------------------------------------------
-# recap_by_species_name %>% dplyr::arrange(diff_ge_1pct)
+cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
+## recap_by_species_name %>% dplyr::arrange(diff_ge_1pct)
 
 #' 
-## ----eval=FALSE--------------------------------------------------------------------------------------------------------------------------------------
-# recap_global %>% dplyr::arrange(diff_ge_1pct)
+## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
+## recap_global %>% dplyr::arrange(diff_ge_1pct)
 
 #' 
-## ----------------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
+## --------------------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
 ggplot(res$long %>% dplyr::filter(species_name%in%c("Yellowfin tuna", "Albacore", "Skipjack tuna", "Bigeye tuna", "Swordfish")), aes(x = year, y = species_name, fill = diff_category)) +
   geom_tile(color = "white") +
   scale_fill_manual(
@@ -2236,60 +2236,60 @@ ggplot(res$long %>% dplyr::filter(species_name%in%c("Yellowfin tuna", "Albacore"
 #' 
 #' ## Now we look at all species/year pairs that have less than 1% difference.
 #' 
-cat("---- End of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----------------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+## --------------------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
 less_1_pt <- c %>% dplyr::filter(perc_diff < 1 )%>% dplyr::select(year, species_name) %>% dplyr::distinct()
 
 #' 
-cat("---- End of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----eval=FALSE--------------------------------------------------------------------------------------------------------------------------------------
-# # 2) Donnees pour le barplot empile (proportions internes a chaque espece)
-# species_name_plot_data <- c %>%
-#   dplyr::count(species_name, diff_category, name = "n") %>%
-#   dplyr::group_by(species_name) %>%
-#   dplyr::mutate(percentage = 100 * n / sum(n)) %>%
-#   dplyr::ungroup()
-# 
-# # 3) ORDRE = proportion de lignes "rouges" (>1%) par espece
-# red_share <- c %>%
-#   dplyr::group_by(species_name) %>%
-#   dplyr::summarise(red_prop = mean(perc_diff >= 1, na.rm = TRUE), .groups = "drop")
-# 
-# # Avec coord_flip(), le 1er niveau est en BAS.
-# order_levels <- red_share %>%
-#   dplyr::arrange(dplyr::desc(red_prop), species_name) %>%  # du + rouge au - rouge
-#   dplyr::pull(species_name)
-# 
-# # 4) Appliquer l'ordre + figer l'ordre des categories
-# species_name_plot_data <- species_name_plot_data %>%
-#   dplyr::mutate(
-#     species_name = factor(species_name, levels = order_levels),
-#     diff_category = factor(diff_category, levels = c("Exact", "<0.1%", "<1%", ">1%" ))
-#   )
-# 
-# # 5) Plot
-# ggplot2::ggplot(species_name_plot_data, ggplot2::aes(x = species_name, y = percentage, fill = diff_category)) +
-#   ggplot2::geom_col() +
-#   ggplot2::coord_flip() +
-#   ggplot2::scale_fill_manual(
-#     values = c("Exact" = "#1b7837", "<0.1%" = "#a6dba0", "<1%" = "#fdb863", ">1%" = "#d7191c"),
-#     name = "Relative difference"
-#   ) +
-#   ggplot2::labs(
-#     x = "Species", y = "Share of records (%)",
-#     title = "Differences between sum.x and sum.y by species_name"
-#   ) +
-#   ggplot2::theme_minimal(base_size = 13) +
-#   ggplot2::theme(
-#     legend.position = "top",
-#     plot.title = ggplot2::element_text(face = "bold", hjust = 0.5)
-#   )
-# 
+cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
+## # 2) Donnees pour le barplot empile (proportions internes a chaque espece)
+## species_name_plot_data <- c %>%
+##   dplyr::count(species_name, diff_category, name = "n") %>%
+##   dplyr::group_by(species_name) %>%
+##   dplyr::mutate(percentage = 100 * n / sum(n)) %>%
+##   dplyr::ungroup()
+## 
+## # 3) ORDRE = proportion de lignes "rouges" (>1%) par espece
+## red_share <- c %>%
+##   dplyr::group_by(species_name) %>%
+##   dplyr::summarise(red_prop = mean(perc_diff >= 1, na.rm = TRUE), .groups = "drop")
+## 
+## # Avec coord_flip(), le 1er niveau est en BAS.
+## order_levels <- red_share %>%
+##   dplyr::arrange(dplyr::desc(red_prop), species_name) %>%  # du + rouge au - rouge
+##   dplyr::pull(species_name)
+## 
+## # 4) Appliquer l'ordre + figer l'ordre des categories
+## species_name_plot_data <- species_name_plot_data %>%
+##   dplyr::mutate(
+##     species_name = factor(species_name, levels = order_levels),
+##     diff_category = factor(diff_category, levels = c("Exact", "<0.1%", "<1%", ">1%" ))
+##   )
+## 
+## # 5) Plot
+## ggplot2::ggplot(species_name_plot_data, ggplot2::aes(x = species_name, y = percentage, fill = diff_category)) +
+##   ggplot2::geom_col() +
+##   ggplot2::coord_flip() +
+##   ggplot2::scale_fill_manual(
+##     values = c("Exact" = "#1b7837", "<0.1%" = "#a6dba0", "<1%" = "#fdb863", ">1%" = "#d7191c"),
+##     name = "Relative difference"
+##   ) +
+##   ggplot2::labs(
+##     x = "Species", y = "Share of records (%)",
+##     title = "Differences between sum.x and sum.y by species_name"
+##   ) +
+##   ggplot2::theme_minimal(base_size = 13) +
+##   ggplot2::theme(
+##     legend.position = "top",
+##     plot.title = ggplot2::element_text(face = "bold", hjust = 0.5)
+##   )
+## 
 
 #' 
-## ----------------------------------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
+## --------------------------------------------------------------------------------------------------------------------------------------------
+cat("---- Beginning of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
 FS_less_1_pct <- FS2014 %>% dplyr::inner_join(less_1_pt)
 NCD_less_1_pct <- NCD2014 %>% dplyr::inner_join(less_1_pt)
 
@@ -2307,46 +2307,48 @@ COMP_LESS_1_PCT <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_i
 
 
 #' 
-cat("---- End of the chunk: ------------------------------------------------------------------------------------------------------------------------------------------------\n")
-## ----attentioncestunesomme---------------------------------------------------------------------------------------------------------------------------
-cat("---- Beginning of the chunk: attentioncestunesomme---------------------------------------------------------------------------------------------------------------------------\n")
+cat("---- End of the chunk: ----------------------------------------------------------------------------------------------------------------------------------------\n")
+## ----attentioncestunesomme-------------------------------------------------------------------------------------------------------------------
+
+cat("---- Beginning of the chunk: attentioncestunesomme-------------------------------------------------------------------------------------------------------------------\n")
 ALBACORE_2015$other_dimension_analysis_list
 
-#' 
-cat("---- End of the chunk: attentioncestunesomme---------------------------------------------------------------------------------------------------------------------------\n")
-## ----tab.cap="Major differences break down by fishing_fleet_label between less_1_pct datasets"-------------------------------------------------------
 
-cat("---- Beginning of the chunk: tab.cap="Major\n")
+#' 
+cat("---- End of the chunk: attentioncestunesomme-------------------------------------------------------------------------------------------------------------------\n")
+## ----albacoretable2015, tab.cap="Major differences break down by fishing_fleet_label between less_1_pct datasets"----------------------------
+
+cat("---- Beginning of the chunk: albacoretable2015\n")
 table <- CWP.dataset::compare_dimension_differences(ALBACORE_2015$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay
 
 CWP.dataset::qflextable2(table%>% dplyr::ungroup()%>% dplyr::select(-measurement_unit), grouped_data = c("Dimension", "Loss / Gain"), columns_to_color = c("Difference (in %)"))
 
 
 #' 
-cat("---- End of the chunk: tab.cap="Major\n")
-## ----eval=FALSE--------------------------------------------------------------------------------------------------------------------------------------
-# year_plot_data <- c %>%
-#   group_by(year, diff_category) %>%
-#   summarise(n = n(), .groups = "drop_last") %>%
-#   mutate(percentage = 100 * n / sum(n)) %>%
-#   ungroup()
-# 
-# ggplot(year_plot_data, aes(x = year, y = percentage, fill = diff_category)) +
-#   geom_col(position = "fill") +
-#   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
-#   scale_fill_manual(values = c("Exact" = "darkgreen",
-#                                "<0.1%" = "lightgreen",
-#                                "<1%" = "orange",
-#                                ">1%" = "red")) +
-#   labs(
-#     x = "Year",
-#     y = "Relative part (%) of year",
-#     fill = "Relative difference",
-#     title = "Comparison of differences between sum.x and sum.y by year"
-#   ) +
-#   theme_minimal(base_size = 13) +
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
-# 
+cat("---- End of the chunk: albacoretable2015\n")
+## ----eval=FALSE------------------------------------------------------------------------------------------------------------------------------
+## year_plot_data <- c %>%
+##   group_by(year, diff_category) %>%
+##   summarise(n = n(), .groups = "drop_last") %>%
+##   mutate(percentage = 100 * n / sum(n)) %>%
+##   ungroup()
+## 
+## ggplot(year_plot_data, aes(x = year, y = percentage, fill = diff_category)) +
+##   geom_col(position = "fill") +
+##   scale_y_continuous(labels = scales::percent_format(scale = 1)) +
+##   scale_fill_manual(values = c("Exact" = "darkgreen",
+##                                "<0.1%" = "lightgreen",
+##                                "<1%" = "orange",
+##                                ">1%" = "red")) +
+##   labs(
+##     x = "Year",
+##     y = "Relative part (%) of year",
+##     fill = "Relative difference",
+##     title = "Comparison of differences between sum.x and sum.y by year"
+##   ) +
+##   theme_minimal(base_size = 13) +
+##   theme(axis.text.x = element_text(angle = 45, hjust = 1))
+## 
 
 #' 
 #' ## Pourcentage de strates completement equivalentes.

@@ -2131,10 +2131,12 @@ COMP_LESS_1_PCT <- CWP.dataset::comprehensive_cwp_dataframe_analysis(parameter_i
 ```
 
 ```{r attentioncestunesomme}
+
 ALBACORE_2015$other_dimension_analysis_list
+
 ```
 
-```{r tab.cap="Major differences break down by fishing_fleet_label between less_1_pct datasets"}
+```{r albacoretable2015, tab.cap="Major differences break down by fishing_fleet_label between less_1_pct datasets"}
 
 table <- CWP.dataset::compare_dimension_differences(ALBACORE_2015$groupping_differences_list$Groupped_all, "fishing_fleet_label", parameter_diff_value_or_percent = "Difference in value", topn = 5)$Groupped_all_not_disap_or_app_to_dysplay
 
