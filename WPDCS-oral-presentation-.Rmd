@@ -617,7 +617,9 @@ cat("
 ::: {.column width="0.7"}
 
 ````{r fleet_table_left, echo=FALSE, out.height='85%', out.width='100%'}
-knitr::include_graphics("outputs/bigeyetable.png")
+
+knitr::include_graphics("outputs/bigeytable_tidy.png")
+
 ````
 
 :::
