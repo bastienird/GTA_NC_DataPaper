@@ -16,8 +16,8 @@ on:
       - main
 
 env:
-  IMAGE_NAME: ghcr.io/bastienird/gta_nc_datapaper
-  CACHE_IMAGE: ghcr.io/bastienird/gta_nc_datapaper-cache
+  IMAGE_NAME: ghcr.io/bastienird/gta_nc_datapaper-dev
+  CACHE_IMAGE: ghcr.io/bastienird/gta_nc_datapaper-cache-dev
   RENV_PATHS_ROOT: /root/.cache/R/renv
   DOCKER_BUILDKIT: 1
 
