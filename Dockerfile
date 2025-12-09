@@ -115,7 +115,7 @@ ARG TEST_SCRIPT_URL="https://raw.githubusercontent.com/firms-gta/tunaatlas_pie_m
 
 RUN R -e "source(url('$TEST_SCRIPT_URL'), local=TRUE, encoding='UTF-8')"
 
-COPY .here .Rprofile tunaatlas_pie_map_shiny.Rproj ./
+COPY .here .Rprofile GTA_NC_DataPaper.Rproj ./
 COPY README.md LICENSE ./
 
 COPY inputs/ inputs/
