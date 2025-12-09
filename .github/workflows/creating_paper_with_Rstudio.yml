@@ -1,0 +1,90 @@
+name: Build and Push DEV Docker Image (with RStudio)
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_branch:
+        description: "Branch to base the dev Docker image on"
+        required: true
+        default: "main"
+      push_image:
+        description: "Push image to GHCR (true/false)"
+        required: true
+        default: "true"
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: ghcr.io/bastienird/gta_nc_datapaper
+  CACHE_IMAGE: ghcr.io/bastienird/gta_nc_datapaper-cache
+  RENV_PATHS_ROOT: /root/.cache/R/renv
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  build-dev-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout ${{ github.event.inputs.base_branch }}
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.base_branch || 'main' }}
+
+      - name: Calculate renv.lock hash
+        id: renv_lock
+        run: |
+          echo "renv_lock_hash=$(sha256sum renv.lock | cut -d' ' -f1)" >> $GITHUB_ENV
+
+      - name: Calculate DOI.csv hash
+        id: doi_csv
+        run: |
+          echo "doi_csv_hash=$(sha256sum DOI.csv | cut -d' ' -f1)" >> $GITHUB_ENV
+      
+      - name: Set BRANCH_NAME
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "BRANCH_NAME=${{ github.event.inputs.base_branch }}" >> $GITHUB_ENV
+          else
+            echo "BRANCH_NAME=main" >> $GITHUB_ENV
+          fi
+
+      - name: Set PUSH_IMAGE flag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "PUSH_IMAGE=${{ github.event.inputs.push_image }}" >> $GITHUB_ENV
+          else
+            echo "PUSH_IMAGE=true" >> $GITHUB_ENV
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: image=moby/buildkit:master,network=host
+
+      - name: Log in to GHCR
+        if: env.PUSH_IMAGE == 'true'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_PAT || secrets.GHCR_TOKEN || github.token }}
+
+      - name: Build dev image # type of name
+        run: |
+          docker buildx build \
+            --progress=plain \
+            --cache-from type=registry,ref=$CACHE_IMAGE:${BRANCH_NAME} \
+            --cache-to type=registry,ref=$CACHE_IMAGE:${BRANCH_NAME},mode=max \
+            --build-arg MODE=dev \
+            --build-arg BASE_IMAGE=rocker/rstudio:4.2.3 \
+            --build-arg RENV_LOCK_HASH=${{ env.renv_lock_hash }} \
+            --build-arg DOI_CSV_HASH=${{ env.doi_csv_hash }} \
+            --tag ${{ env.IMAGE_NAME }}:${BRANCH_NAME} \
+            --tag ${{ env.IMAGE_NAME }}:latest \
+            $([ "$PUSH_IMAGE" = "true" ] && echo "--push" || echo "--load") \
+            .
