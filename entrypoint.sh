@@ -17,7 +17,7 @@ fi
 mkdir -p "$RENV_PATHS_CACHE" || true
 
 if [ "$MODE" = "dev" ]; then
-  echo "🔧 MODE=dev → Preparation de l'environnement RStudio"
+  echo "ðŸ”§ MODE=dev â†’ Preparation de l'environnement RStudio"
 
   # creer l'utilisateur s'il n'existe pas
   useradd -ms /bin/bash rstudio 2>/dev/null || echo "Utilisateur rstudio deja present"

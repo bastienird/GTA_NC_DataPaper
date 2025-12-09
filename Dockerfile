@@ -63,14 +63,6 @@ RUN apt-get update && \
 # Update and upgrade the system
 RUN apt-get update && apt-get upgrade -y
 
-# Install R core package dependencies (e.g. for Shiny)
-RUN install2.r --error --skipinstalled --ncpus -1 \
-    httpuv \
-    tidy
-
-# Update and upgrade the system
-RUN apt-get update && apt-get upgrade -y
-
 # Install R core package dependencies the following line install httpuv that is usually used in shiny apps
 RUN install2.r --error --skipinstalled --ncpus -1 httpuv
 
