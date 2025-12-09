@@ -89,9 +89,9 @@ ENV RENV_PATHS_CACHE=${RENV_PATHS_ROOT}
 
 ARG RENV_LOCK_HASH
 RUN if [ -z "${RENV_LOCK_HASH}" ]; then \
-export RENV_LOCK_HASH=$(sha256sum renv.lock | cut -d' ' -f1); \
-fi && \
-echo "RENV_LOCK_HASH=${RENV_LOCK_HASH}" > /tmp/renv_lock_hash.txt
+      export RENV_LOCK_HASH=$(sha256sum renv.lock | cut -d' ' -f1); \
+    fi && \
+    echo "RENV_LOCK_HASH=${RENV_LOCK_HASH}" > /tmp/renv_lock_hash.txt
 
 RUN mkdir -p ${RENV_PATHS_ROOT}
 COPY renv.lock ./
@@ -145,5 +145,11 @@ EXPOSE 8787
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+
+RUN if [ "$MODE" = "dev" ] && [ -d "/home/rstudio" ]; then \
+      echo "RENV_PATHS_ROOT=/home/rstudio/tunaatlas_pie_map_shiny/renv/library" >> /home/rstudio/.Renviron && \
+      echo "RENV_PATHS_CACHE=/home/rstudio/tunaatlas_pie_map_shiny/renv/library" >> /home/rstudio/.Renviron && \
+      chown rstudio:rstudio /home/rstudio/.Renviron; \
+    fi
 
 ENTRYPOINT ["/entrypoint.sh"]
