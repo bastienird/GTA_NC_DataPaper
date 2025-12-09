@@ -123,24 +123,3 @@ COPY initialisation/ initialisation/
 
 # Run the data to donwload GTA data for species label, species group, cwp_shape
 RUN R -e "options(encoding = \"UTF-8\", stringsAsFactors = FALSE, dplyr.summarise.inform = FALSE)"
-RUN R -e "source(here::here('./generate_rev2_paper.R'))"
-
-ARG BRANCH
-ENV BUILD_BRANCH=${BRANCH}
-
-RUN echo " MODE is: $MODE" && echo " BRANCH is: $BRANCH" && echo " BUILD_BRANCH is: $BUILD_BRANCH"
-RUN echo " Listing files in /inputs/data/FSJ/ after conversion:" && ls -lh ./inputs/data/FSJ/
-RUN echo " Listing files in ./inputs/data/GTA/ after conversion:" && ls -lh ./inputs/data/GTA/
-RUN echo "MODE is: $MODE" && echo "BRANCH is: $BRANCH" && echo "BUILD_BRANCH is: $BUILD_BRANCH"
-
-RUN mkdir -p /etc/GTA_NC_DataPaper/
-
-RUN if [ "$MODE" = "dev" ]; then R -e "renv::isolate()"; fi
-
-EXPOSE 3838
-EXPOSE 8787
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
