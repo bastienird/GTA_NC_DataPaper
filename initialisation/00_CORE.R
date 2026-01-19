@@ -44,10 +44,10 @@ source("03.2_LOAD_FSJ_DATA.R")
 source("03.3_LOAD_FSJ_MAPPING.R")
 
 # Read and consolidate the geo-referenced catch datasets
-# source("04_LOAD_CA_DATA.R")
+source("04_LOAD_CA_DATA.R")
 
 # Describe the data
-# source("04_RFMO_MAPS.R")
-# source("05_NC_CHARTS.R")
+source("04_RFMO_MAPS.R")
+source("05_NC_CHARTS.R")
 
 

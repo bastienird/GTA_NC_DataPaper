@@ -4,16 +4,19 @@ _The Data Records section should be used to explain each data record associated 
 
 _Tables can be used to support the data records, specifying the data output resulting from each data-collection or analytical step and the names of the corresponding files should these form part of the archived record._
 
-<<<<<<< HEAD
 This study encompasses several data records detailing global nominal catch figures across various regions and timelines. Each record represents the aggregate catch, specified by fish species, geographic_identifier, gear_type, fishing_fleet, and respective time periods.
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
-datasets_links_processing <- read_delim(here("inputs/Workflow/datasets_links_processing.csv"),
-    delim = ";", escape_double = FALSE, col_types = cols(`Dataset;RFMO;Link to downolad;Pre-processing function;Comments` = col_character()), trim_ws = TRUE)
+```{r message=FALSE, warning=FALSE, include=FALSE, error=TRUE}
+
+# datasets_links_processing <- read_delim(here("inputs/Workflow/datasets_links_processing.csv"),
+#     delim = ";", escape_double = FALSE, col_types = cols(`Dataset;RFMO;Link to downolad;Pre-processing function;Comments` = col_character()), trim_ws = TRUE)
+
 ```
 
-```{r tab.cap = "Datasets and pre-processing functions used in the creation of the final dataset"}
-qflextable(datasets_links_processing)
+```{r tab.cap = "Datasets and pre-processing functions used in the creation of the final dataset", error=TRUE}
+
+# qflextable(datasets_links_processing)
+
 ```
 
 
@@ -25,17 +28,18 @@ The datasets used to create the data are stored in a google drive, geoflow also 
 
 ```{r include=FALSE}
 
-nominal_files_url <- "https://docs.google.com/spreadsheets/d/13SJB2PYkCCdrzw8HNJMPFg0yXs0OSYY2mUOAl5dagUc/edit#gid=374572086"
+# nominal_files_url <- "https://docs.google.com/spreadsheets/d/13SJB2PYkCCdrzw8HNJMPFg0yXs0OSYY2mUOAl5dagUc/edit#gid=374572086"
+# 
+# if(!(file.exists(here("inputs/Workflow/nominal_files_recap.csv")))){
+# drive_auth()
+#   
+# nominal_files_recap <- read_sheet(nominal_files_url, sheet = "Nominal catches")
+# fwrite(nominal_files_recap,here("inputs/Workflow/nominal_files_recap.csv" ))
+# } else {
+#   nominal_files_recap <- read_csv(here("inputs/Workflow/nominal_files_recap.csv"))
+# 
+# }
 
-if(!(file.exists(here("inputs/Workflow/nominal_files_recap.csv")))){
-drive_auth()
-  
-nominal_files_recap <- read_sheet(nominal_files_url, sheet = "Nominal catches")
-fwrite(nominal_files_recap,here("inputs/Workflow/nominal_files_recap.csv" ))
-} else {
-  nominal_files_recap <- read_csv(here("inputs/Workflow/nominal_files_recap.csv"))
-
-}
 ```
 
 
@@ -69,7 +73,7 @@ The final dataset named : contains `r ifelse((length(colnames(NC)) == 25), lengt
 
 The CWP standards columns are the following **`r (colnames(NC))`**. 
 
-- The data is provided by year, from `r lubridate::year(min(NC$year))` to `r lubridate::year(max(NC$year))`.
+- The data is provided by year, from `r min(NC$year)` to `r max(NC$year)`.
 
 - 
 
@@ -99,29 +103,30 @@ download_link <- paste0("[Download CSV](<", file_url, ">)")
 ```
 
 ```{r include=FALSE}
-link_for_mapping_files <- "https://docs.google.com/spreadsheets/d/1xzXgIxjQm81Fg7PCgtdiwhkB9sgtPKk-NByQDRtAGrE/edit#gid=1158322074"
-if(!(file.exists(here("inputs/Workflow/mapping_files.csv")))){
-drive_auth()
-  
-mapping_files <- read_sheet(link_for_mapping_files, sheet = "2023")
-fwrite(mapping_files,here("inputs/Workflow/mapping_files.csv" ))
-} else {
-  mapping_files <- read_csv(here("inputs/Workflow/mapping_files.csv"))
 
-}
+# link_for_mapping_files <- "https://docs.google.com/spreadsheets/d/1xzXgIxjQm81Fg7PCgtdiwhkB9sgtPKk-NByQDRtAGrE/edit#gid=1158322074"
+# if(!(file.exists(here("inputs/Workflow/mapping_files.csv")))){
+# drive_auth()
+#   
+# mapping_files <- read_sheet(link_for_mapping_files, sheet = "2023")
+# fwrite(mapping_files,here("inputs/Workflow/mapping_files.csv" ))
+# } else {
+#   mapping_files <- read_csv(here("inputs/Workflow/mapping_files.csv"))
+# 
+# }
 
 ```
 
 
-All the dataframes used for the mapping and the metadata (Dublin Core) included are to find in this link `r link_for_mapping_files`. 
+<!-- All the dataframes used for the mapping and the metadata (Dublin Core) included are to find in this link `link_for_mapping_files`. -->
 
 
-Long table to find in annexe (\@ref(tab:mapping-files)).
+<!-- Long table to find in annexe (\@ref(tab:mapping-files)). -->
 
 
 ```{r mapping-files, eval=FALSE, include=FALSE, results='asis'}
 
-qflextable2(mapping_files)
+# qflextable2(mapping_files)
 
 ```
 
@@ -188,4 +193,3 @@ The shape files associated with the geographical_identifier column of the datase
 Nominal catch data are expressed in live-weight equivalent (metric tonnes) and primarily represent the quantities of retained fish either landed or transhipped at sea and in ports. In recent years, data from fisheries in the Atlantic and Western-Central Pacific Oceans have partially included amounts of fish discarded dead. The data are stratified by year, fishing fleet, fishing gear, large spatial area, and taxon.
 
 The dataset encompasses `r length(NC[species_aggregate == FALSE, unique(species)])` medium- and large-sized pelagic species found in both neritic and oceanic habitats of the world's oceans. This includes `r length(NC[species_group_gta %in% c("Neritic tunas", "Tropical tunas", "Temperate tunas") & species_aggregate == FALSE, unique(species)])` species of tunas, `r length(NC[species_group_gta == "Billfishes" & species_aggregate == FALSE, unique(species)])` species of billfish, `r length(NC[species_group_gta == "Spanish mackerels" & species_aggregate == FALSE, unique(species)])` species of Spanish mackerels, `r length(NC[species_group_gta == "Bonitos and mackerels" & species_aggregate == FALSE, unique(species)])` species of bonitos,and wahoo. In `r max(NC$year, na.rm = TRUE)`, the global catch for these species was estimated to exceed 5.9 million metric tonnes. Despite uncertainties and incomplete data due to under-reporting, the dataset also includes reported catches for `r length(NC[species_group_gta %in% c("Rays", "Sharks") & species_aggregate == FALSE, unique(species)])` species of pelagic sharks and rays that may be either targeted or incidentally caught in tuna and tuna-like fisheries. The total reported catch of these elasmobranch species was approximately 275,000 metric tonnes in `r max(NC$year, na.rm = TRUE)`
->>>>>>> 2c98e83c54399b073dbb2ea6515f0dc44b2c416c

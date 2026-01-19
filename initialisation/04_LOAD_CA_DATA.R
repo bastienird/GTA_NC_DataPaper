@@ -1,16 +1,16 @@
 # Read the three datasets ####
 
 ## Folder with GTA data
-wd = "C:/Users/echassot/OneDrive - Food and Agriculture Organization/IOTC/DATA/DataDissemination/TUNA_ATLAS/2024/data"
-
-## global_catch_1deg_1m_surface_firms_level0 ####
-CA_11_M_RAW = fread(paste0(wd, "/global_catch_1deg_1m_surface_firms_level0/data/global_catch_1deg_1m_surface_firms_level0_harmonized.csv"), colClasses = c("gear_type" = "character", "geographic_identifier" = "character"))
-
-## global_catch_5deg_1m_firms_level0 ####
-CA_55_M_RAW = fread(paste0(wd, "/global_catch_5deg_1m_firms_level0/data/global_catch_5deg_1m_firms_level0_harmonized.csv"), colClasses = c("gear_type" = "character", "geographic_identifier" = "character"))
+# wd = "~/firms-gta/GTA_NC_DataPaper_Brepo/inputs/data/GTA"
+# 
+# ## global_catch_1deg_1m_surface_firms_level0 ####
+# CA_11_M_RAW = fread(paste0(wd, "/global_catch_1deg_1m_surface_firms_level0/data/global_catch_1deg_1m_surface_firms_level0_harmonized.csv"), colClasses = c("gear_type" = "character", "geographic_identifier" = "character"))
+# 
+# ## global_catch_5deg_1m_firms_level0 ####
+# CA_55_M_RAW = fread(paste0(wd, "/global_catch_5deg_1m_firms_level0/data/global_catch_5deg_1m_firms_level0_harmonized.csv"), colClasses = c("gear_type" = "character", "geographic_identifier" = "character"))
 
 ## global_catch_firms_level0 ####
-CA_ALL_M_RAW = fread(paste0(wd, "/global_catch_firms_level0/data/global_catch_firms_level0_harmonized.csv"), colClasses = c("gear_type" = "character", "geographic_identifier" = "character"))
+CA_ALL_M_RAW = as.data.table(read_csv("~/firms-gta/geoflow-tunaatlas/data/global_catch_firms_level0_harmonized.csv"))
 
 ## Consolidate the datasets ####
 
@@ -37,6 +37,6 @@ DataSet[, year := year(time_start)]
 return(DataSet)
 }
 
-CA_11_M = catch_consolidate(CA_11_M_RAW)
-CA_55_M = catch_consolidate(CA_55_M_RAW)
+# CA_11_M = catch_consolidate(CA_11_M_RAW)
+# CA_55_M = catch_consolidate(CA_55_M_RAW)
 CA_ALL_M = catch_consolidate(CA_ALL_M_RAW)
