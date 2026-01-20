@@ -43,9 +43,9 @@ fwrite(nominal_files_recap,here("inputs/workflow/nominal_files_recap.csv" ))
 ```
 
 
-```{r nominal-files-recap, tab.cap = "Recap of the files and their associated process used for the creation of the final output 'global_nominal_catch_firms_level0'", results='asis', eval=TRUE}
+```{r nominal-files-recap, tab.cap = "Recap of the files and their associated process used for the creation of the final output 'global_nominal_catch_firms_level0', dplyr::select(-c(Description, Provenance)", results='asis', eval=TRUE}
 
-qflextable2(nominal_files_recap)
+qflextable2(nominal_files_recap %>% dplyr::select(-c(Description, Provenance)))
 
 ```
 
@@ -145,9 +145,9 @@ The file used to filter species for the Nominal Catch dataset:
 `r download_link`
 
 
-```{r species-level-0, tab.cap = "Species retained in the final dataset by tRFMOs", eval = FALSE}
+```{r species-level-0, tab.cap = "Species retained in the final dataset by tRFMOs (only head)", eval = TRUE}
 
-cl_species_level0 <- readr::read_csv(file_url)
+cl_species_level0 <- head(readr::read_csv(file_url))
 ft <- flextable(as_grouped_data(cl_species_level0 %>% arrange(desc(species)) %>% dplyr::select(species, source_authority), groups = "species")) %>% 
   merge_v(j = "species", part = "header") %>%
   set_caption(caption = paste("Download Link:", download_link))
