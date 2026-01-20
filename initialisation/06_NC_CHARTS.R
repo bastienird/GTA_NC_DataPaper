@@ -1,6 +1,7 @@
 # All species ####
 
 ## By tRFMO ####
+NC$ocean_basin <- NC$Ocean
 NC_YEAR_OCEAN_BASIN = NC[year %in% 1950:2021, .(catch = sum(measurement_value/1000)), keyby = .(year, ocean_basin)]
 
 NC_YEAR_OCEAN_BASIN[, ocean_basin := factor(ocean_basin, levels = c("Atlantic Ocean", "Indian Ocean", "Western-Central Pacific Ocean", "Eastern Pacific Ocean", "CCSBT"))]

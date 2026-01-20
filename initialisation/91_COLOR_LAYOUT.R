@@ -1,5 +1,6 @@
 print("Defining color layout...")
-
+library(ggplot2)
+library(ggsci)
 # tRFMOS ####
 RFMO_COL = data.table(source_authority = factor(c("CCSBT", "IATTC", "ICCAT", "IOTC", "WCPFC"), ordered = TRUE), 
                       FILL = pal_npg()(5), 

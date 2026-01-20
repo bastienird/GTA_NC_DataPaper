@@ -3,8 +3,8 @@ options(scipen = 99999)
 
 
 # Includes defaults and helper functions
-# source("91_COLOR_LAYOUT.R") #removed as packages ggcpubr and ggcis are not available anymore for R 4.2, need to update the code
-# source("92_MAP_PACIFIC_PROJECTION_FUNCTION.R")  #removed as packages ggcpubr and ggcis are not available anymore for R 4.2, need to update the code
+source("91_COLOR_LAYOUT.R") #removed as packages ggcpubr and ggcis are not available anymore for R 4.2, need to update the code
+source("92_MAP_PACIFIC_PROJECTION_FUNCTION.R")  #removed as packages ggcpubr and ggcis are not available anymore for R 4.2, need to update the code
 source("93_FUNCTIONS.R")
 
 # Download/load GTA codelists (8 files expected)
@@ -47,7 +47,7 @@ source("03.3_LOAD_FSJ_MAPPING.R")
 source("04_LOAD_CA_DATA.R")
 
 # Describe the data
-source("04_RFMO_MAPS.R")
-source("05_NC_CHARTS.R")
+# source("05_RFMO_MAPS.R")
+source("06_NC_CHARTS.R")
 
 

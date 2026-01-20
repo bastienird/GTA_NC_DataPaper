@@ -31,9 +31,9 @@ The datasets used to create the data are stored in a google drive, geoflow also 
 nominal_files_url <- "https://docs.google.com/spreadsheets/d/13SJB2PYkCCdrzw8HNJMPFg0yXs0OSYY2mUOAl5dagUc/edit#gid=374572086"
 
 if(!(file.exists(here("inputs/workflow/nominal_files_recap.csv")))){
-drive_auth()
+googledrive::drive_auth()
 
-nominal_files_recap <- read_sheet(nominal_files_url, sheet = "Nominal catches")
+nominal_files_recap <- googlesheets4::read_sheet(nominal_files_url, sheet = "Nominal catches")
 fwrite(nominal_files_recap,here("inputs/workflow/nominal_files_recap.csv" ))
 } else {
   nominal_files_recap <- read_csv(here("inputs/workflow/nominal_files_recap.csv"))
@@ -43,7 +43,7 @@ fwrite(nominal_files_recap,here("inputs/workflow/nominal_files_recap.csv" ))
 ```
 
 
-```{r nominal-files-recap, tab.cap = "Recap of the files and their associated process used for the creation of the final output 'global_nominal_catch_firms_level0'", results='asis', eval=FALSE}
+```{r nominal-files-recap, tab.cap = "Recap of the files and their associated process used for the creation of the final output 'global_nominal_catch_firms_level0'", results='asis', eval=TRUE}
 
 qflextable2(nominal_files_recap)
 
@@ -106,9 +106,9 @@ download_link <- paste0("[Download CSV](<", file_url, ">)")
 
 link_for_mapping_files <- "https://docs.google.com/spreadsheets/d/1xzXgIxjQm81Fg7PCgtdiwhkB9sgtPKk-NByQDRtAGrE/edit#gid=1158322074"
 if(!(file.exists(here("inputs/workflow/mapping_files.csv")))){
-drive_auth()
+googledrive::drive_auth()
 
-mapping_files <- read_sheet(link_for_mapping_files, sheet = "2023")
+mapping_files <- googlesheets4::read_sheet(link_for_mapping_files, sheet = "2023")
 fwrite(mapping_files,here("inputs/workflow/mapping_files.csv" ))
 } else {
   mapping_files <- read_csv(here("inputs/workflow/mapping_files.csv"))
